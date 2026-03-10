@@ -1,0 +1,419 @@
+@import "tailwindcss";
+
+/* ===== PIXEL ART GBA PALETTE ===== */
+:root {
+  --gba-bg: #c8e0a8;
+  --gba-bg-dark: #88b058;
+  --gba-bg-darker: #507030;
+  --gba-text: #183018;
+  --gba-white: #e8f0d0;
+  --gba-border: #384030;
+  --gba-accent: #f85858;
+  --gba-blue: #5898f8;
+  --gba-gold: #f8d830;
+  --gba-shadow: #284028;
+  --gba-window: #e8f0d0;
+  --gba-window-border: #506850;
+}
+
+@theme inline {
+  --color-gba-bg: var(--gba-bg);
+  --color-gba-bg-dark: var(--gba-bg-dark);
+  --color-gba-bg-darker: var(--gba-bg-darker);
+  --color-gba-text: var(--gba-text);
+  --color-gba-white: var(--gba-white);
+  --color-gba-border: var(--gba-border);
+  --color-gba-accent: var(--gba-accent);
+  --color-gba-blue: var(--gba-blue);
+  --color-gba-gold: var(--gba-gold);
+  --color-gba-shadow: var(--gba-shadow);
+  --color-gba-window: var(--gba-window);
+  --color-gba-window-border: var(--gba-window-border);
+}
+
+/* ===== PIXEL FONT ===== */
+@font-face {
+  font-family: 'PressStart2P';
+  src: url('https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== GLOBAL STYLES ===== */
+* {
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'PressStart2P', monospace;
+  background-color: #1a1a2e;
+  color: var(--gba-text);
+  overflow-x: hidden;
+}
+
+/* ===== GBA SCREEN CONTAINER ===== */
+.gba-screen {
+  background: var(--gba-bg);
+  border: 4px solid var(--gba-border);
+  box-shadow:
+    inset 0 0 0 2px var(--gba-bg-dark),
+    0 0 0 4px #505050,
+    0 0 0 8px #303030,
+    0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== POKEMON DIALOG BOX ===== */
+.dialog-box {
+  background: var(--gba-window);
+  border: 4px solid var(--gba-window-border);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.2),
+    4px 4px 0 var(--gba-shadow);
+  padding: 16px 20px;
+  position: relative;
+}
+
+.dialog-box::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 2px solid var(--gba-bg-dark);
+  pointer-events: none;
+}
+
+/* ===== TEXT TYPING ANIMATION ===== */
+@keyframes typewriter {
+  from {
+    max-width: 0;
+  }
+
+  to {
+    max-width: 100%;
+  }
+}
+
+@keyframes blink-cursor {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-text {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 2s steps(30) forwards;
+}
+
+/* ===== PIXEL BORDER ===== */
+.pixel-border {
+  box-shadow:
+    -4px 0 0 0 var(--gba-border),
+    4px 0 0 0 var(--gba-border),
+    0 -4px 0 0 var(--gba-border),
+    0 4px 0 0 var(--gba-border);
+}
+
+/* ===== GBA BUTTON ===== */
+.gba-btn {
+  background: var(--gba-bg-dark);
+  color: var(--gba-white);
+  border: 3px solid var(--gba-border);
+  padding: 12px 24px;
+  font-family: 'PressStart2P', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  transition: all 0.1s;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+    3px 3px 0 var(--gba-shadow);
+}
+
+.gba-btn:hover {
+  background: var(--gba-accent);
+  transform: translate(1px, 1px);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 var(--gba-shadow);
+}
+
+.gba-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ===== SCANLINE OVERLAY ===== */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px);
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ===== SPRITE ANIMATIONS ===== */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pixel-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes walk-cycle {
+  0% {
+    transform: translateX(0) scaleX(1);
+  }
+
+  25% {
+    transform: translateX(4px) scaleX(1);
+  }
+
+  50% {
+    transform: translateX(0) scaleX(1);
+  }
+
+  75% {
+    transform: translateX(-4px) scaleX(1);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes screen-on {
+  0% {
+    filter: brightness(0);
+    transform: scale(0.95);
+  }
+
+  50% {
+    filter: brightness(1.5);
+    transform: scale(1.01);
+  }
+
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(136, 176, 88, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(136, 176, 88, 0.6);
+  }
+}
+
+/* ===== MENU SELECT ARROW ===== */
+@keyframes menu-arrow {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.menu-arrow::before {
+  content: '▶';
+  position: absolute;
+  left: -20px;
+  animation: menu-arrow 0.6s ease-in-out infinite;
+}
+
+/* ===== MODAL ANIMATIONS ===== */
+@keyframes modal-open {
+  0% {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-fade {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+/* ===== TILE PATTERN BACKGROUND ===== */
+.tile-bg {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* ===== PIXEL GRID OVERLAY ===== */
+.pixel-grid {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gba-bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gba-bg-dark);
+  border: 2px solid var(--gba-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gba-accent);
+}
+
+/* ===== POKEMON MENU STYLE ===== */
+.pokemon-menu-item {
+  position: relative;
+  padding-left: 24px;
+  transition: all 0.1s;
+}
+
+.pokemon-menu-item:hover {
+  color: var(--gba-accent);
+}
+
+.pokemon-menu-item:hover::before {
+  content: '▶';
+  position: absolute;
+  left: 4px;
+  animation: menu-arrow 0.6s ease-in-out infinite;
+}
+
+/* ===== NPC BOUNCE ===== */
+@keyframes npc-bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ===== STAR TWINKLE ===== */
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
