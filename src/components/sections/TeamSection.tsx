@@ -1,22 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import PixelSprite, { SCIENTIST_SPRITE } from "@/components/PixelSprite";
+import { useState, useEffect } from "react";
+import PixelSprite, { SCIENTIST_SPRITE, COCKATIEL_SPRITE, MISSINGNO_SPRITE, PLAYER_SPRITE, TEAM_ROCKET_SPRITE, MEW_SPRITE } from "@/components/PixelSprite";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import ProgressBar from "@/components/ui/ProgressBar";
 import useInView from "@/hooks/useInView";
+import { getAgeByDate } from "@/lib/terminal/utils/date";
 
 const team = [
-  { name: "DIRECTEUR", title: "Giovanni S.", level: 50, hp: 120, maxHp: 120, desc: "Le mystérieux directeur de la Sylphe Corp. Il supervise secrètement toutes les opérations de l'entreprise d'une main de fer." },
-  { name: "CHERCHEUR", title: "Dr. Fuji", level: 45, hp: 85, maxHp: 100, desc: "Ancien dirigeant du laboratoire de Cramois'Île. Ses recherches sur le clonage et la génétique sont mondialement reconnues." },
-  { name: "INGÉNIEUR", title: "Bill Tech", level: 42, hp: 45, maxHp: 90, desc: "Un génie de l'informatique responsable du système de stockage de PC. Il a un penchant étrange pour se transformer en Pokémon." },
-  { name: "ANALYSTE", title: "Léa Data", level: 38, hp: 20, maxHp: 80, desc: "Experte en analyse de données. Elle optimise les chaînes de production des Poké Balls à la milliseconde près." },
+  { name: "DEVELOPPEUR", title: "Maxime B.", level: getAgeByDate(new Date("1997-03-10")), hp: 120, maxHp: 120, desc: "Le créateur du Sylphe OS. Il supervise le code et passe son temps à tuer les bugs à l'aide de sa fidèle mascotte.", sprite: PLAYER_SPRITE },
+  // { name: "MASCOTTE", title: "Cali", level: getAgeByDate(new Date("2012-01-01")), hp: 70, maxHp: 100, desc: "La perruche calopsitte de la compagnie. Protège l'équipe des bugs en picorant les câbles. Aime passionnément les graines.", sprite: COCKATIEL_SPRITE },
+  { name: "MASCOTTE", title: "Yuan Yuan", level: getAgeByDate(new Date("2025-07-07")), hp: 80, maxHp: 80, desc: "La perruche calopsitte de la compagnie. Protège l'équipe des bugs en picorant les câbles. Aime passionnément les graines.", sprite: COCKATIEL_SPRITE },
+  // { name: "CHERCHEUR", title: "Dr. Fuji", level: 45, hp: 85, maxHp: 100, desc: "Ancien dirigeant du laboratoire de Cramois'Île. Ses recherches sur le clonage et la génétique sont mondialement reconnues.", sprite: SCIENTIST_SPRITE },
+  // { name: "INGÉNIEUR", title: "Bill Tech", level: 42, hp: 45, maxHp: 90, desc: "Un génie de l'informatique responsable du système de stockage de PC. Il a un penchant étrange pour se transformer en Pokémon.", sprite: SCIENTIST_SPRITE },
+  // { name: "ANALYSTE", title: "Léa Data", level: 38, hp: 20, maxHp: 80, desc: "Experte en analyse de données. Elle optimise les chaînes de production des Poké Balls à la milliseconde près.", sprite: TEAM_ROCKET_SPRITE },
+  { name: "???", title: "M?ssingN0", level: 145, hp: 0, maxHp: 0, desc: "An\u00A0er\u00A0ror ha\u00A0s\u00A0occ\u00A0ur\u00A0red. System d\u00A0at\u00A0a corr\u00A0up\u00A0ted. $!1011..#..", sprite: MISSINGNO_SPRITE },
+  { name: "LÉGENDE", title: "Mew", level: 5, hp: 30, maxHp: 30, desc: "Un Pokémon mythique extrêmement rare. Il semble contenir l'ADN de tous les Pokémon existants. Il a été trouvé en train de nager avec des Magicarpes.", sprite: MEW_SPRITE },
 ];
 
 export default function TeamSection() {
   const { ref, isVisible } = useInView(0.2);
   const [selectedMember, setSelectedMember] = useState<number | null>(null);
+  const [showMissingNo, setShowMissingNo] = useState(false);
+  const [showMew, setShowMew] = useState(false);
+
+  // Easter Egg check
+  useEffect(() => {
+    const checkEggs = () => {
+      setShowMissingNo(localStorage.getItem("sylphe_missingno_unlocked") === "true");
+      setShowMew(localStorage.getItem("sylphe_mew_captured") === "true");
+    };
+    checkEggs();
+    window.addEventListener("storage", checkEggs);
+    return () => window.removeEventListener("storage", checkEggs);
+  }, []);
+
+  const visibleTeam = team.filter((m) => {
+    if (m.name === "???") return showMissingNo;
+    if (m.title === "Mew") return showMew;
+    return true;
+  });
 
   return (
     <section
@@ -32,7 +56,7 @@ export default function TeamSection() {
         className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"
           }`}
       >
-        {team.map((member, i) => (
+        {visibleTeam.map((member, i) => (
           <button
             key={i}
             onClick={() => setSelectedMember(i)}
@@ -45,19 +69,20 @@ export default function TeamSection() {
           >
             <div className="flex items-start gap-3">
               <PixelSprite
-                sprite={SCIENTIST_SPRITE}
+                sprite={member.sprite || SCIENTIST_SPRITE}
                 size={48}
                 animate={selectedMember === i}
+                className={member.name === "???" ? "hue-rotate-[120deg] mix-blend-difference" : ""}
               />
               <div className="flex-1 w-full">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <div className="text-[8px] text-gba-text font-bold">{member.name}</div>
+                    <div className={`text-[8px] font-bold ${member.name === "???" ? "text-red-500 blur-[0.5px]" : "text-gba-text"}`}>{member.name}</div>
                     <div className="text-[7px] text-gba-accent">
                       {member.title}
                     </div>
                   </div>
-                  <div className="text-[7px] text-gba-bg-darker">
+                  <div className={`text-[7px] ${member.name === "???" ? "text-red-500 line-through" : "text-gba-bg-darker"}`}>
                     Lv{member.level}
                   </div>
                 </div>
@@ -74,14 +99,14 @@ export default function TeamSection() {
         <Modal
           isOpen={true}
           onClose={() => setSelectedMember(null)}
-          title={`PROFILE : ${team[selectedMember].title}`}
-          description={team[selectedMember].desc}
+          title={visibleTeam[selectedMember].name === "???" ? "$!#& M?S S INGN0 ¤" : `PROFILE : ${visibleTeam[selectedMember].title}`}
+          description={visibleTeam[selectedMember].desc}
         >
-          <div className="flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border">
-            <PixelSprite sprite={SCIENTIST_SPRITE} size={64} animate />
+          <div className={`flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border ${visibleTeam[selectedMember].name === "???" ? "animate-pulse blur-[1px] rotate-1 hue-rotate-180" : ""}`}>
+            <PixelSprite sprite={visibleTeam[selectedMember].sprite || SCIENTIST_SPRITE} size={64} animate />
             <div className="flex-1 space-y-3">
-              <ProgressBar value={team[selectedMember].hp} max={team[selectedMember].maxHp} label="SANTÉ" />
-              <ProgressBar value={team[selectedMember].level} max={100} label="EXPÉRIENCE" color="bg-gba-blue" />
+              <ProgressBar value={visibleTeam[selectedMember].hp} max={visibleTeam[selectedMember].maxHp || 1} label={visibleTeam[selectedMember].name === "???" ? "E R R OR" : "SANTÉ"} />
+              <ProgressBar value={visibleTeam[selectedMember].level} max={100} label={visibleTeam[selectedMember].name === "???" ? "L V L" : "EXPÉRIENCE"} color="bg-gba-blue" />
             </div>
           </div>
 

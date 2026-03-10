@@ -12,6 +12,7 @@ export const WINDOW = 10;
 export const IN_FLOOR = 11;
 export const IN_WALL = 12;
 export const PC_DESK = 13;
+export const KEY = 14;
 
 /* ===== Tile-to-color mapping ===== */
 export const TILE_COLORS: Record<number, string> = {
@@ -36,7 +37,7 @@ export const VIEW_ROWS = 12;
 
 /* ===== Walkability helpers ===== */
 export function isWalkableOutside(tile: number): boolean {
-  return tile === GRASS || tile === PATH || tile === FLOWER || tile === DOOR;
+  return tile === GRASS || tile === PATH || tile === FLOWER || tile === DOOR || tile === KEY;
 }
 
 export function isWalkableInside(tile: number): boolean {
@@ -52,5 +53,5 @@ export function isDoor(tile: number): boolean {
 }
 
 export function isInteractiveTile(tile: number, scene: "OUTSIDE" | "INSIDE"): boolean {
-  return tile === DOOR || tile === PC_DESK || isWalkable(tile, scene);
+  return tile === DOOR || tile === PC_DESK || tile === KEY || tile === TREE || tile === WATER || isWalkable(tile, scene);
 }

@@ -1,7 +1,7 @@
 import {
   GRASS, TREE, FLOWER, WATER, BUILDING, WINDOW, DOOR,
   PATH, IN_WALL, IN_FLOOR, PC_DESK, SKY, CLOUD,
-  TILE_COLORS, TILE_SIZE,
+  KEY, TILE_COLORS, TILE_SIZE,
 } from "./tiles";
 
 const TILE = TILE_SIZE;
@@ -14,39 +14,66 @@ export function drawTile(
   tile: number,
   x: number,
   y: number,
-  frame: number
+  frame: number,
+  season: "Winter" | "Spring" | "Summer" | "Autumn" = "Spring"
 ) {
   // Base color
-  ctx.fillStyle = TILE_COLORS[tile];
+  let baseColor = TILE_COLORS[tile] || "#000000";
+  if (season === "Winter") {
+    if (tile === GRASS || tile === FLOWER || tile === TREE || tile === KEY) baseColor = "#f0f8ff";
+    else if (tile === PATH) baseColor = "#e0e8f0";
+  } else if (season === "Autumn") {
+    if (tile === GRASS || tile === FLOWER || tile === TREE || tile === KEY) baseColor = "#c8a060";
+    else if (tile === PATH) baseColor = "#d8c090";
+  } else if (season === "Summer") {
+    if (tile === GRASS || tile === FLOWER || tile === TREE || tile === KEY) baseColor = "#98d898";
+    else if (tile === PATH) baseColor = "#d8c090";
+  }
+
+  ctx.fillStyle = baseColor;
   ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
 
   switch (tile) {
     case GRASS:
       if ((x + y) % 3 === 0) {
-        ctx.fillStyle = "#78a048";
+        ctx.fillStyle = season === "Winter" ? "#d0d8e0" : (season === "Autumn" ? "#a88040" : "#78a048");
         ctx.fillRect(x * TILE + 2, y * TILE + 4, 2, 2);
         ctx.fillRect(x * TILE + 7, y * TILE + 8, 2, 2);
       }
       break;
 
     case TREE:
-      ctx.fillStyle = "#385020";
+      ctx.fillStyle = season === "Winter" ? "#d0d8e0" : (season === "Autumn" ? "#884010" : "#385020");
       ctx.fillRect(x * TILE + 2, y * TILE + 2, 8, 6);
-      ctx.fillStyle = "#68a040";
+      ctx.fillStyle = season === "Winter" ? "#ffffff" : (season === "Autumn" ? "#c86018" : "#68a040");
       ctx.fillRect(x * TILE + 3, y * TILE + 3, 6, 4);
       ctx.fillStyle = "#604020";
       ctx.fillRect(x * TILE + 5, y * TILE + 8, 2, 4);
       break;
 
     case FLOWER: {
-      ctx.fillStyle = "#88b058";
-      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
-      const flowerColor = (x + y) % 2 === 0 ? "#f85858" : "#f8d830";
+      const flowerColor = season === "Winter" ? "#a0d0f0" : ((x + y) % 2 === 0 ? "#f85858" : "#f8d830");
       ctx.fillStyle = flowerColor;
       const bobY = Math.sin(frame * 0.05 + x * 0.5) * 1;
       ctx.fillRect(x * TILE + 4, y * TILE + 3 + bobY, 4, 4);
-      ctx.fillStyle = "#507030";
+      ctx.fillStyle = season === "Winter" ? "#c0d0e0" : (season === "Autumn" ? "#a88040" : "#507030");
       ctx.fillRect(x * TILE + 5, y * TILE + 7, 2, 3);
+      break;
+    }
+
+    case KEY: {
+      const bobY = Math.sin(frame * 0.05 + x * 0.5) * 1;
+      ctx.fillStyle = "#FFD700"; // gold
+      ctx.fillRect(x * TILE + 3, y * TILE + 5 + bobY, 6, 2);
+      ctx.fillRect(x * TILE + 2, y * TILE + 4 + bobY, 2, 4);
+      let holeColor = "#88b058";
+      if (season === "Winter") holeColor = "#f0f8ff";
+      else if (season === "Autumn") holeColor = "#c8a060";
+      ctx.fillStyle = holeColor;
+      ctx.fillRect(x * TILE + 2, y * TILE + 5 + bobY, 1, 2);
+      ctx.fillStyle = "#FFD700";
+      ctx.fillRect(x * TILE + 6, y * TILE + 7 + bobY, 1, 2);
+      ctx.fillRect(x * TILE + 8, y * TILE + 7 + bobY, 1, 2);
       break;
     }
 

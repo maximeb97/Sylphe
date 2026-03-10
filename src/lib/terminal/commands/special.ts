@@ -191,3 +191,52 @@ export const pingCommand: Command = {
     }
   },
 };
+
+export const missingnoCommand: Command = {
+  name: "missingno",
+  description: "???",
+  usage: "missingno",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_missingno_unlocked", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    const frames = [
+      "...",
+      "An anomaly has been detected.",
+      "Data corruption at 0x9F4C.",
+      "The glitch is now part of the team.",
+    ];
+    for (const line of frames) {
+      ctx.addLine({ type: "system", content: line });
+    }
+  },
+};
+
+export const rocketCommand: Command = {
+  name: "rocket",
+  description: "Acc\u00e9der au protocole R",
+  usage: "rocket",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_rocket_mode", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    ctx.addLine({ type: "error", content: "Protocole ROCKET activ\u00e9." });
+    ctx.addLine({ type: "error", content: "Nous sommes de retour pour vous jouer un mauvais tour..." });
+  },
+};
+
+export const masterballCommand: Command = {
+  name: "masterball",
+  description: "Capture garantie",
+  usage: "masterball",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_masterball_unlocked", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    ctx.addLine({ type: "system", content: "Master Ball acquise !" });
+    ctx.addLine({ type: "system", content: "Vous pourrez capturer n'importe quel bug sans \u00e9chouer." });
+  },
+};

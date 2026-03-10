@@ -22,6 +22,9 @@ import {
   exitCommand,
   sudoCommand,
   pingCommand,
+  missingnoCommand,
+  rocketCommand,
+  masterballCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -59,6 +62,9 @@ export function registerAllCommands() {
   registerCommand(exitCommand);
   registerCommand(sudoCommand);
   registerCommand(pingCommand);
+  registerCommand(missingnoCommand);
+  registerCommand(rocketCommand);
+  registerCommand(masterballCommand);
 
   // Aliases
   registerAlias("ll", "ls");

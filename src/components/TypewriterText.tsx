@@ -12,12 +12,14 @@ export default function TypewriterText({
   speed = 50,
   delay = 0,
   className = "",
+  forceComplete = false,
   onComplete,
 }: {
   text: string;
   speed?: number;
   delay?: number;
   className?: string;
+  forceComplete?: boolean;
   onComplete?: () => void;
 }) {
   const [chars, setChars] = useState<PixelChar[]>(
@@ -30,6 +32,14 @@ export default function TypewriterText({
     const timer = setTimeout(() => setStarted(true), delay);
     return () => clearTimeout(timer);
   }, [delay]);
+
+  useEffect(() => {
+    if (forceComplete && !done) {
+      setChars((prev) => prev.map((c) => ({ ...c, visible: true })));
+      setDone(true);
+      onComplete?.();
+    }
+  }, [forceComplete, done, onComplete]);
 
   const tick = useCallback(() => {
     setChars((prev) => {

@@ -15,8 +15,8 @@ export default function DialogBox({
 }) {
   return (
     <div
-      className={`dialog-box ${className} ${isClickable ? "cursor-pointer-pixel" : ""}`}
-      onClick={isClickable ? onClick : undefined}
+      className={`dialog-box ${className} ${onClick ? "cursor-pointer-pixel" : ""}`}
+      onClick={onClick}
     >
       <div className="relative z-10">{children}</div>
 
