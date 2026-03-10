@@ -23,12 +23,20 @@ export function createFileSystem(): FSNode {
             "Explorez les fichiers pour découvrir nos secrets...\n\n" +
             "Tapez 'help' pour voir les commandes disponibles."
         ),
+        ".profile": file(
+          "# Profil utilisateur Sylphe\nexport LANG=fr_FR.UTF-8\nexport EDITOR=vi\nalias ll='ls -la'\nalias cls='clear'\n\n# Message du jour\ncat /etc/motd"
+        ),
         "notes.txt": file(
           "TODO:\n" +
             "- Finir le projet MEWTWO\n" +
             "- Vérifier les logs du Scope Sylphe\n" +
             "- Ne pas oublier de nourrir les Pokémon du labo"
         ),
+        downloads: dir({
+          "rapport_q1_2026.pdf": file("[FICHIER BINAIRE - Rapport trimestriel Q1 2026 - 2.4 Mo]"),
+          "photo_equipe.png": file("[FICHIER BINAIRE - Photo d'équipe Sylphe Corp - 856 Ko]"),
+          "budget_secret.xlsx": file("[FICHIER PROTÉGÉ - Accès refusé - Contactez l'administrateur]"),
+        }),
         projects: dir({
           sylphe: dir({
             "README.md": file(
@@ -101,10 +109,29 @@ export function createFileSystem(): FSNode {
           "#!/bin/bash\n# Affiche un effet Matrix\necho 'Initialisation de la matrice...'",
           true
         ),
+        "pokemon.sh": file(
+          "#!/bin/bash\n# Pokémon aléatoire\necho 'Recherche dans le Pokédex...'\necho 'Tapez: pokedex [1-1025] pour chercher un Pokémon'",
+          true
+        ),
+        "rocket.sh": file(
+          "#!/bin/bash\n# Message secret de la Team Rocket\necho ''\necho '  ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗'\necho '  ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝'\necho '  ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   '\necho '  ██╔══██╗██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   '\necho '  ██║  ██║╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   '\necho '  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   '\necho ''\necho 'Préparez-vous aux problèmes...'\necho 'Et faites-les doubles !'\necho ''\necho '- Jessie & James, agents infiltrés'",
+          true
+        ),
       }),
     }),
     tmp: dir({
       "scratch.txt": file("fichier temporaire - rien d'intéressant ici"),
+    }),
+    dev: dir({
+      null: file(""),
+      random: file("01001101 01000101 01010111 01010100 01010111 01001111"),
+    }),
+    usr: dir({
+      local: dir({
+        bin: dir({
+          "neofetch": file("#!/bin/bash\n# System information display\necho 'SylpheOS Neofetch'", true),
+        }),
+      }),
     }),
   });
 }

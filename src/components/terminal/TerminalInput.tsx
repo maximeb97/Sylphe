@@ -6,12 +6,14 @@ interface TerminalInputProps {
   cwd: string;
   onSubmit: (input: string) => void;
   onNavigateHistory: (direction: "up" | "down") => string;
+  onTabComplete?: (partial: string) => string;
 }
 
 export default function TerminalInput({
   cwd,
   onSubmit,
   onNavigateHistory,
+  onTabComplete,
 }: TerminalInputProps) {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,9 +36,23 @@ export default function TerminalInput({
         e.preventDefault();
         const next = onNavigateHistory("down");
         setValue(next);
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        if (onTabComplete) {
+          const completed = onTabComplete(value);
+          setValue(completed);
+        }
+      } else if (e.key === "c" && e.ctrlKey) {
+        e.preventDefault();
+        onSubmit("");
+        setValue("");
+      } else if (e.key === "l" && e.ctrlKey) {
+        e.preventDefault();
+        onSubmit("clear");
+        setValue("");
       }
     },
-    [value, onSubmit, onNavigateHistory]
+    [value, onSubmit, onNavigateHistory, onTabComplete]
   );
 
   return (
@@ -44,8 +60,11 @@ export default function TerminalInput({
       className="flex items-center px-3 py-2 border-t border-[#1a3a1a]"
       onClick={() => inputRef.current?.focus()}
     >
-      <span className="text-[9px] md:text-[10px] text-[#4af626] whitespace-nowrap mr-2 font-mono">
-        {cwd} $
+      <span className="text-[9px] md:text-[10px] whitespace-nowrap mr-2 font-mono">
+        <span className="text-[#2a9a2a]">user@sylphe</span>
+        <span className="text-[#666]">:</span>
+        <span className="text-[#5898f8]">{cwd}</span>
+        <span className="text-[#666]"> $</span>
       </span>
       <input
         ref={inputRef}

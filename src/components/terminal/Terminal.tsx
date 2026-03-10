@@ -10,7 +10,7 @@ interface TerminalProps {
 }
 
 export default function Terminal({ onClose }: TerminalProps) {
-  const { lines, cwd, executeCommand, navigateHistory } = useTerminal();
+  const { lines, cwd, executeCommand, navigateHistory, tabComplete } = useTerminal();
 
   const handleSubmit = useCallback(
     async (input: string) => {
@@ -22,18 +22,20 @@ export default function Terminal({ onClose }: TerminalProps) {
 
   return (
     <div
-      className="absolute inset-0 z-[60] flex flex-col bg-[#0a0a0a]"
-      style={{ animation: "terminal-open 0.3s ease-out" }}
+      className="flex flex-col bg-[#0a0a0a] min-h-[500px] h-full crt-effect relative"
+      style={{ animation: "terminal-open 0.5s ease-out" }}
       onClick={(e) => {
-        // Focus input when clicking anywhere in terminal
         const input = (e.currentTarget as HTMLElement).querySelector("input");
         input?.focus();
       }}
     >
       {/* Terminal header bar */}
-      <div className="flex items-center justify-between px-3 py-[6px] bg-[#1a1a1a] border-b border-[#333]">
+      <div className="flex items-center justify-between px-3 py-[6px] bg-[#1a1a1a] border-b border-[#333] relative z-20">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#33ff33]" />
+          <div
+            className="w-2 h-2 rounded-full bg-[#33ff33]"
+            style={{ animation: "pixel-pulse 2s ease-in-out infinite" }}
+          />
           <span className="text-[8px] text-[#33ff33] font-mono tracking-wider">
             SYLPHE TERMINAL v3.1.4
           </span>
@@ -43,21 +45,22 @@ export default function Terminal({ onClose }: TerminalProps) {
             e.stopPropagation();
             onClose();
           }}
-          className="text-[10px] text-[#666] hover:text-[#ff4444] transition-colors font-mono px-2"
+          className="text-[10px] text-[#666] hover:text-[#ff4444] transition-colors font-mono px-2 leading-none"
         >
           [X]
         </button>
       </div>
 
       {/* Terminal body */}
-      <TerminalOutput lines={lines} />
-
-      {/* Terminal input */}
-      <TerminalInput
-        cwd={cwd}
-        onSubmit={handleSubmit}
-        onNavigateHistory={navigateHistory}
-      />
+      <div className="flex-1 flex flex-col relative z-20 overflow-hidden">
+        <TerminalOutput lines={lines} />
+        <TerminalInput
+          cwd={cwd}
+          onSubmit={handleSubmit}
+          onNavigateHistory={navigateHistory}
+          onTabComplete={tabComplete}
+        />
+      </div>
     </div>
   );
 }

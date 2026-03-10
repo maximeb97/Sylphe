@@ -417,3 +417,150 @@ body {
     transform: scale(1.2);
   }
 }
+
+/* ===== CUSTOM PIXEL CURSORS ===== */
+/* Default pixel cursor (arrow) */
+.cursor-pixel {
+  cursor: url('/cursors/cursor-default.svg') 0 0, auto;
+}
+
+/* Pointer cursor (hand) */
+.cursor-pointer-pixel {
+  cursor: url('/cursors/cursor-pointer.svg') 5 0, pointer;
+}
+
+/* Apply default pixel cursor globally */
+html, body {
+  cursor: url('/cursors/cursor-default.svg') 0 0, auto;
+}
+
+/* Interactive elements get pointer cursor */
+button, 
+a, 
+[role="button"], 
+input[type="submit"], 
+input[type="button"] {
+  cursor: url('/cursors/cursor-pointer.svg') 5 0, pointer;
+}
+
+/* ===== TERMINAL ANIMATIONS ===== */
+@keyframes terminal-open {
+  0% {
+    opacity: 0;
+    filter: brightness(3) blur(4px);
+    transform: scaleY(0.01) scaleX(0.5);
+  }
+  40% {
+    opacity: 1;
+    filter: brightness(2) blur(0px);
+    transform: scaleY(0.01) scaleX(1);
+  }
+  100% {
+    filter: brightness(1);
+    transform: scaleY(1) scaleX(1);
+  }
+}
+
+@keyframes terminal-flicker {
+  0% { opacity: 0.97; }
+  5% { opacity: 0.95; }
+  10% { opacity: 0.98; }
+  15% { opacity: 0.96; }
+  100% { opacity: 1; }
+}
+
+/* Terminal scrollbar */
+.terminal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-scroll::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background: #1a3a1a;
+  border: 1px solid #0a2a0a;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #2a5a2a;
+}
+
+/* CRT scanline effect for terminal */
+.crt-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 0, 0.03) 2px,
+    rgba(0, 255, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+  animation: terminal-flicker 4s linear infinite;
+}
+
+.crt-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ===== ENHANCED GBA SHELL GLOW ===== */
+@keyframes screen-glow {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 2px var(--gba-bg-dark),
+      0 0 0 4px #505050,
+      0 0 0 8px #303030,
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(136, 176, 88, 0.2);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 2px var(--gba-bg-dark),
+      0 0 0 4px #505050,
+      0 0 0 8px #303030,
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 0 50px rgba(136, 176, 88, 0.35);
+  }
+}
+
+.gba-screen {
+  animation: screen-glow 4s ease-in-out infinite;
+}
+
+/* ===== PIXEL SHIMMER EFFECT ===== */
+@keyframes pixel-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.pixel-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 30%,
+    rgba(255,255,255,0.08) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: pixel-shimmer 3s ease-in-out infinite;
+}
+
+/* ===== RETRO BADGE HOVER ===== */
+@keyframes badge-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}

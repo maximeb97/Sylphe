@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import type { TerminalLine, CommandContext, FSNode } from "@/lib/terminal/types";
-import { createFileSystem } from "@/lib/terminal/fileSystem";
-import { getCommand } from "@/lib/terminal/commandRegistry";
+import { createFileSystem, resolvePath, getNode } from "@/lib/terminal/fileSystem";
+import { getCommand, getAllCommands } from "@/lib/terminal/commandRegistry";
 import { registerAllCommands } from "@/lib/terminal/commands";
 
 let commandsRegistered = false;
@@ -127,10 +127,76 @@ export default function useTerminal() {
     [history, historyIndex]
   );
 
+  const tabComplete = useCallback(
+    (input: string): string => {
+      const parts = input.split(/\s+/);
+
+      if (parts.length <= 1) {
+        // Complete command name
+        const partial = parts[0] || "";
+        const allCmds = getAllCommands();
+        const matches = allCmds.filter((c) => c.name.startsWith(partial));
+        if (matches.length === 1) return matches[0].name + " ";
+        if (matches.length > 1) {
+          addLine({ type: "output", content: matches.map((c) => c.name).join("  ") });
+          const prefix = matches.reduce((a, b) => {
+            let i = 0;
+            while (i < a.name.length && i < b.name.length && a.name[i] === b.name[i]) i++;
+            return { ...a, name: a.name.slice(0, i) };
+          });
+          return prefix.name;
+        }
+        return input;
+      }
+
+      // Complete file/directory path
+      const lastArg = parts[parts.length - 1];
+      const dirPart = lastArg.includes("/")
+        ? lastArg.slice(0, lastArg.lastIndexOf("/") + 1)
+        : "";
+      const filePart = lastArg.includes("/")
+        ? lastArg.slice(lastArg.lastIndexOf("/") + 1)
+        : lastArg;
+
+      const lookupDir = dirPart
+        ? resolvePath(fsRef.current!, cwd, dirPart)
+        : cwd;
+      const node = getNode(fsRef.current!, lookupDir);
+
+      if (!node || node.type !== "directory") return input;
+
+      const entries = Object.keys(node.children || {});
+      const matches = entries.filter((name) => name.startsWith(filePart));
+
+      if (matches.length === 1) {
+        const match = matches[0];
+        const child = node.children![match];
+        const suffix = child.type === "directory" ? "/" : " ";
+        const newParts = [...parts.slice(0, -1), dirPart + match + suffix];
+        return newParts.join(" ");
+      }
+
+      if (matches.length > 1) {
+        addLine({ type: "output", content: matches.join("  ") });
+        const commonPrefix = matches.reduce((a, b) => {
+          let i = 0;
+          while (i < a.length && i < b.length && a[i] === b[i]) i++;
+          return a.slice(0, i);
+        });
+        const newParts = [...parts.slice(0, -1), dirPart + commonPrefix];
+        return newParts.join(" ");
+      }
+
+      return input;
+    },
+    [cwd, addLine]
+  );
+
   return {
     lines,
     cwd,
     executeCommand,
     navigateHistory,
+    tabComplete,
   };
 }

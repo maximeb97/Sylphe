@@ -88,3 +88,127 @@ export const pwdCommand: Command = {
     ctx.addLine({ type: "output", content: ctx.cwd });
   },
 };
+
+export const treeCommand: Command = {
+  name: "tree",
+  description: "Afficher l'arborescence des fichiers",
+  usage: "tree [chemin]",
+  execute(args: string[], ctx: CommandContext) {
+    const target = args[0] || ctx.cwd;
+    const path = resolvePath(ctx.fs, ctx.cwd, target);
+    const node = getNode(ctx.fs, path);
+
+    if (!node) {
+      ctx.addLine({ type: "error", content: `tree: ${target}: Aucun fichier ou dossier de ce type` });
+      return;
+    }
+
+    if (node.type === "file") {
+      ctx.addLine({ type: "output", content: target });
+      return;
+    }
+
+    ctx.addLine({ type: "output", content: path });
+    let dirs = 0, files = 0;
+
+    function printTree(n: typeof node, prefix: string) {
+      if (!n || !n.children) return;
+      const entries = Object.entries(n.children);
+      entries.forEach(([name, child], i) => {
+        const isLast = i === entries.length - 1;
+        const connector = isLast ? "└── " : "├── ";
+        const suffix = child.type === "directory" ? "/" : "";
+        ctx.addLine({ type: "output", content: `${prefix}${connector}${name}${suffix}` });
+        if (child.type === "directory") {
+          dirs++;
+          printTree(child, prefix + (isLast ? "    " : "│   "));
+        } else {
+          files++;
+        }
+      });
+    }
+
+    printTree(node, "");
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({ type: "system", content: `${dirs} répertoires, ${files} fichiers` });
+  },
+};
+
+export const findCommand: Command = {
+  name: "find",
+  description: "Rechercher des fichiers par nom",
+  usage: "find <motif>",
+  execute(args: string[], ctx: CommandContext) {
+    if (args.length === 0) {
+      ctx.addLine({ type: "error", content: "find: argument manquant" });
+      return;
+    }
+
+    const pattern = args[0].toLowerCase();
+    const results: string[] = [];
+
+    function search(node: typeof ctx.fs, currentPath: string) {
+      if (node.type === "directory" && node.children) {
+        for (const [name, child] of Object.entries(node.children)) {
+          const fullPath = currentPath === "/" ? `/${name}` : `${currentPath}/${name}`;
+          if (name.toLowerCase().includes(pattern)) {
+            results.push(fullPath);
+          }
+          if (child.type === "directory") {
+            search(child, fullPath);
+          }
+        }
+      }
+    }
+
+    search(ctx.fs, "");
+
+    if (results.length === 0) {
+      ctx.addLine({ type: "output", content: `Aucun résultat pour '${args[0]}'` });
+    } else {
+      for (const r of results) {
+        ctx.addLine({ type: "output", content: r });
+      }
+      ctx.addLine({ type: "system", content: `${results.length} résultat(s) trouvé(s)` });
+    }
+  },
+};
+
+export const grepCommand: Command = {
+  name: "grep",
+  description: "Rechercher du texte dans un fichier",
+  usage: "grep <motif> <fichier>",
+  execute(args: string[], ctx: CommandContext) {
+    if (args.length < 2) {
+      ctx.addLine({ type: "error", content: "grep: usage: grep <motif> <fichier>" });
+      return;
+    }
+
+    const pattern = args[0].toLowerCase();
+    const path = resolvePath(ctx.fs, ctx.cwd, args[1]);
+    const node = getNode(ctx.fs, path);
+
+    if (!node) {
+      ctx.addLine({ type: "error", content: `grep: ${args[1]}: Aucun fichier de ce type` });
+      return;
+    }
+
+    if (node.type === "directory") {
+      ctx.addLine({ type: "error", content: `grep: ${args[1]}: Est un dossier` });
+      return;
+    }
+
+    const lines = (node.content || "").split("\n");
+    let found = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].toLowerCase().includes(pattern)) {
+        ctx.addLine({ type: "output", content: `${i + 1}: ${lines[i]}` });
+        found++;
+      }
+    }
+
+    if (found === 0) {
+      ctx.addLine({ type: "output", content: `Aucune correspondance pour '${args[0]}'` });
+    }
+  },
+};

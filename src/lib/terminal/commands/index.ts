@@ -1,5 +1,6 @@
 import { registerCommand } from "../commandRegistry";
-import { lsCommand, cdCommand, pwdCommand } from "./navigation";
+import { registerAlias } from "../commandRegistry";
+import { lsCommand, cdCommand, pwdCommand, treeCommand, findCommand, grepCommand } from "./navigation";
 import { catCommand, touchCommand, mkdirCommand, rmCommand } from "./fileOps";
 import {
   helpCommand,
@@ -9,6 +10,9 @@ import {
   dateCommand,
   unameCommand,
   historyCommand,
+  envCommand,
+  hostnameCommand,
+  neofetchCommand,
 } from "./system";
 import {
   hackCommand,
@@ -16,6 +20,8 @@ import {
   matrixCommand,
   runCommand,
   exitCommand,
+  sudoCommand,
+  pingCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -23,6 +29,9 @@ export function registerAllCommands() {
   registerCommand(lsCommand);
   registerCommand(cdCommand);
   registerCommand(pwdCommand);
+  registerCommand(treeCommand);
+  registerCommand(findCommand);
+  registerCommand(grepCommand);
 
   // File operations
   registerCommand(catCommand);
@@ -38,6 +47,9 @@ export function registerAllCommands() {
   registerCommand(dateCommand);
   registerCommand(unameCommand);
   registerCommand(historyCommand);
+  registerCommand(envCommand);
+  registerCommand(hostnameCommand);
+  registerCommand(neofetchCommand);
 
   // Special / Easter eggs
   registerCommand(hackCommand);
@@ -45,4 +57,13 @@ export function registerAllCommands() {
   registerCommand(matrixCommand);
   registerCommand(runCommand);
   registerCommand(exitCommand);
+  registerCommand(sudoCommand);
+  registerCommand(pingCommand);
+
+  // Aliases
+  registerAlias("ll", "ls");
+  registerAlias("dir", "ls");
+  registerAlias("cls", "clear");
+  registerAlias("type", "cat");
+  registerAlias("more", "cat");
 }

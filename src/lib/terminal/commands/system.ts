@@ -94,3 +94,70 @@ export const historyCommand: Command = {
   // Actual implementation is in useTerminal hook
   execute() {},
 };
+
+export const envCommand: Command = {
+  name: "env",
+  description: "Afficher les variables d'environnement",
+  usage: "env",
+  execute(_args: string[], ctx: CommandContext) {
+    const vars: Record<string, string> = {
+      ...ctx.env,
+      PATH: "/usr/local/bin:/usr/bin:/bin",
+      TERM: "sylphe-256color",
+      LANG: "fr_FR.UTF-8",
+      PWD: ctx.cwd,
+      HOSTNAME: "sylphe-mainframe",
+      OS: "SylpheOS 3.1.4",
+      EDITOR: "vi",
+      PAGER: "less",
+    };
+    for (const [key, value] of Object.entries(vars)) {
+      ctx.addLine({ type: "output", content: `${key}=${value}` });
+    }
+  },
+};
+
+export const hostnameCommand: Command = {
+  name: "hostname",
+  description: "Afficher le nom de la machine",
+  usage: "hostname",
+  execute(_args: string[], ctx: CommandContext) {
+    ctx.addLine({ type: "output", content: "sylphe-mainframe" });
+  },
+};
+
+export const neofetchCommand: Command = {
+  name: "neofetch",
+  description: "Afficher les informations syst\u00e8me",
+  usage: "neofetch",
+  execute(_args: string[], ctx: CommandContext) {
+    const art = [
+      "       ___       ",
+      "      /   \\      ",
+      "     / S C \\     ",
+      "    / SYLPHE\\    ",
+      "   /  CORP.  \\   ",
+      "  /___________\\  ",
+      "  |  |     |  |  ",
+      "  |__|     |__|  ",
+    ];
+    const info = [
+      `user@sylphe-mainframe`,
+      `-------------------`,
+      `OS: SylpheOS 3.1.4 (Kanto Build 151)`,
+      `Host: Sylphe Mainframe MK-II`,
+      `Kernel: pokemon-6.1.51`,
+      `Shell: sylphe-sh 3.14`,
+      `Terminal: SYLPHE TERMINAL v3.1.4`,
+      `CPU: PokeProcessor 151-core @ 4.2GHz`,
+    ];
+    for (let i = 0; i < Math.max(art.length, info.length); i++) {
+      const left = (art[i] || "").padEnd(20);
+      const right = info[i] || "";
+      ctx.addLine({
+        type: i < art.length ? "system" : "output",
+        content: `${left}${right}`,
+      });
+    }
+  },
+};

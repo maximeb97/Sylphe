@@ -141,3 +141,53 @@ export const exitCommand: Command = {
     // Handled by the terminal component directly
   },
 };
+
+export const sudoCommand: Command = {
+  name: "sudo",
+  description: "Ex\u00e9cuter en tant que superutilisateur",
+  usage: "sudo <commande>",
+  execute(args: string[], ctx: CommandContext) {
+    if (args.length === 0) {
+      ctx.addLine({ type: "error", content: "sudo: argument manquant" });
+      return;
+    }
+    ctx.addLine({ type: "system", content: "[sudo] Mot de passe pour user :" });
+    ctx.addLine({ type: "error", content: "V\u00e9rification..." });
+    ctx.addLine({ type: "error", content: "\u2588\u2588\u2588 ACC\u00c8S REFUS\u00c9 \u2588\u2588\u2588" });
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({ type: "system", content: "Cet incident sera signal\u00e9 au Prof. Chen." });
+  },
+};
+
+export const pingCommand: Command = {
+  name: "ping",
+  description: "Tester la connectivit\u00e9 r\u00e9seau",
+  usage: "ping <h\u00f4te>",
+  execute(args: string[], ctx: CommandContext) {
+    const host = args[0] || "sylphe-mainframe";
+    ctx.addLine({ type: "system", content: `PING ${host} (192.168.1.42): 56 data bytes` });
+
+    const responses = [
+      { time: "1.24", ttl: 64 },
+      { time: "0.89", ttl: 64 },
+      { time: "1.02", ttl: 64 },
+      { time: "42.00", ttl: 42 },
+    ];
+
+    for (const r of responses) {
+      ctx.addLine({
+        type: "output",
+        content: `64 bytes from ${host}: icmp_seq=1 ttl=${r.ttl} time=${r.time} ms`,
+      });
+    }
+
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({ type: "system", content: `--- ${host} statistiques ---` });
+    ctx.addLine({ type: "output", content: "4 paquets transmis, 4 re\u00e7us, 0% perte" });
+
+    if (host.toLowerCase().includes("rocket") || host.toLowerCase().includes("mewtwo")) {
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({ type: "error", content: "\u26a0 ALERTE: Activit\u00e9 suspecte d\u00e9tect\u00e9e sur ce r\u00e9seau" });
+    }
+  },
+};

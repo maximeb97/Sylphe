@@ -1,0 +1,306 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { TEAM_ROCKET_SPRITE, NEUTRAL_NPC_SPRITE } from "../PixelSprite";
+import { OUTSIDE_MAP, INSIDE_MAP } from "./maps";
+import { DOOR, PC_DESK, TILE_SIZE, VIEW_ROWS, isWalkable, isInteractiveTile } from "./tiles";
+import { drawTile, drawSprite } from "./renderer";
+import { findPath, Point } from "./pathfinding";
+
+const TILE = TILE_SIZE;
+
+export default function TileMapCanvas({
+  className = "",
+  onInteractPC,
+}: {
+  className?: string;
+  onInteractPC?: () => void;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [scene, setScene] = useState<"OUTSIDE" | "INSIDE">("OUTSIDE");
+  const [player, setPlayer] = useState({ x: 14, y: 29, sprite: NEUTRAL_NPC_SPRITE });
+  const playerRef = useRef(player);
+
+  // Movement
+  const moveQueueRef = useRef<Point[]>([]);
+  const [isMoving, setIsMoving] = useState(false);
+  const [hoveredTile, setHoveredTile] = useState<Point | null>(null);
+  const pendingInteractionRef = useRef<(() => void) | null>(null);
+
+  // NPCs
+  const npcs = useRef([
+    { id: "rocket_guard", x: 7, y: 26, sprite: TEAM_ROCKET_SPRITE, type: "static" as const, scene: "OUTSIDE" as const },
+    { id: "rocket_patrol", x: 4, y: 28, sprite: TEAM_ROCKET_SPRITE, type: "wander" as const, scene: "OUTSIDE" as const },
+  ]);
+
+  const frameRef = useRef(0);
+  const animFrameRef = useRef<number>(0);
+  const sceneRef = useRef(scene);
+
+  useEffect(() => { playerRef.current = player; }, [player]);
+  useEffect(() => { sceneRef.current = scene; }, [scene]);
+
+  // ── Helpers ────────────────────────────────────────────────
+  const getMap = () => sceneRef.current === "OUTSIDE" ? OUTSIDE_MAP : INSIDE_MAP;
+
+  const screenToTile = (clientX: number, clientY: number): Point | null => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width;
+    const sy = canvas.height / rect.height;
+
+    const drawX = (clientX - rect.left) * sx;
+    let drawY = (clientY - rect.top) * sy;
+
+    if (sceneRef.current === "OUTSIDE") {
+      const maxCamY = (OUTSIDE_MAP.length - VIEW_ROWS) * TILE;
+      if (frameRef.current >= 200) drawY += maxCamY;
+    }
+
+    return { x: Math.floor(drawX / TILE), y: Math.floor(drawY / TILE) };
+  };
+
+  // ── Auto-walk interval ────────────────────────────────────
+  useEffect(() => {
+    if (!isMoving) return;
+
+    const step = () => {
+      const queue = moveQueueRef.current;
+      if (queue.length === 0) { setIsMoving(false); return; }
+
+      const next = queue[0];
+      const map = sceneRef.current === "OUTSIDE" ? OUTSIDE_MAP : INSIDE_MAP;
+      const tile = map[next.y]?.[next.x];
+
+      // Door transitions
+      if (sceneRef.current === "OUTSIDE" && tile === DOOR) {
+        setScene("INSIDE");
+        setPlayer({ ...playerRef.current, x: 9, y: 10 });
+        moveQueueRef.current = [];
+        setIsMoving(false);
+        return;
+      }
+      if (sceneRef.current === "INSIDE" && tile === DOOR) {
+        setScene("OUTSIDE");
+        setPlayer({ ...playerRef.current, x: 9, y: 25 });
+        moveQueueRef.current = [];
+        setIsMoving(false);
+        return;
+      }
+
+      setPlayer({ ...playerRef.current, x: next.x, y: next.y });
+      moveQueueRef.current = queue.slice(1);
+      if (moveQueueRef.current.length === 0) {
+        setIsMoving(false);
+        if (pendingInteractionRef.current) {
+          const cb = pendingInteractionRef.current;
+          pendingInteractionRef.current = null;
+          cb();
+        }
+      }
+    };
+
+    // First step immediately, then at interval
+    step();
+    const id = setInterval(step, 120);
+    return () => clearInterval(id);
+  }, [isMoving]);
+
+  // ── Canvas render loop ────────────────────────────────────
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const viewW = OUTSIDE_MAP[0].length * TILE;
+    const viewH = VIEW_ROWS * TILE;
+    canvas.width = viewW;
+    canvas.height = viewH;
+
+    const render = () => {
+      frameRef.current++;
+      const frame = frameRef.current;
+      const currentMap = getMap();
+
+      // Camera pan (outside only)
+      let cameraY = 0;
+      if (sceneRef.current === "OUTSIDE") {
+        const maxCamY = (currentMap.length - VIEW_ROWS) * TILE;
+        const HOLD = 80, PAN = 120;
+        if (frame < HOLD) cameraY = 0;
+        else if (frame < HOLD + PAN) {
+          const p = (frame - HOLD) / PAN;
+          cameraY = (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2) * maxCamY;
+        } else cameraY = maxCamY;
+      }
+
+      // Clear
+      ctx.fillStyle = sceneRef.current === "OUTSIDE" ? "#88c8f8" : "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(0, -cameraY);
+
+      // Tiles
+      for (let y = 0; y < currentMap.length; y++) {
+        if (y * TILE < cameraY - TILE || y * TILE > cameraY + viewH + TILE) continue;
+        for (let x = 0; x < currentMap[y].length; x++) {
+          drawTile(ctx, currentMap[y][x], x, y, frame);
+        }
+      }
+
+      // Player
+      const py = playerRef.current.y * TILE;
+      if (py >= cameraY - TILE * 2 && py <= cameraY + viewH + TILE * 2) {
+        drawSprite(ctx, playerRef.current.sprite, playerRef.current.x * TILE, py, 0);
+      }
+
+      // NPCs
+      npcs.current.forEach(npc => {
+        if (npc.scene !== sceneRef.current) return;
+        const ny = npc.y * TILE;
+        if (ny >= cameraY - TILE * 2 && ny <= cameraY + viewH + TILE * 2) {
+          const bob = npc.type === "wander" ? Math.sin(frame * 0.1 + npc.x) * 1 : 0;
+          drawSprite(ctx, npc.sprite, npc.x * TILE, ny, bob);
+        }
+      });
+
+      ctx.restore();
+      animFrameRef.current = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animFrameRef.current);
+  }, []);
+
+  // ── Keyboard controls ─────────────────────────────────────
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const map = scene === "OUTSIDE" ? OUTSIDE_MAP : INSIDE_MAP;
+      let { x, y } = playerRef.current;
+
+      if (e.key === "ArrowUp" || e.key === "w") y -= 1;
+      else if (e.key === "ArrowDown" || e.key === "s") y += 1;
+      else if (e.key === "ArrowLeft" || e.key === "a") x -= 1;
+      else if (e.key === "ArrowRight" || e.key === "d") x += 1;
+      else return;
+
+      if (y < 0 || y >= map.length || x < 0 || x >= map[0].length) return;
+
+      const tile = map[y][x];
+      if (!isWalkable(tile, scene)) {
+        // PC interaction on walk-into
+        if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) onInteractPC();
+        return;
+      }
+
+      // Door transitions
+      if (tile === DOOR) {
+        if (scene === "OUTSIDE") {
+          setScene("INSIDE");
+          setPlayer({ ...playerRef.current, x: 9, y: 10 });
+        } else {
+          setScene("OUTSIDE");
+          setPlayer({ ...playerRef.current, x: 9, y: 25 });
+        }
+        moveQueueRef.current = [];
+        setIsMoving(false);
+        return;
+      }
+
+      setPlayer({ ...playerRef.current, x, y });
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [scene, onInteractPC]);
+
+  // ── Click handler ─────────────────────────────────────────
+  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const pt = screenToTile(e.clientX, e.clientY);
+    if (!pt) return;
+
+    const map = scene === "OUTSIDE" ? OUTSIDE_MAP : INSIDE_MAP;
+    if (pt.y < 0 || pt.y >= map.length || pt.x < 0 || pt.x >= map[0].length) return;
+
+    const tile = map[pt.y][pt.x];
+
+    // PC interaction: walk to adjacent tile, then callback
+    if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) {
+      // If already adjacent, trigger immediately
+      if (Math.abs(playerRef.current.x - pt.x) <= 1 && Math.abs(playerRef.current.y - pt.y) <= 1) {
+        onInteractPC();
+        return;
+      }
+
+      // Find adjacent walkable tile to walk to
+      const adjacentTiles = [
+        { x: pt.x, y: pt.y + 1 },
+        { x: pt.x - 1, y: pt.y },
+        { x: pt.x + 1, y: pt.y },
+        { x: pt.x, y: pt.y - 1 },
+      ];
+
+      for (const adj of adjacentTiles) {
+        if (adj.y < 0 || adj.y >= map.length || adj.x < 0 || adj.x >= map[0].length) continue;
+        if (!isWalkable(map[adj.y][adj.x], scene)) continue;
+
+        const path = findPath(
+          { x: playerRef.current.x, y: playerRef.current.y },
+          adj,
+          map,
+          scene,
+        );
+
+        if (path.length > 0) {
+          pendingInteractionRef.current = onInteractPC;
+          moveQueueRef.current = path;
+          setIsMoving(true);
+          return;
+        }
+      }
+      return;
+    }
+
+    if (!isWalkable(tile, scene)) return;
+
+    const path = findPath(
+      { x: playerRef.current.x, y: playerRef.current.y },
+      pt,
+      map,
+      scene,
+    );
+
+    if (path.length > 0) {
+      moveQueueRef.current = path;
+      setIsMoving(true);
+    }
+  };
+
+  // ── Mouse hover ───────────────────────────────────────────
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const pt = screenToTile(e.clientX, e.clientY);
+    setHoveredTile(pt);
+  };
+
+  const cursorClass = (() => {
+    if (!hoveredTile) return "cursor-pixel";
+    const map = scene === "OUTSIDE" ? OUTSIDE_MAP : INSIDE_MAP;
+    if (hoveredTile.y < 0 || hoveredTile.y >= map.length || hoveredTile.x < 0 || hoveredTile.x >= map[0].length) return "cursor-pixel";
+    return isInteractiveTile(map[hoveredTile.y][hoveredTile.x], scene) ? "cursor-pointer-pixel" : "cursor-pixel";
+  })();
+
+  return (
+    <canvas
+      ref={canvasRef}
+      onPointerDown={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setHoveredTile(null)}
+      className={`w-full h-auto ${className} ${cursorClass}`}
+      style={{ imageRendering: "pixelated" }}
+    />
+  );
+}
