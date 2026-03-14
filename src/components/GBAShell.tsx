@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import StartMenu from "@/components/StartMenu";
+import { markMapVisited } from "@/lib/gameState";
 
 export default function GBAShell({
   children,
@@ -10,11 +13,32 @@ export default function GBAShell({
   overlay?: React.ReactNode;
 }) {
   const [powered, setPowered] = useState(false);
+  const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const timer = setTimeout(() => setPowered(true), 300);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!pathname) return;
+    markMapVisited(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const tagName = document.activeElement?.tagName;
+      if (tagName === "INPUT" || tagName === "TEXTAREA") return;
+      if (event.key !== "Enter" || overlay) return;
+
+      event.preventDefault();
+      setStartMenuOpen((current) => !current);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [overlay]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8 bg-[#1a1a2e]">
@@ -61,6 +85,7 @@ export default function GBAShell({
               {overlay && (
                 <div className="relative z-[60]">{overlay}</div>
               )}
+              <StartMenu isOpen={startMenuOpen && !overlay} onClose={() => setStartMenuOpen(false)} />
               <div style={{ display: overlay ? "none" : undefined }}>
                 {children}
               </div>
@@ -109,7 +134,13 @@ export default function GBAShell({
               <span className="text-[5px] text-[#6a6a8a] uppercase">Select</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-[28px] h-[10px] bg-[#3a3a5a] rounded-full border border-[#2a2a4a] active:bg-[#4a4a6a] transition-colors" />
+              <button
+                type="button"
+                aria-label="Open start menu"
+                disabled={Boolean(overlay)}
+                onClick={() => setStartMenuOpen((current) => !current)}
+                className={`w-[28px] h-[10px] rounded-full border transition-colors ${overlay ? "bg-[#2b2b3b] border-[#252535] opacity-50 cursor-not-allowed" : "bg-[#3a3a5a] border-[#2a2a4a] hover:bg-[#4a4a6a] cursor-pointer-pixel"}`}
+              />
               <span className="text-[5px] text-[#6a6a8a] uppercase">Start</span>
             </div>
           </div>

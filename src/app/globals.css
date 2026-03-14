@@ -293,6 +293,48 @@ body {
   }
 }
 
+@keyframes masterball-throw {
+  0% {
+    transform: translate(0, 0) scale(0.7) rotate(0deg);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translate(270px, -170px) scale(1.1) rotate(720deg);
+    opacity: 1;
+  }
+}
+
+@keyframes capture-shake-left {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateX(-8px) rotate(-10deg);
+  }
+
+  75% {
+    transform: translateX(8px) rotate(10deg);
+  }
+}
+
+@keyframes capture-shake-right {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateX(8px) rotate(10deg);
+  }
+
+  75% {
+    transform: translateX(-8px) rotate(-10deg);
+  }
+}
+
 /* ===== MENU SELECT ARROW ===== */
 @keyframes menu-arrow {
 

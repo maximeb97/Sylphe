@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
                     '/rocket-hq',
                     '/giovanni-office',
                     '/mew-cloning-chamber-042',
+                    '/cerulean-cave',
                 ],
             },
             {
@@ -19,6 +20,10 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: 'Pikachu',
                 disallow: '/pokeball',
+            },
+            {
+                userAgent: 'Mew',
+                allow: '/pokeball',
             },
             {
                 userAgent: 'MissingNo',

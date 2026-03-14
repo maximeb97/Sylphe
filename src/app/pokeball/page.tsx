@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
@@ -29,16 +28,13 @@ export default function PokeballInterior() {
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
+  const hasMew = typeof window !== "undefined" && localStorage.getItem("sylphe_mew_captured") === "true";
+  const hasPrototype151 = typeof window !== "undefined" && localStorage.getItem("sylphe_prototype_151") === "true";
 
-  const [hasMew, setHasMew] = useState(false);
-
-  useEffect(() => {
-     setHasMew(localStorage.getItem("sylphe_mew_captured") === "true");
-  }, []);
-
-  const npcs: CustomNPC[] = hasMew ? [
-    { id: "mew", x: 10, y: 5, sprite: MEW_SPRITE, type: "wander" },
-  ] : [];
+  const npcs: CustomNPC[] = [
+   ...(hasMew ? [{ id: "mew", x: 10, y: 5, sprite: MEW_SPRITE, type: "wander" as const }] : []),
+   ...(hasPrototype151 ? [{ id: "echo151", x: 10, y: 3, sprite: MEW_SPRITE, type: "static" as const }] : []),
+  ];
 
   const handleInteract = (tile: number, x: number, y: number, npcId?: string) => {
     setIsTypewriterDone(false);
@@ -46,8 +42,10 @@ export default function PokeballInterior() {
     if (npcId === "mew") {
        playPokemonCry(151);
        setDialog("Mew voltige joyeusement dans cet espace infini...");
+   } else if (npcId === "echo151") {
+     setDialog(hasMew ? "L'archive 151 se tait. Le sujet originel a finalement retrouve une forme stable." : "Une silhouette blanche clignote dans la coque: 'Je n'etais pas le clone. J'etais le modele.'");
     } else if (tile === POKEBALL_WALL) {
-       setDialog(hasMew ? "La paroi de la Masterball. C'est confortable à l'intérieur." : "La Masterball est vide... Un immense espace blanc vide.");
+     setDialog(hasPrototype151 ? "Les parois vibrent. Une inscription apparait puis disparait: pr0t0type_151." : hasMew ? "La paroi de la Masterball. C'est confortable à l'intérieur." : "La Masterball est vide... Un immense espace blanc vide.");
     }
   };
 
@@ -70,6 +68,7 @@ export default function PokeballInterior() {
   return (
     <GBAShell>
       <section className="relative tile-bg pixel-grid bg-white overflow-hidden h-full">
+        {hasPrototype151 && <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(248,168,184,0.35),transparent_35%)] pointer-events-none z-10" />}
 
         <div className="relative isolate h-full">
           <CustomMapCanvas
@@ -80,7 +79,7 @@ export default function PokeballInterior() {
             npcs={npcs}
             onInteract={handleInteract}
             onPlayerMove={handlePlayerMove}
-            className="w-full h-auto"
+            className={`w-full h-auto ${hasPrototype151 ? "saturate-125 hue-rotate-[12deg]" : ""}`}
           />
 
           {dialog && (

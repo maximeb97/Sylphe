@@ -21,6 +21,29 @@
 - [x] Route à créer: "/cerulean-cave", un labyrinthe de fin de jeu accessible uniquement après avoir fini tous les autres easter eggs.
 - [x] Implémenter le fameux combat final avec RED si on parvient au bout de /cerulean-cave.
 - [x] Ajouter une gestion de l'inventaire pour visualiser la Masterball, la clé, et le Silph Scope. (Via commande terminal `inventory`)
-- [ ] Utiliser des animations de combat Pokémon classiques lors de la capture de Mew et Mewtwo plutôt que juste du texte de dialogue. (Combat RED implémenté)
 - [x] Avec le système d'inventaire, ajoute aussi une liste des maps visitées. En cliquant sur une map, on est redirigé vers celle-ci. Une map ne doit appraitre que quand elle a déjà été visitée une fois. (Commande terminal `map` implémentée)
-- [ ] Ajoute un easter egg en rapport avec le mot de passe qui se trouve dans /var/log/system.log (pr0t0type_151)
+
+## Prochaines étapes (Phase 4):
+
+- [x] Ajoute un easter egg en rapport avec le mot de passe qui se trouve dans /var/log/system.log (pr0t0type_151)
+- [x] Utiliser des animations de combat Pokémon classiques lors de la capture de Mew et Mewtwo plutôt que juste du texte de dialogue.
+- [x] Refonte du systeme d'inventaire: ouvrir un menu quand l'utilisateur appuie sur le bouton "start" de la gameboy, ce menu contient 2 sous menu: "inventaire" et "map", on affichera la liste des items, et la liste des maps débloquer. Cliquer sur une map nous redirigera vers celle-ci.
+- [x] Améliore la map de /cerulean-cave
+- [x] Ajoute la route au robots.txt
+
+## Prochaines étapes (Phase 5):
+
+- [ ] Ajouter une route "/hall-of-fame" qui s'ouvre après RED et rejoue toute la progression sous forme d'archives corrompues.
+- [ ] Créer un mini-jeu de terminal où Porygon défragmente les données de Glitch City pour révéler une nouvelle commande cachée.
+- [ ] Ajouter une mécanique de météo secrète: pluie acide Team Rocket, aurore cybernétique, brouillard spectral si le Scope est actif.
+- [ ] Ajouter un faux Pokédex interne Sylphe avec fiches truquées pour Mew, Mewtwo et le Prototype 151.
+- [ ] Cacher un easter egg audio: si l'utilisateur ouvre /pokeball puis /mew-cloning-chamber-042 en moins de 15 secondes, un cri inversé de Mew joue et débloque une note de labo.
+- [ ] Ajouter une salle blanche finale derrière les escaliers de /cerulean-cave pour confronter l'archive 151 elle-même.
+- [ ] Faire en sorte que le personnage soit aussi controllable avec les touche de la gameboy
+- [ ] Tous les pokémons capturés doivent apparaitrent dans la "Team"
+
+## Idées de lore additionnel:
+
+- Le mot de passe `pr0t0type_151` n'est pas juste un code de sauvegarde: c'est une clef memoire qui reveille l'empreinte du sujet originel cache dans la Masterball.
+- RED n'est pas seulement le boss final: il surveille le point ou la recherche Sylphe bascule d'une simple capture vers la recreation du vivant.
+- La Pokeball blanche agit comme une chambre d'echo mentale: plus le joueur accumule de secrets, plus elle cesse d'etre vide.

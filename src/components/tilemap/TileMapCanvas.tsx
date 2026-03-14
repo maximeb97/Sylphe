@@ -13,10 +13,12 @@ export default function TileMapCanvas({
   className = "",
   onInteractPC,
   onShowDialog,
+  onSpecialEncounter,
 }: {
   className?: string;
   onInteractPC?: () => void;
   onShowDialog?: (text: string) => void;
+  onSpecialEncounter?: (encounterId: "mew") => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [scene, setScene] = useState<"OUTSIDE" | "INSIDE">("OUTSIDE");
@@ -380,9 +382,15 @@ export default function TileMapCanvas({
         if (waterClickCountRef.current >= 20) {
           onShowDialog?.("Vous apercevez un vieux camion rouillé gisant dans les profondeurs... Vous cherchez en dessous, mais il n'y a rien.");
         } else if (localStorage.getItem("sylphe_masterball_unlocked") === "true") {
-          onShowDialog?.("Un étrange Pokémon rose flotte... Vous lancez la Masterball ! MEW est capturé et rejoint l'équipe !");
-          localStorage.setItem("sylphe_mew_captured", "true");
-          window.dispatchEvent(new Event("storage"));
+          if (localStorage.getItem("sylphe_mew_captured") === "true") {
+            onShowDialog?.("Le courant est calme. Une onde residuelle indique que MEW a deja ete capture ici.");
+          } else if (onSpecialEncounter) {
+            onSpecialEncounter("mew");
+          } else {
+            onShowDialog?.("Un étrange Pokémon rose flotte... Vous lancez la Masterball ! MEW est capturé et rejoint l'équipe !");
+            localStorage.setItem("sylphe_mew_captured", "true");
+            window.dispatchEvent(new Event("storage"));
+          }
         } else {
           onShowDialog?.("Un étrange Pokémon rose flotte au deçà de la surface. Vous avez découvert MEW !! (si seulement vous aviez une Masterball...)");
         }

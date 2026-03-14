@@ -32,6 +32,7 @@ import {
   doomCommand,
   coffeeCommand,
   giovanniCommand,
+  prototype151Command,
   inventoryCommand,
   mapCommand,
 } from "./special";
@@ -81,6 +82,7 @@ export function registerAllCommands() {
   registerCommand(doomCommand);
   registerCommand(coffeeCommand);
   registerCommand(giovanniCommand);
+  registerCommand(prototype151Command);
   registerCommand(inventoryCommand);
   registerCommand(mapCommand);
 

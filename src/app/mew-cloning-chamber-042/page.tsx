@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import BattleTransition from "@/components/BattleTransition";
 import DialogBox from "@/components/DialogBox";
+import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
 import { NEUTRAL_NPC_SPRITE, MEWTWO_SPRITE, MEW_SPRITE } from "@/components/PixelSprite";
 import { IN_FLOOR, IN_WALL, VAT_BG, PC_DESK } from "@/components/tilemap/tiles";
-
-import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
+import { setGameFlag } from "@/lib/gameState";
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -30,24 +32,17 @@ export default function MewChamber() {
     const [dialog, setDialog] = useState<string | null>(null);
     const [isTypewriterDone, setIsTypewriterDone] = useState(false);
     const [forceComplete, setForceComplete] = useState(false);
-
-    const [hasAccess, setHasAccess] = useState<boolean | null>(null);
-    const [isPasswordPrompt, setIsPasswordPrompt] = useState(false);
+    const [showBattleTransition, setShowBattleTransition] = useState(false);
+    const [captureTarget, setCaptureTarget] = useState<"mewtwo" | null>(null);
+    const [hasAccess, setHasAccess] = useState<boolean | null>(() => typeof window === "undefined" ? null : localStorage.getItem("sylphe_mew_unlocked") === "true");
+    const [isPasswordPrompt, setIsPasswordPrompt] = useState(() => typeof window !== "undefined" ? localStorage.getItem("sylphe_mew_unlocked") !== "true" : false);
     const [passwordInput, setPasswordInput] = useState("");
-
-    useEffect(() => {
-        const access = localStorage.getItem("sylphe_mew_unlocked") === "true";
-        if (access) {
-            setHasAccess(true);
-        } else {
-            setIsPasswordPrompt(true);
-        }
-    }, []);
+    const hasPrototype151 = typeof window !== "undefined" && localStorage.getItem("sylphe_prototype_151") === "true";
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (passwordInput?.toUpperCase() === "7382-4B9F") {
-            localStorage.setItem("sylphe_mew_unlocked", "true");
+            setGameFlag("sylphe_mew_unlocked");
             setHasAccess(true);
             setIsPasswordPrompt(false);
             setDialog(null);
@@ -69,19 +64,28 @@ export default function MewChamber() {
         if (npcId === "mewtwo") {
             playPokemonCry(150);
             const hasMasterball = localStorage.getItem("sylphe_masterball_unlocked") === "true";
-            if (hasMasterball) {
-                setDialog("Le clone instable #150 se déchaîne... Vous lancez la MASTERBALL ! Mewtwo a été capturé avec succès !");
-                localStorage.setItem("sylphe_mewtwo_captured", "true");
+            const alreadyCaptured = localStorage.getItem("sylphe_mewtwo_captured") === "true";
+            if (alreadyCaptured) {
+                setDialog("La cuve est vide. Seule une empreinte psychique de #150 flotte encore dans le liquide.");
+            } else if (hasMasterball) {
+                setCaptureTarget("mewtwo");
+                setShowBattleTransition(true);
             } else {
                 setDialog("Le monstre endormi dans la cuve émet une onde psychique terrifiante, mais reste figé.");
             }
         }
         else if (npcId === "mew1" || npcId === "mew2") {
             playPokemonCry(151);
-            setDialog("Mew... L'original nous observe...");
+            setDialog(hasPrototype151 ? "Mew... L'original nous observe. Une archive chuchote: '151 precede 150.'" : "Mew... L'original nous observe...");
         }
-        else if (tile === PC_DESK) setDialog("Terminal Labo : Tentative de clonage #41 échouée. Les fonds de la Team Rocket permettent de relancer l'essai #42.");
+        else if (tile === PC_DESK) setDialog(hasPrototype151 ? "Terminal Labo : Tentative de clonage #41 echouee. Note supprimee: le sujet originel 151 presente une signature plus stable que le clone 150." : "Terminal Labo : Tentative de clonage #41 échouée. Les fonds de la Team Rocket permettent de relancer l'essai #42.");
         else if (tile === VAT_BG) setDialog("Le liquide fluorescent bouillonne mystérieusement.");
+    };
+
+    const handleCaptureComplete = () => {
+        setCaptureTarget(null);
+        setGameFlag("sylphe_mewtwo_captured");
+        setDialog(hasPrototype151 ? "La MASTERBALL absorbe le clone #150. Les capteurs indiquent une resonance immediate avec l'archive 151." : "Le clone instable #150 se déchaîne... Vous lancez la MASTERBALL ! Mewtwo a été capturé avec succès !");
     };
 
     const handlePlayerMove = (x: number, y: number) => {
@@ -151,6 +155,20 @@ export default function MewChamber() {
                         onPlayerMove={handlePlayerMove}
                         className="w-full h-auto hue-rotate-90 saturate-50"
                     />
+
+                    {showBattleTransition && (
+                        <BattleTransition onComplete={() => setShowBattleTransition(false)} />
+                    )}
+
+                    {captureTarget === "mewtwo" && !showBattleTransition && (
+                        <PokemonCaptureSequence
+                            pokemonName="Mewtwo"
+                            pokemonSprite={MEWTWO_SPRITE}
+                            accentClassName="from-[#f3f0ff] via-[#cab8ff] to-[#98c8ff]"
+                            introText={hasPrototype151 ? "Le clone #150 force l'ouverture d'une archive interdite avant de charger." : undefined}
+                            onComplete={handleCaptureComplete}
+                        />
+                    )}
 
                     {dialog && (
                         <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-20">

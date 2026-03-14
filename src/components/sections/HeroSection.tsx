@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react";
 import TileMap from "@/components/TileMap";
-import PixelSprite, { MASTERBALL_SPRITE } from "@/components/PixelSprite";
+import PixelSprite, { MASTERBALL_SPRITE, MEW_SPRITE } from "@/components/PixelSprite";
+import BattleTransition from "@/components/BattleTransition";
 import TypewriterText from "@/components/TypewriterText";
 import DialogBox from "@/components/DialogBox";
+import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import useInView from "@/hooks/useInView";
 import useKonamiCode from "@/hooks/useKonamiCode";
+import { setGameFlag } from "@/lib/gameState";
 
 export default function HeroSection({
   onOpenTerminal,
@@ -23,13 +26,23 @@ export default function HeroSection({
   const [isRocketMode, setIsRocketMode] = useState(false);
   const [hasMasterball, setHasMasterball] = useState(false);
   const [isRich, setIsRich] = useState(false);
+  const [hasPrototype151, setHasPrototype151] = useState(false);
   const [nightModeClicks, setNightModeClicks] = useState(0);
+  const [pendingEncounter, setPendingEncounter] = useState<"mew" | null>(null);
+  const [showBattleTransition, setShowBattleTransition] = useState(false);
+
+  const handleShowDialog = (text: string) => {
+    setDialogText(text);
+    setIsTypewriterDone(false);
+    setForceComplete(false);
+  };
 
   useEffect(() => {
     const checkEggs = () => {
       setIsRocketMode(localStorage.getItem("sylphe_rocket_mode") === "true");
       setHasMasterball(localStorage.getItem("sylphe_masterball_unlocked") === "true");
       setIsRich(localStorage.getItem("sylphe_rich") === "true");
+      setHasPrototype151(localStorage.getItem("sylphe_prototype_151") === "true");
 
       if (localStorage.getItem("sylphe_night_mode") === "true") {
         document.body.classList.add("night-mode");
@@ -78,10 +91,19 @@ export default function HeroSection({
     }
   };
 
-  const handleShowDialog = (text: string) => {
-    setDialogText(text);
-    setIsTypewriterDone(false);
-    setForceComplete(false);
+  const handleSpecialEncounter = (encounterId: "mew") => {
+    setPendingEncounter(encounterId);
+    setShowBattleTransition(true);
+  };
+
+  const handleCaptureComplete = () => {
+    setPendingEncounter(null);
+    setGameFlag("sylphe_mew_captured");
+    handleShowDialog(
+      hasPrototype151
+        ? "La MASTERBALL se referme. Un fichier fantome s'eveille: le sujet 151 n'etait pas un simple clone, mais la matrice originelle du Projet M."
+        : "La MASTERBALL se referme. MEW rejoint l'inventaire secret de Sylphe Corp."
+    );
   };
 
   return (
@@ -92,6 +114,7 @@ export default function HeroSection({
         <div className="flex items-center gap-2">
           {isRich && <span className="text-yellow-400">♦ 999 999 ₽</span>}
           {hasMasterball && <PixelSprite sprite={MASTERBALL_SPRITE} size={12} animate={false} />}
+          {hasPrototype151 && <span className="text-pink-300">PROTO_151</span>}
           <span className="opacity-60">{isRocketMode ? "TEAM ROCKET HQ" : "SYLPHE CORP. HQ"}</span>
         </div>
       </div>
@@ -102,7 +125,26 @@ export default function HeroSection({
           className="opacity-90"
           onInteractPC={onOpenTerminal}
           onShowDialog={handleShowDialog}
+          onSpecialEncounter={handleSpecialEncounter}
         />
+
+        {showBattleTransition && (
+          <BattleTransition
+            onComplete={() => {
+              setShowBattleTransition(false);
+            }}
+          />
+        )}
+
+        {pendingEncounter === "mew" && !showBattleTransition && (
+          <PokemonCaptureSequence
+            pokemonName="Mew"
+            pokemonSprite={MEW_SPRITE}
+            accentClassName="from-[#fff2fb] via-[#f8c5df] to-[#a9d8ff]"
+            introText={hasPrototype151 ? "Le sujet 151 sauvage materialise une silhouette rose au-dessus de l'eau." : undefined}
+            onComplete={handleCaptureComplete}
+          />
+        )}
 
         {/* Overlay dialog */}
         {dialogText !== null && (

@@ -1,5 +1,6 @@
 import type { Command, CommandContext } from "../types";
 import { resolvePath, getNode } from "../fileSystem";
+import { getUnlockedInventoryItems, getVisitedMaps, setGameFlag } from "../../gameState";
 
 export const hackCommand: Command = {
   name: "hack",
@@ -351,35 +352,40 @@ export const giovanniCommand: Command = {
   },
 };
 
+export const prototype151Command: Command = {
+  name: "pr0t0type_151",
+  description: "Resonance memoire classee",
+  usage: "pr0t0type_151",
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      setGameFlag("sylphe_prototype_151");
+    }
+
+    ctx.addLine({ type: "system", content: "[ARCHIVE 151] Signature genetique reconnue." });
+    ctx.addLine({ type: "system", content: "[ARCHIVE 151] La Masterball blanche repond a un sujet originel non catalogue." });
+    ctx.addLine({ type: "output", content: "Une resonance s'installe dans les zones vides du systeme." });
+    ctx.addLine({ type: "output", content: "Nouvel objet ajoute: ARCHIVE PROTOTYPE 151." });
+  },
+};
+
 export const inventoryCommand: Command = {
   name: "inventory",
   description: "Afficher les objets ramassés",
   usage: "inventory",
   execute(_args: string[], ctx: CommandContext) {
     if (typeof window === "undefined") return;
-    
+
     ctx.addLine({ type: "system", content: "--- INVENTAIRE SYLPHE OS ---" });
-    let hasItems = false;
-    
-    const items = [
-      { key: "sylphe_has_key", name: "CARTE D'ACCÈS SYLPHE" },
-      { key: "sylphe_masterball_unlocked", name: "MASTERBALL" },
-      { key: "sylphe_silph_scope", name: "SCOPE SYLPHE" },
-      { key: "sylphe_mewtwo_captured", name: "MEWTWO (CAPTURED)" },
-      { key: "sylphe_mew_captured", name: "MEW (CAPTURED)" },
-      { key: "sylphe_system_pass", name: "PASS SYSTÈME (RED)" },
-    ];
-    
-    for (const item of items) {
-      if (localStorage.getItem(item.key) === "true") {
+    const items = getUnlockedInventoryItems();
+
+    if (items.length === 0) {
+      ctx.addLine({ type: "output", content: " Votre inventaire est vide." });
+    } else {
+      for (const item of items) {
         ctx.addLine({ type: "output", content: ` [x] ${item.name}` });
-        hasItems = true;
       }
     }
-    
-    if (!hasItems) {
-      ctx.addLine({ type: "output", content: " Votre inventaire est vide." });
-    }
+
     ctx.addLine({ type: "output", content: "" });
   },
 };
@@ -390,24 +396,17 @@ export const mapCommand: Command = {
   usage: "map",
   execute(_args: string[], ctx: CommandContext) {
     if (typeof window === "undefined") return;
-    
+
     ctx.addLine({ type: "system", content: "--- CARTOGRAPHIE SYSTÈME ---" });
-    
-    const maps = [
-        { key: "always", name: "ACCUEIL", color: "green" },
-        { key: "sylphe_has_key", name: "ROCKET-HQ", color: "red" },
-        { key: "sylphe_giovanni_unlocked", name: "BUREAU GIOVANNI", color: "red" },
-        { key: "sylphe_mew_unlocked", name: "CHAMBRE 042", color: "purple" },
-        { key: "sylphe_missingno_unlocked", name: "GLITCH CITY", color: "gray" },
-        { key: "sylphe_mewtwo_captured", name: "GROTTE AZURÉE", color: "blue" },
-    ];
-    
-    for (const map of maps) {
-        if (map.key === "always" || localStorage.getItem(map.key) === "true") {
-            ctx.addLine({ type: "output", content: ` - ${map.name} (ACCESSIBLE)` });
-        } else {
-             ctx.addLine({ type: "output", content: ` - ??? (VERROUILLÉ)` });
-        }
+
+    const maps = getVisitedMaps();
+
+    if (maps.length === 0) {
+      ctx.addLine({ type: "output", content: " - AUCUNE ZONE ENREGISTREE" });
+    } else {
+      for (const map of maps) {
+        ctx.addLine({ type: "output", content: ` - ${map.name} (VISITEE)` });
+      }
     }
     ctx.addLine({ type: "output", content: "" });
   },
