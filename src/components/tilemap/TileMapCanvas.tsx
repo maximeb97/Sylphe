@@ -66,8 +66,25 @@ export default function TileMapCanvas({
   const waterClickCountRef = useRef(0);
   const stepsCountRef = useRef(0);
 
+  const [bikeMode, setBikeMode] = useState(false);
+  const [noclipMode, setNoclipMode] = useState(false);
+
   useEffect(() => {
     stepsCountRef.current = parseInt(localStorage.getItem("sylphe_steps") || "0", 10);
+
+    const checkBike = () => {
+      setBikeMode(localStorage.getItem("sylphe_bike") === "true");
+    };
+    checkBike();
+    window.addEventListener("storage", checkBike);
+
+    const toggleNoclip = () => setNoclipMode(true);
+    window.addEventListener("sylphe_noclip_toggle", toggleNoclip);
+
+    return () => {
+      window.removeEventListener("storage", checkBike);
+      window.removeEventListener("sylphe_noclip_toggle", toggleNoclip);
+    };
   }, []);
 
   useEffect(() => { playerRef.current = player; }, [player]);
@@ -162,14 +179,20 @@ export default function TileMapCanvas({
           pendingInteractionRef.current = null;
           cb();
         }
+      } else {
+        animFrameRef.current = window.setTimeout(() => {
+          step();
+        }, bikeMode ? 60 : 150);
       }
     };
 
     // First step immediately, then at interval
     step();
-    const id = setInterval(step, 120);
-    return () => clearInterval(id);
-  }, [isMoving]);
+    // The interval is now handled by the setTimeout in the step function itself
+    // const id = setInterval(step, 120);
+    // return () => clearInterval(id);
+    return () => clearTimeout(animFrameRef.current);
+  }, [isMoving, bikeMode]);
 
   // ── Canvas render loop ────────────────────────────────────
   useEffect(() => {
@@ -265,7 +288,7 @@ export default function TileMapCanvas({
       }
 
       const tile = map[y][x];
-      if (!isWalkable(tile, scene)) {
+      if (!noclipMode && !isWalkable(tile, scene)) {
         // PC interaction on walk-into
         if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) onInteractPC();
         return;
@@ -313,7 +336,7 @@ export default function TileMapCanvas({
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [scene, outsideMap, onInteractPC, onShowDialog]);
+  }, [scene, outsideMap, onInteractPC, onShowDialog, noclipMode]);
 
   // ── Click handler ─────────────────────────────────────────
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -340,7 +363,9 @@ export default function TileMapCanvas({
     if (tile === WATER) {
       waterClickCountRef.current += 1;
       if (waterClickCountRef.current >= 10) {
-        if (localStorage.getItem("sylphe_masterball_unlocked") === "true") {
+        if (waterClickCountRef.current >= 20) {
+          onShowDialog?.("Vous apercevez un vieux camion rouillé gisant dans les profondeurs... Vous cherchez en dessous, mais il n'y a rien.");
+        } else if (localStorage.getItem("sylphe_masterball_unlocked") === "true") {
           onShowDialog?.("Un étrange Pokémon rose flotte... Vous lancez la Masterball ! MEW est capturé et rejoint l'équipe !");
           localStorage.setItem("sylphe_mew_captured", "true");
           window.dispatchEvent(new Event("storage"));
@@ -356,7 +381,13 @@ export default function TileMapCanvas({
     if (tile === TREE) {
       treeClickCountRef.current += 1;
       if (treeClickCountRef.current >= 5) {
-        onShowDialog?.("Un PIKACHU pixelisé sauvage apparaît ! ... Ah non, ce n'est qu'un oiseau étrange.");
+        if (localStorage.getItem("sylphe_cali_unlocked") === "true") {
+          onShowDialog?.("Un PIKACHU pixelisé sauvage apparaît ! ... Ah non, ce n'est qu'un oiseau étrange.");
+        } else {
+          onShowDialog?.("Vous trouvez une petite plume grise sous les feuilles... Cali veillera sur l'équipe pour toujours.");
+          localStorage.setItem("sylphe_cali_unlocked", "true");
+          window.dispatchEvent(new Event("storage"));
+        }
         treeClickCountRef.current = 0;
       } else {
         onShowDialog?.("Un bel arbre feuillu et robuste. Vous ne pouvez pas couper ce petit buisson avec la CS Coupe.");
@@ -366,13 +397,11 @@ export default function TileMapCanvas({
 
     // PC interaction: walk to adjacent tile, then callback
     if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) {
-      // If already adjacent, trigger immediately
       if (Math.abs(playerRef.current.x - pt.x) <= 1 && Math.abs(playerRef.current.y - pt.y) <= 1) {
         onInteractPC();
         return;
       }
 
-      // Find adjacent walkable tile to walk to
       const adjacentTiles = [
         { x: pt.x, y: pt.y + 1 },
         { x: pt.x - 1, y: pt.y },
@@ -382,9 +411,9 @@ export default function TileMapCanvas({
 
       for (const adj of adjacentTiles) {
         if (adj.y < 0 || adj.y >= map.length || adj.x < 0 || adj.x >= map[0].length) continue;
-        if (!isWalkable(map[adj.y][adj.x], scene)) continue;
+        if (!noclipMode && !isWalkable(map[adj.y][adj.x], scene)) continue;
 
-        const path = findPath(
+        const path = noclipMode ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, adj) : findPath(
           { x: playerRef.current.x, y: playerRef.current.y },
           adj,
           map,
@@ -401,9 +430,9 @@ export default function TileMapCanvas({
       return;
     }
 
-    if (!isWalkable(tile, scene)) return;
+    if (!noclipMode && !isWalkable(tile, scene)) return;
 
-    const path = findPath(
+    const path = noclipMode ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, pt) : findPath(
       { x: playerRef.current.x, y: playerRef.current.y },
       pt,
       map,
@@ -414,6 +443,20 @@ export default function TileMapCanvas({
       moveQueueRef.current = path;
       setIsMoving(true);
     }
+  };
+
+  const getStraightPath = (start: Point, end: Point) => {
+    const p = [];
+    let cx = start.x;
+    let cy = start.y;
+    while (cx !== end.x || cy !== end.y) {
+      if (cx < end.x) cx++;
+      else if (cx > end.x) cx--;
+      else if (cy < end.y) cy++;
+      else if (cy > end.y) cy--;
+      p.push({ x: cx, y: cy });
+    }
+    return p;
   };
 
   // ── Mouse hover ───────────────────────────────────────────

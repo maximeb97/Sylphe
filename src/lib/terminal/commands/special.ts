@@ -240,3 +240,113 @@ export const masterballCommand: Command = {
     ctx.addLine({ type: "system", content: "Vous pourrez capturer n'importe quel bug sans \u00e9chouer." });
   },
 };
+
+export const noclipCommand: Command = {
+  name: "noclip",
+  description: "Désactiver les collisions",
+  usage: "noclip",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("sylphe_noclip_toggle"));
+    }
+    ctx.addLine({ type: "system", content: "NOCLIP ACTIVÉ." });
+    ctx.addLine({ type: "output", content: "Attention: vous risquez de tomber dans les Backrooms (Glitch City)." });
+  },
+};
+
+export const lsdCommand: Command = {
+  name: "lsd",
+  description: "???",
+  usage: "lsd",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      document.body.classList.add("acid-mode");
+      setTimeout(() => {
+        document.body.classList.remove("acid-mode");
+      }, 60000);
+    }
+    ctx.addLine({ type: "system", content: "Woah, les couleurs sont bizarres..." });
+  },
+};
+
+export const bikeCommand: Command = {
+  name: "bike",
+  description: "Obtenir une bicyclette",
+  usage: "bike",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_bike", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    ctx.addLine({ type: "system", content: "Bicyclette obtenue !" });
+    ctx.addLine({ type: "output", content: "Vous irez maintenant 2x plus vite sur le terrain." });
+  },
+};
+
+export const motherlodeCommand: Command = {
+  name: "motherlode",
+  description: "Injection financière",
+  usage: "motherlode",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_rich", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    ctx.addLine({ type: "system", content: "Fonds injectés." });
+  },
+};
+
+export const doomCommand: Command = {
+  name: "doom",
+  description: "Lancer DOOM",
+  usage: "doom",
+  execute(args: string[], ctx: CommandContext) {
+    ctx.addLine({ type: "error", content: "ERREUR 12: Pas assez de mémoire RAM." });
+    ctx.addLine({ type: "error", content: "Sylphe OS prend déjà toute la mémoire pour le rendu du background." });
+  },
+};
+
+export const coffeeCommand: Command = {
+  name: "coffee",
+  description: "Faire un café",
+  usage: "coffee",
+  async execute(args: string[], ctx: CommandContext) {
+    ctx.addLine({ type: "system", content: "Demande de préparation de café envoyée au serveur..." });
+
+    try {
+      const res = await fetch("/api/coffee");
+      const data = await res.json();
+
+      if (res.status === 418) {
+        ctx.addLine({ type: "error", content: data.message });
+      } else {
+        ctx.addLine({ type: "output", content: `Status: ${res.status} - ${data.message || 'Café prêt ?'}` });
+      }
+
+      const secret = res.headers.get("X-Sylphe-Secret");
+      const devMsg = res.headers.get("X-Developer-Msg");
+      if (secret) {
+        ctx.addLine({ type: "system", content: `[HEADER CACHÉ] : ${secret}` });
+      }
+      if (devMsg) {
+        ctx.addLine({ type: "system", content: `[NOTE LABO] : ${devMsg}` });
+      }
+    } catch {
+      ctx.addLine({ type: "error", content: "Erreur réseau: Impossible de contacter la machine à café." });
+    }
+  },
+};
+
+export const giovanniCommand: Command = {
+  name: "giovanni",
+  description: "Accès direction",
+  usage: "giovanni",
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sylphe_giovanni_unlocked", "true");
+      window.dispatchEvent(new Event("storage"));
+    }
+    ctx.addLine({ type: "system", content: "Boss Mode: ACTIVÉ." });
+    ctx.addLine({ type: "output", content: "Bienvenue, Monsieur." });
+  },
+};

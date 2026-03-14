@@ -25,6 +25,13 @@ import {
   missingnoCommand,
   rocketCommand,
   masterballCommand,
+  noclipCommand,
+  lsdCommand,
+  bikeCommand,
+  motherlodeCommand,
+  doomCommand,
+  coffeeCommand,
+  giovanniCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -65,6 +72,13 @@ export function registerAllCommands() {
   registerCommand(missingnoCommand);
   registerCommand(rocketCommand);
   registerCommand(masterballCommand);
+  registerCommand(noclipCommand);
+  registerCommand(lsdCommand);
+  registerCommand(bikeCommand);
+  registerCommand(motherlodeCommand);
+  registerCommand(doomCommand);
+  registerCommand(coffeeCommand);
+  registerCommand(giovanniCommand);
 
   // Aliases
   registerAlias("ll", "ls");

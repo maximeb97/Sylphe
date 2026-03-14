@@ -22,11 +22,18 @@ export default function HeroSection({
   const [isSpinning, setIsSpinning] = useState(false);
   const [isRocketMode, setIsRocketMode] = useState(false);
   const [hasMasterball, setHasMasterball] = useState(false);
+  const [isRich, setIsRich] = useState(false);
+  const [nightModeClicks, setNightModeClicks] = useState(0);
 
   useEffect(() => {
     const checkEggs = () => {
       setIsRocketMode(localStorage.getItem("sylphe_rocket_mode") === "true");
       setHasMasterball(localStorage.getItem("sylphe_masterball_unlocked") === "true");
+      setIsRich(localStorage.getItem("sylphe_rich") === "true");
+
+      if (localStorage.getItem("sylphe_night_mode") === "true") {
+        document.body.classList.add("night-mode");
+      }
     };
     checkEggs();
     window.addEventListener("storage", checkEggs);
@@ -53,6 +60,24 @@ export default function HeroSection({
     }
   };
 
+  const handleNightModeClick = () => {
+    const newClicks = nightModeClicks + 1;
+    setNightModeClicks(newClicks);
+    if (newClicks >= 5) {
+      const isNight = localStorage.getItem("sylphe_night_mode") === "true";
+      if (isNight) {
+        localStorage.setItem("sylphe_night_mode", "false");
+        document.body.classList.remove("night-mode");
+        handleShowDialog("Le soleil se lève sur Jadielle !");
+      } else {
+        localStorage.setItem("sylphe_night_mode", "true");
+        document.body.classList.add("night-mode");
+        handleShowDialog("La nuit tombe soudainement. Bonne nuit zZz...");
+      }
+      setNightModeClicks(0);
+    }
+  };
+
   const handleShowDialog = (text: string) => {
     setDialogText(text);
     setIsTypewriterDone(false);
@@ -62,9 +87,10 @@ export default function HeroSection({
   return (
     <section ref={ref} className={`relative tile-bg pixel-grid ${isRocketMode ? "bg-red-950" : "bg-gba-bg"}`}>
       {/* Top bar - Location header */}
-      <div className={`${isRocketMode ? "bg-red-900 border-b-2 border-red-700 text-red-100" : "bg-gba-bg-darker text-gba-white"} text-[8px] px-4 py-2 flex justify-between items-center`}>
+      <div className={`${isRocketMode ? "bg-red-900 border-b-2 border-red-700 text-red-100" : "bg-gba-bg-darker text-gba-white"} text-[8px] px-4 py-2 flex justify-between items-center z-10 relative cursor-pointer select-none`} onClick={handleNightModeClick}>
         <span>📍 JADIELLE CITY</span>
         <div className="flex items-center gap-2">
+          {isRich && <span className="text-yellow-400">♦ 999 999 ₽</span>}
           {hasMasterball && <PixelSprite sprite={MASTERBALL_SPRITE} size={12} animate={false} />}
           <span className="opacity-60">{isRocketMode ? "TEAM ROCKET HQ" : "SYLPHE CORP. HQ"}</span>
         </div>
