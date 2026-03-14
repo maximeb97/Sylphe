@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { TEAM_ROCKET_SPRITE, NEUTRAL_NPC_SPRITE } from "../PixelSprite";
+import { TEAM_ROCKET_SPRITE, NEUTRAL_NPC_SPRITE, GHOST_SPRITE } from "../PixelSprite";
 import { OUTSIDE_MAP, INSIDE_MAP } from "./maps";
 import { DOOR, PC_DESK, TILE_SIZE, VIEW_ROWS, isWalkable, isInteractiveTile, KEY, GRASS, TREE, WATER } from "./tiles";
 import { drawTile, drawSprite } from "./renderer";
@@ -58,6 +58,16 @@ export default function TileMapCanvas({
     { id: "rocket_guard", x: 7, y: 26, sprite: TEAM_ROCKET_SPRITE, type: "static" as const, scene: "OUTSIDE" as const },
     { id: "rocket_patrol", x: 4, y: 28, sprite: TEAM_ROCKET_SPRITE, type: "wander" as const, scene: "OUTSIDE" as const },
   ]);
+
+  useEffect(() => {
+    if (localStorage.getItem("sylphe_silph_scope") === "true") {
+      const g1 = npcs.current.find(n => n.id === "ghost1");
+      if (!g1) {
+        npcs.current.push({ id: "ghost1", x: 14, y: 31, sprite: GHOST_SPRITE, type: "wander", scene: "OUTSIDE" });
+        npcs.current.push({ id: "ghost2", x: 4, y: 32, sprite: GHOST_SPRITE, type: "wander", scene: "OUTSIDE" });
+      }
+    }
+  }, []);
 
   const frameRef = useRef(0);
   const animFrameRef = useRef<number>(0);
@@ -283,6 +293,8 @@ export default function TileMapCanvas({
           onShowDialog("Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.");
         } else if (targetNpc.id === "rocket_patrol") {
           onShowDialog("Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.");
+        } else if (targetNpc.id.startsWith("ghost")) {
+          onShowDialog("Va-t-en... Le clone #150 nous a détruits...");
         }
         return; // blocked from walking
       }
@@ -353,6 +365,8 @@ export default function TileMapCanvas({
         onShowDialog("Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.");
       } else if (clickedNpc.id === "rocket_patrol") {
         onShowDialog("Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.");
+      } else if (clickedNpc.id.startsWith("ghost")) {
+        onShowDialog("Va-t-en... Le clone #150 nous a détruits...");
       }
       return;
     }

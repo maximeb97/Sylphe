@@ -32,6 +32,8 @@ import {
   doomCommand,
   coffeeCommand,
   giovanniCommand,
+  inventoryCommand,
+  mapCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -79,6 +81,8 @@ export function registerAllCommands() {
   registerCommand(doomCommand);
   registerCommand(coffeeCommand);
   registerCommand(giovanniCommand);
+  registerCommand(inventoryCommand);
+  registerCommand(mapCommand);
 
   // Aliases
   registerAlias("ll", "ls");

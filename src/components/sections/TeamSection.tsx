@@ -11,7 +11,8 @@ import { getAgeByDate } from "@/lib/terminal/utils/date";
 const team = [
   { name: "BOSS", title: "Giovanni", level: 99, hp: 999, maxHp: 999, desc: "Le véritable boss de la Sylphe, tapi dans les ombres.", sprite: BOSS_SPRITE },
   { name: "DEVELOPPEUR", title: "Maxime B.", level: getAgeByDate(new Date("1997-03-10")), hp: 120, maxHp: 120, desc: "Le créateur du Sylphe OS. Il supervise le code et passe son temps à tuer les bugs à l'aide de sa fidèle mascotte.", sprite: PLAYER_SPRITE },
-  { name: "FANTÔME", title: "L'esprit de Cali", level: 99, hp: 0, maxHp: 1, desc: "Une plume trouvée par terre... L'esprit d'une mascotte qui veillera sur vous pour toujours.", sprite: GHOST_SPRITE },
+  // TODO: Future idée
+  // { name: "FANTÔME", title: "L'esprit de Cali", level: 99, hp: 0, maxHp: 1, desc: "Une plume trouvée par terre... L'esprit d'une mascotte qui veillera sur vous pour toujours.", sprite: GHOST_SPRITE },
   { name: "MASCOTTE", title: "Yuan Yuan", level: getAgeByDate(new Date("2025-07-07")), hp: 80, maxHp: 80, desc: "La perruche calopsitte de la compagnie. Protège l'équipe des bugs en picorant les câbles. Aime passionnément les graines.", sprite: COCKATIEL_SPRITE },
   { name: "???", title: "M?ssingN0", level: 145, hp: 0, maxHp: 0, desc: "An\u00A0er\u00A0ror ha\u00A0s\u00A0occ\u00A0ur\u00A0red. System d\u00A0at\u00A0a corr\u00A0up\u00A0ted. $!1011..#..", sprite: MISSINGNO_SPRITE },
   { name: "LÉGENDE", title: "Mew", level: 5, hp: 30, maxHp: 30, desc: "Un Pokémon mythique extrêmement rare. Il semble contenir l'ADN de tous les Pokémon existants. Il a été trouvé en train de nager avec des Magicarpes.", sprite: MEW_SPRITE },

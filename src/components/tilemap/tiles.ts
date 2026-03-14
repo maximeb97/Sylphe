@@ -14,6 +14,22 @@ export const IN_WALL = 12;
 export const PC_DESK = 13;
 export const KEY = 14;
 
+// Custom Easter Egg Tiles
+export const ROCKET_FLOOR = 20;
+export const ROCKET_CRATE = 21;
+export const BOSS_DESK = 22;
+export const CYBER_FLOOR = 23;
+export const CYBER_WALL = 24;
+export const GLITCH_TILE = 25;
+export const GLITCH_WALL = 26;
+export const VAT_BG = 27;
+export const POKEBALL_FLOOR = 28;
+export const POKEBALL_WALL = 29;
+export const CERULEAN_FLOOR = 30;
+export const CERULEAN_WALL = 31;
+export const CERULEAN_WATER = 32;
+export const CERULEAN_STAIRS = 33;
+
 /* ===== Tile-to-color mapping ===== */
 export const TILE_COLORS: Record<number, string> = {
   [GRASS]: "#88b058",
@@ -29,6 +45,10 @@ export const TILE_COLORS: Record<number, string> = {
   [IN_FLOOR]: "#c0c0d8",
   [IN_WALL]: "#585870",
   [PC_DESK]: "#a0a8b0",
+  [CERULEAN_FLOOR]: "#b0b0a0",
+  [CERULEAN_WALL]: "#505040",
+  [CERULEAN_WATER]: "#4080f0",
+  [CERULEAN_STAIRS]: "#e0e0d0",
 };
 
 /* ===== Tile rendering size ===== */
@@ -41,7 +61,7 @@ export function isWalkableOutside(tile: number): boolean {
 }
 
 export function isWalkableInside(tile: number): boolean {
-  return tile === IN_FLOOR || tile === DOOR;
+  return tile === IN_FLOOR || tile === DOOR || tile === ROCKET_FLOOR || tile === CYBER_FLOOR || tile === GLITCH_TILE || tile === POKEBALL_FLOOR || tile === VAT_BG || tile === CERULEAN_FLOOR || tile === CERULEAN_STAIRS;
 }
 
 export function isWalkable(tile: number, scene: "OUTSIDE" | "INSIDE"): boolean {
@@ -53,5 +73,5 @@ export function isDoor(tile: number): boolean {
 }
 
 export function isInteractiveTile(tile: number, scene: "OUTSIDE" | "INSIDE"): boolean {
-  return tile === DOOR || tile === PC_DESK || tile === KEY || tile === TREE || tile === WATER || isWalkable(tile, scene);
+  return tile === DOOR || tile === PC_DESK || tile === BOSS_DESK || tile === ROCKET_CRATE || tile === CYBER_WALL || tile === GLITCH_WALL || tile === KEY || tile === TREE || tile === WATER || isWalkable(tile, scene);
 }

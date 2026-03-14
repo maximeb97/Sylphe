@@ -2,6 +2,9 @@ import {
   GRASS, TREE, FLOWER, WATER, BUILDING, WINDOW, DOOR,
   PATH, IN_WALL, IN_FLOOR, PC_DESK, SKY, CLOUD,
   KEY, TILE_COLORS, TILE_SIZE,
+  ROCKET_FLOOR, ROCKET_CRATE, BOSS_DESK, CYBER_FLOOR, CYBER_WALL,
+  GLITCH_TILE, GLITCH_WALL, VAT_BG, POKEBALL_FLOOR, POKEBALL_WALL,
+  CERULEAN_FLOOR, CERULEAN_WALL, CERULEAN_WATER, CERULEAN_STAIRS
 } from "./tiles";
 
 const TILE = TILE_SIZE;
@@ -166,10 +169,117 @@ export function drawTile(
       ctx.fillStyle = "#a0a0a0";
       ctx.fillRect(x * TILE + 5, y * TILE + 3, 2, 2);
       break;
+
+    case ROCKET_FLOOR:
+      // Subtle pulse
+      const rPulse = Math.sin(frame * 0.05) * 5;
+      ctx.fillStyle = (x + y) % 2 === 0 ? `rgb(${26+rPulse}, ${26}, ${26})` : `rgb(${34+rPulse}, ${34}, ${34})`;
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+    case ROCKET_CRATE:
+      ctx.fillStyle = "#3a2a1a";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#503a20";
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      break;
+    case BOSS_DESK:
+      ctx.fillStyle = "#400000";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#ff3333";
+      ctx.fillRect(x * TILE + 1, y * TILE + Math.sin(frame * 0.1) * 2 + 5, 2, 2);
+      break;
+    case CYBER_FLOOR: {
+      // Dynamic color shifting blue/red as requested
+      const phase = Math.sin(frame * 0.05 + x * 0.5 + y * 0.5);
+      const r = Math.floor(128 + 127 * phase);
+      const b = Math.floor(128 - 127 * phase);
+      ctx.fillStyle = `rgba(${r}, 0, ${b}, 0.2)`;
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      
+      ctx.strokeStyle = phase > 0 ? "rgba(255, 0, 85, 0.4)" : "rgba(0, 255, 255, 0.4)";
+      ctx.strokeRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+    }
+    case CYBER_WALL:
+      ctx.fillStyle = Math.random() > 0.05 ? (Math.sin(frame * 0.05 + y) > 0 ? "#00ffff" : "#ff0055") : "#ffffff";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+    case GLITCH_TILE:
+    case GLITCH_WALL:
+      ctx.fillStyle = Math.random() > 0.5 ? "#000" : "#fff";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      if (Math.random() > 0.8) {
+        ctx.fillStyle = Math.random() > 0.5 ? "magenta" : "cyan";
+        ctx.fillRect(x * TILE + Math.random() * TILE, y * TILE + Math.random() * TILE, 4, 4);
+      }
+      break;
+    case VAT_BG:
+      ctx.fillStyle = "#005533";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+    case POKEBALL_FLOOR:
+    case POKEBALL_WALL: {
+      const isWall = tile === POKEBALL_WALL;
+      // Fixed bottom tiles to be white/gray instead of red if requested
+      let color = "#ffffff";
+      if (y < 5) color = "#cc0000";
+      else if (y === 5 || y === 6) color = "#000000";
+      
+      if (isWall) {
+          if (y < 5) color = "#880000";
+          else if (y === 5 || y === 6) color = "#222222";
+          else color = "#aaaaaa";
+      }
+      
+      ctx.fillStyle = color;
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      
+      // Button animation
+      if (y >= 4 && y <= 7 && x >= 8 && x <= 11) {
+        const isCenter = (y === 5 || y === 6) && (x === 9 || x === 10);
+        if (isCenter && Math.sin(frame * 0.1) > 0) {
+            ctx.fillStyle = "#ffaaaa"; // pulsing button
+        } else {
+            ctx.fillStyle = isCenter ? "#ffffff" : "#000000";
+        }
+        if (!((x === 8 || x === 11) && (y === 4 || y === 7))) {
+           ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+        }
+      }
+      break;
+    }
+
+    case CERULEAN_FLOOR:
+      ctx.fillStyle = (x + y) % 5 === 0 ? "#a8a898" : "#b0b0a0";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+
+    case CERULEAN_WALL:
+      ctx.fillStyle = "#404030";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#505040";
+      ctx.fillRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4);
+      break;
+
+    case CERULEAN_WATER: {
+      const wShade = Math.sin(frame * 0.1 + x) > 0 ? "#3070e0" : "#4080f0";
+      ctx.fillStyle = wShade;
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      break;
+    }
+
+    case CERULEAN_STAIRS:
+      ctx.fillStyle = "#c0c0b0";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#606050";
+      for (let i = 0; i < 4; i++) {
+        ctx.fillRect(x * TILE + 1, y * TILE + 2 + i * 2, TILE - 2, 1);
+      }
+      break;
   }
 
-  // Subtle grid lines (skip sky/cloud/wall)
-  if (tile !== SKY && tile !== CLOUD && tile !== IN_WALL) {
+  // Subtle grid lines (skip sky/cloud/wall/cyber)
+  if (tile !== SKY && tile !== CLOUD && tile !== IN_WALL && tile !== CYBER_FLOOR && tile !== POKEBALL_WALL && tile !== GLITCH_WALL) {
     ctx.strokeStyle = "rgba(0,0,0,0.05)";
     ctx.strokeRect(x * TILE, y * TILE, TILE, TILE);
   }
