@@ -46,7 +46,7 @@ export default function StartMenu({
 
   return (
     <div className="absolute inset-0 z-[90] flex items-center justify-center bg-black/55 px-4 backdrop-blur-[2px] overflow-auto">
-      <DialogBox className="w-full max-w-2xl !bg-[#d8e8c0] max-h-[300px] md:max-h-[50vh] lg:max-h-[60vh] overflow-auto">
+      <DialogBox className="w-full max-w-2xl !bg-[#d8e8c0] max-h-[90%] overflow-auto">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
             <p className="text-[11px] text-gba-text">MENU START</p>

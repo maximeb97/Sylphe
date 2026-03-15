@@ -185,6 +185,23 @@ export default function HeroSection({
           </div>
         )}
       </div>
+      {/* Hidden CSS secret - employee memo */}
+      <span
+        style={{
+          color: "transparent",
+          fontSize: "1px",
+          lineHeight: "0px",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          userSelect: "text",
+        }}
+      >
+        MEMO EMPLOYE SYLPHE #47: Le Dr Fuji cache ses notes dans le reseau.
+        Essayez ping mansion.cinnabar.gov dans le terminal. Le LocalStorage
+        contient la cle sylphe_root_access. La console DevTools cache un Glitch:
+        window.sylphe.useMasterball()
+      </span>
     </section>
   );
 }

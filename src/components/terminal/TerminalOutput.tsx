@@ -25,12 +25,13 @@ export default function TerminalOutput({ lines }: { lines: TerminalLine[] }) {
 
   return (
     <div className="flex-1 overflow-y-auto px-3 py-2 font-mono terminal-scroll">
-      {lines.map((line) => (
+      {lines.map(line => (
         <div
           key={line.id}
           className={`text-[9px] md:text-[10px] leading-[16px] whitespace-pre-wrap break-all ${getLineColor(line.type)}`}
+          dangerouslySetInnerHTML={{ __html: line.content || "\u00A0" }}
         >
-          {line.content || "\u00A0"}
+          {/* {line.content || "\u00A0"} */}
         </div>
       ))}
       <div ref={bottomRef} />

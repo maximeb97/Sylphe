@@ -97,6 +97,87 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
     name: "PASS SYSTEME (RED)",
     detail: "Autorisation transmise au coeur du systeme par le champion final.",
   },
+  {
+    key: "sylphe_root_access",
+    name: "ACCES ROOT",
+    detail:
+      "Privilege superutilisateur obtenu en manipulant le LocalStorage. Porygon approuve.",
+  },
+  {
+    key: "sylphe_dr_fuji_notes",
+    name: "NOTES DU DR FUJI",
+    detail:
+      "Paquets reseau decodes depuis mansion.cinnabar.gov. Le Dr Fuji y documente l'instabilite du clone.",
+  },
+  {
+    key: "sylphe_casino_porygon_z",
+    name: "MODE PORYGON-Z",
+    detail:
+      "Derive instable de Porygon obtenue aux machines a sous clandestines. Terminal augmente.",
+  },
+  {
+    key: "sylphe_magnet_train_pass",
+    name: "PASSE TRAIN MAGNETIQUE",
+    detail: "Passe emis depuis la region de Kanto. Coordonnees GPS verifiees.",
+  },
+  {
+    key: "sylphe_bill_email",
+    name: "EMAIL DE LEO",
+    detail:
+      "Brouillon retrouve dans la corbeille du PC de Leo. Panique totale.",
+  },
+  {
+    key: "sylphe_rocket_ransomware",
+    name: "RANÇONGICIEL ROCKET",
+    detail:
+      "Logiciel malveillant Team Rocket. Les menus sont temporairement verrouilles.",
+  },
+  {
+    key: "sylphe_cave_echo",
+    name: "ECHO DE LA GROTTE",
+    detail: "Fragment sonore capte dans les profondeurs du Mont Selenite.",
+  },
+  {
+    key: "sylphe_glitch_boss_defeated",
+    name: "GLITCH CONSOLE (CAPTURE)",
+    detail:
+      "Anomalie qui vivait dans la console DevTools, vaincue par window.sylphe.useMasterball().",
+  },
+  {
+    key: "sylphe_containment_off",
+    name: "CONFINEMENT DESACTIVE",
+    detail:
+      "Le fichier containment.conf a ete modifie via nano. Les barrieres cedent.",
+  },
+  {
+    key: "sylphe_pod_synced",
+    name: "SYNCHRONISATION ADN",
+    detail:
+      "Les pods de clonage A et B ont ete synchronises via BroadcastChannel.",
+  },
+  {
+    key: "sylphe_kabuto_captured",
+    name: "KABUTO (CAPTURED)",
+    detail:
+      "Fossile vivant extrait des profondeurs du Mont Selenite. Capture via Masterball.",
+  },
+  {
+    key: "sylphe_fantominus_captured",
+    name: "FANTOMINUS (CAPTURED)",
+    detail:
+      "Spectre primordial detecte par le Miroir Spectral. Capture via Masterball.",
+  },
+  {
+    key: "sylphe_spectral_feather",
+    name: "PLUME SPECTRALE",
+    detail:
+      "Artefact fantome recupere au Musee Null. Analysable dans le terminal.",
+  },
+  {
+    key: "sylphe_intranet_complete",
+    name: "DOSSIER ROCKET",
+    detail: "Emails compromettants recuperes depuis l'intranet ROCKET-NET.",
+  },
 ];
 
 export const MAP_DEFINITIONS: MapDefinition[] = [
@@ -152,6 +233,39 @@ export const MAP_DEFINITIONS: MapDefinition[] = [
     href: "/lavender-mirror",
     name: "LAVENDER MIRROR",
     unlockKey: "sylphe_lavender_mirror_unlocked",
+  },
+  {
+    href: "/mt-moon-cavern",
+    name: "MONT SELENITE",
+  },
+  {
+    href: "/spectre-mirror",
+    name: "MIROIR SPECTRAL",
+  },
+  {
+    href: "/trick-house-maze",
+    name: "MAISON PIEGE",
+  },
+  {
+    href: "/cloning-pod-a",
+    name: "POD CLONAGE A",
+  },
+  {
+    href: "/pc-bill",
+    name: "PC DE LEO",
+    unlockKey: "sylphe_bill_email",
+  },
+  {
+    href: "/casino-game-corner",
+    name: "CASINO CLANDESTIN",
+  },
+  {
+    href: "/employee-login",
+    name: "INTRANET ROCKET",
+  },
+  {
+    href: "/cloning-pod-b",
+    name: "POD CLONAGE B",
   },
 ];
 

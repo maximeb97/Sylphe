@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import PixelSprite, {
   MASTERBALL_SPRITE,
   POKEBALL_SPRITE,
@@ -39,6 +40,7 @@ const products = [
 ];
 
 export default function ProductsSection() {
+  const router = useRouter();
   const { ref, isVisible } = useInView(0.2);
   const [selectedItem, setSelectedItem] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +63,10 @@ export default function ProductsSection() {
     if (!lavenderHintUnlocked && nextCount >= 3) {
       setGameFlag("sylphe_lavender_hint");
       setLavenderHintUnlocked(true);
+    }
+
+    if (nextCount >= 5) {
+      router.push("/spectre-mirror");
     }
   };
 

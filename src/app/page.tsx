@@ -3,6 +3,11 @@
 import { useState, useCallback } from "react";
 import GBAShell from "@/components/GBAShell";
 import Terminal from "@/components/terminal/Terminal";
+import RadioPokematos from "@/components/RadioPokematos";
+import MidnightGhosts from "@/components/MidnightGhosts";
+import GlitchScrollVoid from "@/components/GlitchScrollVoid";
+import GeolocationEasterEgg from "@/components/GeolocationEasterEgg";
+import NotificationGhost from "@/components/NotificationGhost";
 import {
   TitleScreen,
   HeroSection,
@@ -38,7 +43,9 @@ export default function Home() {
 
   return (
     <GBAShell
-      overlay={terminalOpen ? <Terminal onClose={handleCloseTerminal} /> : undefined}
+      overlay={
+        terminalOpen ? <Terminal onClose={handleCloseTerminal} /> : undefined
+      }
     >
       {/* Screen transition flash */}
       {showTransition && (
@@ -70,13 +77,14 @@ export default function Home() {
           {/* Top HUD bar */}
           <div className="sticky top-0 z-40 bg-gba-text text-gba-white text-[7px] px-3 py-[6px] flex justify-between items-center">
             <span className="text-gba-gold">SYLPHE CORP.</span>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
+              <MidnightGhosts />
               {[
                 { label: "INFO", href: "#about" },
                 { label: "ITEMS", href: "#products" },
                 { label: "STATS", href: "#stats" },
                 { label: "TEAM", href: "#team" },
-              ].map((link) => (
+              ].map(link => (
                 <a
                   key={link.label}
                   href={link.href}
@@ -85,9 +93,12 @@ export default function Home() {
                   {link.label}
                 </a>
               ))}
+              <RadioPokematos />
             </div>
           </div>
 
+          <GeolocationEasterEgg />
+          <NotificationGhost />
           <HeroSection onOpenTerminal={handleOpenTerminal} />
           <AboutSection />
           <ProductsSection />
@@ -95,6 +106,7 @@ export default function Home() {
           <TeamSection />
           <ContactSection />
           <Footer />
+          <GlitchScrollVoid />
         </div>
       )}
     </GBAShell>

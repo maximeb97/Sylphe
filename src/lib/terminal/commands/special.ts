@@ -282,6 +282,80 @@ export const pingCommand: Command = {
   usage: "ping <h\u00f4te>",
   execute(args: string[], ctx: CommandContext) {
     const host = args[0] || "sylphe-mainframe";
+
+    if (host.toLowerCase() === "mansion.cinnabar.gov") {
+      ctx.addLine({
+        type: "system",
+        content: `PING ${host} (10.0.151.42): 56 data bytes`,
+      });
+      ctx.addLine({
+        type: "output",
+        content: `64 bytes from ${host}: icmp_seq=1 ttl=42 time=151.00 ms`,
+      });
+      ctx.addLine({
+        type: "output",
+        content: `64 bytes from ${host}: icmp_seq=2 ttl=42 time=ERROR ms`,
+      });
+      ctx.addLine({
+        type: "error",
+        content: "⚠ Paquet corrompu intercepte — fragment Base64 detecte:",
+      });
+
+      const drFujiNotes = [
+        {
+          encoded:
+            "TGUgY2xvbmUgIzE1MCBtb250cmUgZGVzIHNpZ25lcyBkJ2luc3RhYmlsaXRl",
+          decoded: "Le clone #150 montre des signes d'instabilite",
+        },
+        {
+          encoded:
+            "TCdBRE4gZGUgTWV3IGVzdCBpbmNvbXBsZXQuIElsIG1hbnF1ZSBsZSBmcmFnbWVudCA3Mzgy",
+          decoded: "L'ADN de Mew est incomplet. Il manque le fragment 7382",
+        },
+        {
+          encoded:
+            "R2lvdmFubmkgdmV1dCB1bmUgYXJtZS4gSmUgdmV1eCBzYXV2ZXIgbW9uIGZpbHM=",
+          decoded: "Giovanni veut une arme. Je veux sauver mon fils",
+        },
+        {
+          encoded: "U2kgdm91cyBsaXNleiBjZWNpLCBsZSBQcm9qZXQgTSBhIGVjaG91ZQ==",
+          decoded: "Si vous lisez ceci, le Projet M a echoue",
+        },
+        {
+          encoded:
+            "TGUgU3VqZXQgMTUxIGVzdCBsYSBtYXRyaWNlLiBJbCBuZSBkb2l0IHBhcyBldHJlIGNsb25l",
+          decoded: "Le Sujet 151 est la matrice. Il ne doit pas etre clone",
+        },
+      ];
+
+      const note = drFujiNotes[Math.floor(Math.random() * drFujiNotes.length)];
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "system",
+        content: `[PAQUET CORROMPU] ${note.encoded}`,
+      });
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "output",
+        content: `Decodage Base64: "${note.decoded}"`,
+      });
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "system",
+        content: "— Notes du Dr. Fuji, Manoir Pokemon, Cramois'Ile —",
+      });
+
+      if (!readFlag("sylphe_dr_fuji_notes")) {
+        setGameFlag("sylphe_dr_fuji_notes");
+        ctx.addLine({ type: "system", content: "" });
+        ctx.addLine({
+          type: "system",
+          content: "✦ Objet obtenu: NOTES DU DR FUJI",
+        });
+      }
+      return;
+    }
+
     ctx.addLine({ type: "system", content: `PING ${host} (192.168.1.42): 56 data bytes` });
 
     const responses = [
@@ -1123,3 +1197,198 @@ function printSylphedexEntry(
     content: "╚══════════════════════════════════════════╝",
   });
 }
+
+export const nanoCommand: Command = {
+  name: "nano",
+  description: "Editeur de fichier textuel",
+  usage: "nano <fichier>",
+  hidden: true,
+  execute(args: string[], ctx: CommandContext) {
+    const target = args[0];
+    if (!target) {
+      ctx.addLine({ type: "error", content: "Usage: nano <fichier>" });
+      return;
+    }
+
+    const resolved = resolvePath(ctx.fs, ctx.cwd, target);
+    const node = getNode(ctx.fs, resolved);
+
+    if (!node) {
+      ctx.addLine({
+        type: "error",
+        content: `nano: ${target}: Fichier introuvable`,
+      });
+      return;
+    }
+
+    if (node.type === "directory") {
+      ctx.addLine({
+        type: "error",
+        content: `nano: ${target}: Est un repertoire`,
+      });
+      return;
+    }
+
+    const isContainmentConf = resolved === "/etc/sylphe/containment.conf";
+
+    ctx.addLine({
+      type: "system",
+      content: "╔══════════════════════════════════════╗",
+    });
+    ctx.addLine({
+      type: "system",
+      content: `║  GNU nano 7.2  —  ${target.slice(0, 20).padEnd(20)}║`,
+    });
+    ctx.addLine({
+      type: "system",
+      content: "╠══════════════════════════════════════╣",
+    });
+
+    const content = node.content || "";
+    const lines = content.split("\n");
+    for (const line of lines) {
+      ctx.addLine({ type: "output", content: `║  ${line}` });
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "╠══════════════════════════════════════╣",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "║  ^O Enregistrer  ^X Quitter         ║",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "╚══════════════════════════════════════╝",
+    });
+
+    if (isContainmentConf) {
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "system",
+        content: "Pour modifier status=ON en OFF, tapez: nano-edit off",
+      });
+      ctx.addLine({
+        type: "error",
+        content: "⚠ ATTENTION: Cela coupera le courant du systeme.",
+      });
+    }
+  },
+};
+
+export const nanoEditCommand: Command = {
+  name: "nano-edit",
+  description: "Modifier le confinement",
+  usage: "nano-edit <on|off>",
+  hidden: true,
+  execute(args: string[], ctx: CommandContext) {
+    const value = args[0]?.toLowerCase();
+    if (value !== "on" && value !== "off") {
+      ctx.addLine({ type: "error", content: "Usage: nano-edit <on|off>" });
+      return;
+    }
+
+    if (value === "off") {
+      ctx.addLine({
+        type: "system",
+        content: "[containment.conf] status=ON → status=OFF",
+      });
+      ctx.addLine({ type: "system", content: "" });
+      ctx.addLine({ type: "error", content: "⚠ ALERTE CRITIQUE ⚠" });
+      ctx.addLine({
+        type: "error",
+        content: "Systeme de confinement DESACTIVE.",
+      });
+      ctx.addLine({
+        type: "system",
+        content: "Les barrieres du sous-sol cedent...",
+      });
+      ctx.addLine({
+        type: "system",
+        content: "Anomalies temporelles en cours de liberation...",
+      });
+      ctx.addLine({ type: "system", content: "" });
+
+      const glitch = [
+        "▓▒░ SIGNAL PERDU ░▒▓",
+        "...",
+        "...",
+        "Reconnexion en cours...",
+        "",
+        "Le courant est revenu. Mais quelque chose a change.",
+        "Les fantomes circulent librement.",
+        "Le Sujet 151 murmure dans les murs.",
+      ];
+      for (const line of glitch) {
+        ctx.addLine({
+          type:
+            line.includes("▓") || line.includes("ALERTE") ? "error" : "system",
+          content: line,
+        });
+      }
+
+      setGameFlag("sylphe_containment_off");
+    } else {
+      ctx.addLine({
+        type: "system",
+        content: "[containment.conf] status=OFF → status=ON",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Confinement retabli. Les barrieres sont en cours de reparation.",
+      });
+    }
+  },
+};
+
+export const analyzeSampleCommand: Command = {
+  name: "analyze_sample",
+  description: "Analyser un echantillon spectral",
+  usage: "analyze_sample",
+  hidden: true,
+  execute(args: string[], ctx: CommandContext) {
+    if (!readFlag("sylphe_spectral_feather")) {
+      ctx.addLine({ type: "error", content: "Aucun echantillon a analyser." });
+      ctx.addLine({
+        type: "output",
+        content:
+          "Indice: Certains artefacts du <a href='/museum-null' style='color: blue;'>Musee Null</a> peuvent etre glisses ici...",
+      });
+      return;
+    }
+
+    ctx.addLine({ type: "system", content: "Analyse spectrale en cours..." });
+    ctx.addLine({ type: "system", content: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%" });
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({ type: "system", content: "RESULTATS:" });
+    ctx.addLine({
+      type: "output",
+      content: "Type: Plume Spectrale (categorie: ARTEFACT FANTOME)",
+    });
+    ctx.addLine({
+      type: "output",
+      content: "Provenance: Aile NULL du Musee Sylphe",
+    });
+    ctx.addLine({
+      type: "output",
+      content: "Resonance: Frequence de Lavanville (10.5 GHz)",
+    });
+    ctx.addLine({
+      type: "output",
+      content: "ADN residuel: Compatible Sujet 151-ALPHA",
+    });
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({
+      type: "system",
+      content: "L'artefact vibre a la frequence des morts.",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "Le Dr. Fuji l'utilisait pour communiquer avec les spectres.",
+    });
+
+    setGameFlag("sylphe_sample_analyzed");
+  },
+};

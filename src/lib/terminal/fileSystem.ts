@@ -93,6 +93,28 @@ export function createFileSystem(): FSNode {
       ),
       hostname: file("sylphe-mainframe"),
       version: file("SylpheOS 3.1.4 (Kanto Build 151)"),
+      sylphe: dir({
+        "containment.conf": file(
+          "# Configuration de confinement Sylphe Corp.\n" +
+            "# NE PAS MODIFIER SANS AUTORISATION NIVEAU 5\n" +
+            "#\n" +
+            "# Parametres du systeme de confinement\n" +
+            "[containment]\n" +
+            "status=ON\n" +
+            "subjects=150,151\n" +
+            "barrier_integrity=97.3%\n" +
+            "auto_repair=true\n" +
+            "\n" +
+            "[alerts]\n" +
+            "notify_giovanni=true\n" +
+            "notify_dr_fuji=false  # decede\n" +
+            "emergency_protocol=LOCKDOWN\n" +
+            "\n" +
+            "# AVERTISSEMENT: Changer status=OFF provoquera\n" +
+            "# une coupure systeme complete et liberera les\n" +
+            "# anomalies temporelles confinées au sous-sol.",
+        ),
+      }),
     }),
     var: dir({
       log: dir({

@@ -12,6 +12,7 @@ export default function ContactSection() {
   const router = useRouter();
   const { ref, isVisible } = useInView(0.2);
   const [pokegearTapCount, setPokegearTapCount] = useState(0);
+  const [poste42Taps, setPoste42Taps] = useState(0);
   const hasLavenderHint =
     typeof window !== "undefined" &&
     localStorage.getItem("sylphe_lavender_hint") === "true";
@@ -83,6 +84,18 @@ export default function ContactSection() {
                 oublies n&apos;ont jamais ete retires du central.
               </div>
             )}
+
+            <button
+              type="button"
+              onClick={() => {
+                const next = poste42Taps + 1;
+                setPoste42Taps(next);
+                if (next >= 3) router.push("/cloning-pod-a");
+              }}
+              className="mt-3 text-[5px] text-gba-shadow opacity-30 cursor-pointer-pixel"
+            >
+              poste interne #042 — cuves de clonage
+            </button>
           </DialogBox>
 
           {/* Navigation Menu */}

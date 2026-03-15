@@ -35,6 +35,19 @@ export default function robots(): MetadataRoute.Robots {
           disallow: "/*",
           allow: "/glitch-city",
         },
+        {
+          userAgent: "Pokedex-Crawler",
+          disallow: "/",
+        },
+        {
+          userAgent: "Deoxys-Speed",
+          allow: "/api/",
+          disallow: "/api/masterball",
+        },
+        {
+          userAgent: "Team-Rocket-Bot",
+          disallow: "/*",
+        },
       ],
       sitemap: "https://votre-domaine.com/sitemap.xml", // Remplacez par le vrai domaine
     };

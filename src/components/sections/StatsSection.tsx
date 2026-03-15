@@ -62,6 +62,15 @@ export default function StatsSection() {
     }
   };
 
+  const [badgeTaps, setBadgeTaps] = useState<Record<string, number>>({});
+
+  const handleBadgeClick = (badge: string) => {
+    const next = (badgeTaps[badge] || 0) + 1;
+    setBadgeTaps(prev => ({ ...prev, [badge]: next }));
+    if (badge === "Sécurité" && next >= 4) router.push("/trick-house-maze");
+    if (badge === "Quantique" && next >= 4) router.push("/casino-game-corner");
+  };
+
   return (
     <section
       ref={ref}
@@ -141,8 +150,10 @@ export default function StatsSection() {
                 "Nano",
                 "Énergie",
               ].map((badge, i) => (
-                <div
+                <button
+                  type="button"
                   key={i}
+                  onClick={() => handleBadgeClick(badge)}
                   className="bg-gba-bg-darker text-gba-gold text-[6px] px-2 py-1 pixel-border"
                   style={{
                     animation: isVisible
@@ -151,7 +162,7 @@ export default function StatsSection() {
                   }}
                 >
                   {badge}
-                </div>
+                </button>
               ))}
             </div>
           </div>

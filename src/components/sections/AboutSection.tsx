@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import PixelSprite, { SCIENTIST_SPRITE } from "@/components/PixelSprite";
 import DialogBox from "@/components/DialogBox";
 import useInView from "@/hooks/useInView";
 import { setGameFlag } from "@/lib/gameState";
 
 export default function AboutSection() {
+  const router = useRouter();
   const { ref, isVisible } = useInView(0.2);
   const [profileTapCount, setProfileTapCount] = useState(0);
   const [hintUnlocked, setHintUnlocked] = useState(
@@ -22,6 +24,10 @@ export default function AboutSection() {
     if (!hintUnlocked && nextTapCount >= 3) {
       setGameFlag("sylphe_museum_null_hint");
       setHintUnlocked(true);
+    }
+
+    if (nextTapCount >= 7) {
+      router.push("/mt-moon-cavern");
     }
   };
 
@@ -82,6 +88,15 @@ export default function AboutSection() {
             </p>
             <p className="text-[8px] leading-[16px] text-gba-accent">
               Notre mission : repousser les limites de l&apos;innovation.
+            </p>
+            {/* Hidden CSS secret - visible only by inspecting DOM or selecting all text */}
+            <p
+              className="text-[1px] leading-[1px] select-all"
+              style={{ color: "transparent", userSelect: "text" }}
+            >
+              MEMO INTERNE SYLPHE — Le 11e etage abrite le Projet M. Mot de
+              passe partiel: mansion.cinnabar.gov contient la suite. Commande
+              terminal secrete: nano /etc/sylphe/containment.conf
             </p>
           </DialogBox>
         </div>

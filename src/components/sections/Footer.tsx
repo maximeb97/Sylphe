@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
+  const router = useRouter();
   const [saveTapCount, setSaveTapCount] = useState(0);
 
   return (
@@ -34,7 +36,11 @@ export default function Footer() {
         </div>
         <button
           type="button"
-          onClick={() => setSaveTapCount(count => count + 1)}
+          onClick={() => {
+            const next = saveTapCount + 1;
+            setSaveTapCount(next);
+            if (next >= 8) router.push("/pc-bill");
+          }}
           className="mt-3 text-[5px] text-gba-shadow opacity-40 cursor-pointer-pixel"
         >
           ██ DONNÉES SAUVEGARDÉES ██ N&apos;ÉTEIGNEZ PAS ██
@@ -60,6 +66,26 @@ export default function Footer() {
             }}
           />
         ))}
+      </div>
+
+      {/* Hidden CSS secrets - only visible via DOM inspection or Ctrl+A */}
+      <div
+        style={{
+          color: "transparent",
+          fontSize: "1px",
+          lineHeight: "1px",
+          userSelect: "text",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+        }}
+      >
+        JOURNAL DE BORD — DR FUJI — Le sujet 150 montre des capacites psychiques
+        depassant toute mesure. Giovanni insiste pour accelerer. Mot de passe
+        casino: les triple 7 cachent Porygon-Z. Verifiez /humans.txt pour le
+        dernier message du developpeur piege. Les cuves de clonage sont au poste 42.
+        Le miroir spectral detecte trois spectres. La maison piege requiert un badge securite.
+        L&apos;intranet Rocket ne se montre qu&apos;a Giovanni.
       </div>
     </footer>
   );

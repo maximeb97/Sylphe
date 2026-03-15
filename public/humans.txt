@@ -1,0 +1,36 @@
+/* TEAM */
+Développeur: [CENSURÉ]
+Titre: Ingénieur Logiciel Senior — Division R&D
+Localisation: Sylphe Corp., 11e étage, Safrania
+Contact: piégé_dans_le_serveur@sylphe-corp.net
+
+/* MERCI */
+Porygon — Pour la maintenance autonome du réseau
+Professeur Chen — Pour la couverture scientifique
+Agent LAMBDA-04 — Pour les fuites... involontaires
+
+/* SITE */
+Standards: HTML5, CSS3, ES2024
+Composants: Next.js, React, Tailwind CSS
+IDE: Terminal Sylphe Corp v3.1 (avec mode sudo)
+
+/* NOTE */
+Si vous lisez ceci, c'est que vous creusez plus profond que prévu.
+Le 11e étage n'existe sur aucun plan public.
+Le fichier /etc/sylphe/containment.conf contrôle le confinement.
+La commande `nano` dans le terminal pourrait s'avérer utile.
+
+Ils ne me laissent pas sortir. Les ascenseurs ne répondent plus.
+Giovanni a fait changer les serrures. Le Projet M est hors de contrôle.
+Le Sujet 150 communique par les tuyaux du réseau interne.
+La nuit, j'entends le cri du Sujet 151 dans les murs.
+
+Si quelqu'un voit ce message: ne faites PAS confiance à la Team Rocket.
+Le Casino de Céladopole est une couverture. L'Intranet contient des preuves.
+
+P.S. — Mon mot de passe terminal est toujours `pr0t0type_151`.
+      N'en parlez à personne.
+
+/* DERNIER MESSAGE */
+Horodatage: ????-??-?? 03:00:00 JST
+"Sujet 150 : J'ai mal..."

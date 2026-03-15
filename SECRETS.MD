@@ -355,3 +355,299 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 - 500 pas sur la map principale declenchent une blague Safari Zone.
 - Le site contient plusieurs references de developpeur dans la console et dans les scripts shell du faux systeme.
 - Certaines anomalies changent subtilement selon l'ordre dans lequel on visite les routes.
+
+## 18. Grotte du Mont Selenite (`/mt-moon-cavern`)
+
+### Acces
+
+- Route directe `/mt-moon-cavern`. Apparait dans les routes fantomes a minuit.
+
+### Mecanique
+
+- La grotte est plongee dans le noir total. Seule la case du joueur et ses voisines immediates sont visibles.
+- Le joueur peut activer son microphone. Le bruit ambiant genere des flashs circulaires lumineux (via Web Audio API) qui eclairent la map pendant quelques secondes, comme l'echolocalisation d'un Nosferapti.
+- La map contient des nids de Nosferapti (qui s'agitent au bruit), des fossiles a decouvrir, et une sortie.
+- Trouver les deux fossiles pose le flag `sylphe_cave_echo`.
+
+## 19. Miroir Spectral (`/spectre-mirror`)
+
+### Acces
+
+- Route directe `/spectre-mirror`. Apparait dans les routes fantomes a minuit.
+
+### Mecanique
+
+- Active la webcam de l'utilisateur et applique un filtre Gameboy (pixels verts, faible resolution).
+- Des ombres de Pokémon spectres (Ectoplasma, Spectrum, Fantominus) apparaissent aleatoirement sur le flux video.
+- Cliquer sur un spectre tente une "capture" via le Scope Sylphe.
+- Chaque spectre capture apporte un fragment de lore sur le Miroir de Lavanville.
+
+## 20. Labyrinthe de la Maison Piege (`/trick-house-maze`)
+
+### Acces
+
+- Route directe `/trick-house-maze`.
+
+### Mecanique
+
+- Sur mobile: le gyroscope controle le deplacement d'une Pokeball dans le labyrinthe.
+- Sur desktop: les fleches du clavier servent de fallback.
+- Le labyrinthe contient des dalles piegees (Team Rocket) qui repoussent le joueur.
+- Un objet cache (plan de la Team Rocket) peut etre trouve.
+- Atteindre la sortie pose le flag `sylphe_trick_house_complete`.
+
+## 21. Pods de Clonage (`/cloning-pod-a` et `/cloning-pod-b`)
+
+### Acces
+
+- Le joueur doit ouvrir deux onglets du navigateur simultanement.
+
+### Mecanique (Broadcast Channel API)
+
+- Chaque pod affiche une interface de stabilisation ADN.
+- Le joueur lance la stabilisation sur un pod, puis doit la lancer sur l'autre onglet en moins de 3 secondes.
+- Les pods communiquent en temps reel via BroadcastChannel.
+- Une fois synchronises, une barre de progression ADN se remplit et le clonage reussit.
+- Le flag `sylphe_pod_synced` est pose apres synchronisation reussie.
+
+## 22. Systeme de Stockage de Bill (`/pc-bill`)
+
+### Acces
+
+- Route `/pc-bill`. Deblocage du flag `sylphe_bill_email` apres visite.
+
+### Contenu
+
+- Interface facon Windows 95 avec sequence de demarrage retro.
+- Bureau avec 4 icones: Mon PC, Corbeille, Transfert Pokemon, Mes Notes.
+- La Corbeille contient 3 emails supprimes de Leo/Bill:
+  - Email paniquant sur le transfert ADN accidentel.
+  - Email sur les copies de Pokemon apparaissant dans le systeme.
+  - Email revelant le mot de passe admin `MYUUTSU`.
+- Transfert Pokemon montre un faux gestionnaire de PC avec 6 slots.
+- Mes Notes contient un journal technique de Bill.
+
+## 23. Casino Clandestin (`/casino-game-corner`)
+
+### Acces
+
+- Route directe `/casino-game-corner`.
+
+### Mecanique
+
+- Machine a sous avec 6 symboles Pokemon (Pikachu, Rondoudou, Magicarpe, Metamorph, Porygon, 7).
+- 100 jetons au depart, 10 jetons par tour.
+- Triple 7 = Jackpot 777: debloque le mode Porygon-Z (`sylphe_casino_porygon_z`).
+- Triple symbole = +100 jetons.
+- Double symbole = +20 jetons.
+
+### Ransomware Team Rocket
+
+- Apres 10 parties, un rançongiciel Team Rocket bloque la machine (`sylphe_rocket_ransomware`).
+- Le message indique de payer 9999 jetons ou taper `defrag` dans le terminal.
+
+## 24. Intranet Corporate (`/employee-login`)
+
+### Acces
+
+- Route directe `/employee-login`.
+
+### Mecanique
+
+- Portail de connexion imitant un intranet Team Rocket.
+- Deux agents disponibles:
+  - LAMBDA-04: mot de passe = `arbok` (son Pokemon prefere).
+  - SIGMA-12: mot de passe = `rattata` (son Pokemon prefere).
+- Chaque agent a une boite mail avec des emails compromettants sur le Projet M.
+- Le flag `sylphe_intranet_complete` est pose apres lecture des emails.
+
+## 25. Radio Pokematos
+
+### Acces
+
+- Disponible en permanence dans le header de la page d'accueil.
+
+### Frequences speciales
+
+- **10.5 MHz**: Frequence de Lavanville. Murmures spectraux et pose du flag `sylphe_lavender_whisper`.
+- **20.5 MHz**: Pokéflûte. Reveil du Ronflex. Pose du flag `sylphe_pokeflute_played`.
+- **42.0 MHz**: "La reponse est 42."
+- **151.0 MHz**: Signal du Sujet 151. Message de detresse.
+
+## 26. Boss de la Console DevTools
+
+### Acces
+
+- Ouvrir la console developpeur (F12) du navigateur.
+
+### Mecanique
+
+- `window.sylphe.useMasterball()` declenche un combat dans la console.
+- L'entite Glitch a 3 PV.
+- Chaque appel de `useMasterball()` inflige 1 degat avec des messages colores en console.
+- Vaincre le Glitch pose le flag `sylphe_glitch_boss_defeated`.
+- Un indice Porygon est affiche dans la console au chargement de la page, chuchotant de chercher `sylphe_root_access` dans le LocalStorage.
+
+## 27. Piratage du LocalStorage
+
+### Indice
+
+- Porygon affiche un message dans la console: "La derniere clef n'est pas sur nos serveurs, mais chez vous."
+
+### Mecanique
+
+- Le joueur doit ouvrir l'onglet Application/Storage du navigateur.
+- Passer manuellement la variable `sylphe_root_access` de `false` a `true`.
+- Recharger la page pour que le flag soit pris en compte.
+
+## 28. Secrets CSS caches (Inspecteur DOM)
+
+### Localisations
+
+- **AboutSection**: Texte transparent 1px contenant un memo employe mentionnant le 11e etage, `mansion.cinnabar.gov`, et la commande `nano`.
+- **Footer**: Texte transparent hors champ contenant une entree du journal du Dr Fuji et des indices sur le casino et `humans.txt`.
+- **HeroSection**: Texte transparent mentionnant la commande `ping`, le LocalStorage, et le boss DevTools.
+
+### Methode de decouverte
+
+- Inspecter le DOM ou surligner toute la page pour reveler les textes caches.
+
+## 29. Commandes Terminal Phase 8+
+
+### `nano` / `nano /etc/sylphe/containment.conf`
+
+- Ouvre une interface d'edition textuelle simulee.
+- La lecture de `containment.conf` revele les parametres de confinement des sujets 150 et 151.
+- Un commentaire cachee dans le fichier sugere d'utiliser `nano-edit off`.
+
+### `nano-edit off`
+
+- Commande cachee pour basculer le confinement de ON a OFF.
+- Desactiver le confinement declenche une sequence dramatique avec glitchs visuels.
+- Pose le flag `sylphe_containment_off`.
+
+### `analyze_sample`
+
+- Commande cachee pour analyser un echantillon spectral.
+- Necessite le flag `sylphe_spectral_feather` (obtenu par drag & drop depuis `/museum-null`).
+- Revele des informations sur le Dr Fuji et la frequence de Lavanville.
+
+### `ping mansion.cinnabar.gov`
+
+- Simule une trace reseau vers le Manoir de Cramois'ile.
+- Les paquets "corrompus" sont des chaines Base64 encodant les notes du Dr Fuji.
+- Pose le flag `sylphe_dr_fuji_notes`.
+
+## 30. Drag & Drop inter-pages
+
+### Mecanique
+
+- Sur `/museum-null`, une plume spectrale apparait quand le Scope Sylphe est obtenu.
+- L'objet est draggable (HTML5 Drag API).
+- Le flag `sylphe_spectral_feather` est pose au debut du drag.
+- Le Terminal accepte le drop et execute automatiquement la commande `analyze_sample`.
+
+## 31. Routes fantomes a minuit (MidnightGhosts)
+
+### Condition
+
+- L'heure systeme de l'utilisateur doit etre entre 23h et 1h.
+
+### Effet
+
+- Des liens fantomes vers `/mt-moon-cavern`, `/spectre-mirror`, et `/lavender-mirror` apparaissent dans la barre HUD de la page d'accueil.
+- Les liens pulsent avec un style spectral.
+
+## 32. Quete de l'Hors-Ligne (Service Worker)
+
+### Mecanique
+
+- Un Service Worker (`/sw.js`) est enregistre au chargement du site.
+- Il met en cache une page corrompue de secours.
+- Si l'utilisateur perd sa connexion internet, le site affiche une page MissingNo avec le message "L'abime reseau est ma maison".
+- La page offline contient une animation de glitch et un compteur de realite.
+
+## 33. Geolocalisation et Train Magnetique
+
+### Mecanique
+
+- Le site demande la position GPS apres 15 secondes.
+- Si l'utilisateur est en Europe, un message "Signal lointain detecte" s'affiche.
+- Si la position correspond a Tokyo/Kanto (lat 35-36.5, lon 139-140.5), le joueur recoit le passe Train Magnetique (`sylphe_magnet_train_pass`).
+
+### Astuce
+
+- L'utilisateur peut spoofer sa position via DevTools (Sensors > Geolocation > Tokyo) pour obtenir le passe.
+
+## 34. Notifications PUSH fantomes
+
+### Mecanique
+
+- Le site demande la permission de notification web.
+- Si l'heure systeme est 3h du matin, une notification est envoyee: "Sujet 150 : J'ai mal..."
+- La notification se declenche meme si l'onglet n'est pas actif.
+
+## 35. Glitch Scroll Void (Bug de Scroll)
+
+### Condition
+
+- Le flag `sylphe_prototype_151` ou `sylphe_archive_debug` doit etre actif.
+
+### Effet
+
+- Apres le footer de la page d'accueil, une zone void noire apparait.
+- Un canvas affiche 12 MissingNos errant dans le vide.
+- Les MissingNos sont rendus en glitch art pixel avec des artefacts visuels.
+
+## 36. `robots.txt` et `humans.txt`
+
+### robots.txt
+
+- `User-agent: Pokedex-Crawler` / `Disallow: /` — Le Pokedex n'a pas le droit de tout scanner.
+- `User-agent: Deoxys-Speed` / `Allow: /api/` / `Disallow: /api/masterball` — Forme Vitesse autorisee sauf Masterball.
+- `User-agent: Team-Rocket-Bot` / `Disallow: /*` — Les bots de la Team Rocket sont interdits partout.
+
+### humans.txt
+
+- Message d'un developpeur prisonnier du QG Team Rocket.
+- Indices caches: commande `nano`, `containment.conf`, casino, intranet, mot de passe `pr0t0type_151`.
+
+## 37. Quetes Phase 8+
+
+### Quete G: Decoder les notes du Dr Fuji
+
+1. Trouver l'indice CSS dans AboutSection (inspecter le DOM).
+2. Taper `ping mansion.cinnabar.gov` dans le terminal.
+3. Decoder les chaines Base64 pour lire les notes du Dr Fuji.
+
+### Quete H: Desactiver le confinement
+
+1. Trouver l'indice `nano` dans `humans.txt` ou dans les secrets CSS.
+2. Taper `nano /etc/sylphe/containment.conf` dans le terminal.
+3. Taper `nano-edit off` pour desactiver le confinement.
+
+### Quete I: Synchroniser les Pods de clonage
+
+1. Ouvrir `/cloning-pod-a` dans un onglet.
+2. Ouvrir `/cloning-pod-b` dans un autre onglet.
+3. Lancer la stabilisation sur les deux pods en moins de 3 secondes.
+
+### Quete J: Infiltrer l'Intranet Rocket
+
+1. Aller sur `/employee-login`.
+2. Entrer le login LAMBDA-04 avec le mot de passe `arbok`.
+3. Ou entrer SIGMA-12 avec `rattata`.
+4. Lire les emails compromettants.
+
+### Quete K: Battre le Boss DevTools
+
+1. Ouvrir la console (F12).
+2. Taper `window.sylphe.useMasterball()` trois fois.
+3. L'entite Glitch est vaincue.
+
+### Quete L: Analyser la plume spectrale
+
+1. Obtenir le Scope Sylphe.
+2. Sur `/museum-null`, glisser la plume spectrale.
+3. La deposer sur le terminal.
+4. La commande `analyze_sample` s'execute automatiquement.

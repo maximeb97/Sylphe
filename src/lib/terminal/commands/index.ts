@@ -42,6 +42,9 @@ import {
   defragCommand,
   reconstructCommand,
   sylphedexCommand,
+  nanoCommand,
+  nanoEditCommand,
+  analyzeSampleCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -99,6 +102,9 @@ export function registerAllCommands() {
   registerCommand(defragCommand);
   registerCommand(reconstructCommand);
   registerCommand(sylphedexCommand);
+  registerCommand(nanoCommand);
+  registerCommand(nanoEditCommand);
+  registerCommand(analyzeSampleCommand);
 
   // Aliases
   registerAlias("ll", "ls");

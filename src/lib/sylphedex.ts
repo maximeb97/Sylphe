@@ -87,8 +87,7 @@ export function getSylphedexEntries(): SylphedexEntry[] {
       name: "MISSINGN0",
       type: "OISEAU/NORMAL [CORROMPU]",
       classification: "ANOMALIE DE DONNEES / ENTITE HORS-INDEX",
-      status:
-        "NON CONFINE — Se deplace librement dans les secteurs corrompus.",
+      status: "NON CONFINE — Se deplace librement dans les secteurs corrompus.",
       notes: [
         "Entite non repertoriee officiellement. Adresse memoire: 0x9F4C.",
         "Duplication d'objets confirmee: les inventaires a proximite se multiplient (x128).",
@@ -98,7 +97,7 @@ export function getSylphedexEntries(): SylphedexEntry[] {
         "Glitch City reste instable. MissingNo semble etre la cause et non le symptome.",
         ...(hasNullBadge
           ? [
-              "[BADGE NULL] Le Musee Null confirme que MissingNo etait repertorie dans l'aile effacee avant purge du catalogue.",
+              "[BADGE NULL] Le <a href='/museum-null' style='color: blue;'>Musee Null</a> confirme que MissingNo etait repertorie dans l'aile effacee avant purge du catalogue.",
             ]
           : []),
       ],

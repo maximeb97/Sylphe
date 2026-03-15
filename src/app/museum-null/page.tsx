@@ -40,6 +40,7 @@ export default function MuseumNullPage() {
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
+  const [featherPickedUp, setFeatherPickedUp] = useState(false);
 
   if (typeof window === "undefined") return null;
 
@@ -228,9 +229,37 @@ export default function MuseumNullPage() {
             {hasNullBadge ? "BADGE NULL: ACTIF" : "BADGE NULL: ABSENT"}
           </div>
 
+          {/* Draggable Spectral Feather */}
+          {hasScope && !featherPickedUp && (
+            <div
+              draggable
+              onDragStart={e => {
+                e.dataTransfer.setData("text/plain", "spectral_feather");
+                e.dataTransfer.effectAllowed = "move";
+                setFeatherPickedUp(true);
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("sylphe_spectral_feather", "true");
+                  window.dispatchEvent(new Event("storage"));
+                }
+                setDialog(
+                  "Plume Spectrale recuperee ! Glissez-la dans le terminal et tapez analyze_sample.",
+                );
+              }}
+              className="absolute top-12 right-4 z-30 cursor-grab active:cursor-grabbing animate-pulse"
+              title="Plume Spectrale — Glissez vers le terminal"
+            >
+              <div className="bg-purple-900/60 border border-purple-500/40 px-2 py-1 rounded text-[7px] text-purple-300 hover:bg-purple-800/60 transition-colors">
+                🪶 Plume Spectrale
+              </div>
+            </div>
+          )}
+
           {dialog && (
             <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-30">
-              <DialogBox isClickable={isTypewriterDone} onClick={handleDialogClick}>
+              <DialogBox
+                isClickable={isTypewriterDone}
+                onClick={handleDialogClick}
+              >
                 <TypewriterText
                   key={dialog}
                   text={dialog}

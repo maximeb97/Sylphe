@@ -30,6 +30,20 @@ export const CERULEAN_WALL = 31;
 export const CERULEAN_WATER = 32;
 export const CERULEAN_STAIRS = 33;
 
+// Phase 8+ Tiles
+export const CAVERN_FLOOR = 34;
+export const CAVERN_WALL = 35;
+export const CASINO_FLOOR = 36;
+export const CASINO_MACHINE = 37;
+export const RETRO_FLOOR = 38;
+export const RETRO_WALL = 39;
+export const TRICK_FLOOR = 40;
+export const TRICK_TRAP = 41;
+export const MIRROR_FLOOR = 42;
+export const CLONE_POD = 43;
+export const LOGIN_FLOOR = 44;
+export const LOGIN_DESK = 45;
+
 /* ===== Tile-to-color mapping ===== */
 export const TILE_COLORS: Record<number, string> = {
   [GRASS]: "#88b058",
@@ -49,6 +63,18 @@ export const TILE_COLORS: Record<number, string> = {
   [CERULEAN_WALL]: "#505040",
   [CERULEAN_WATER]: "#4080f0",
   [CERULEAN_STAIRS]: "#e0e0d0",
+  [CAVERN_FLOOR]: "#2a1a0a",
+  [CAVERN_WALL]: "#1a0a00",
+  [CASINO_FLOOR]: "#8b1a1a",
+  [CASINO_MACHINE]: "#d4af37",
+  [RETRO_FLOOR]: "#008080",
+  [RETRO_WALL]: "#404040",
+  [TRICK_FLOOR]: "#a0522d",
+  [TRICK_TRAP]: "#ff4500",
+  [MIRROR_FLOOR]: "#1a1a2e",
+  [CLONE_POD]: "#00ff88",
+  [LOGIN_FLOOR]: "#e8e8e8",
+  [LOGIN_DESK]: "#6a6a8a",
 };
 
 /* ===== Tile rendering size ===== */
@@ -61,7 +87,23 @@ export function isWalkableOutside(tile: number): boolean {
 }
 
 export function isWalkableInside(tile: number): boolean {
-  return tile === IN_FLOOR || tile === DOOR || tile === ROCKET_FLOOR || tile === CYBER_FLOOR || tile === GLITCH_TILE || tile === POKEBALL_FLOOR || tile === VAT_BG || tile === CERULEAN_FLOOR || tile === CERULEAN_STAIRS;
+  return (
+    tile === IN_FLOOR ||
+    tile === DOOR ||
+    tile === ROCKET_FLOOR ||
+    tile === CYBER_FLOOR ||
+    tile === GLITCH_TILE ||
+    tile === POKEBALL_FLOOR ||
+    tile === VAT_BG ||
+    tile === CERULEAN_FLOOR ||
+    tile === CERULEAN_STAIRS ||
+    tile === CAVERN_FLOOR ||
+    tile === CASINO_FLOOR ||
+    tile === RETRO_FLOOR ||
+    tile === TRICK_FLOOR ||
+    tile === MIRROR_FLOOR ||
+    tile === LOGIN_FLOOR
+  );
 }
 
 export function isWalkable(tile: number, scene: "OUTSIDE" | "INSIDE"): boolean {
@@ -73,5 +115,21 @@ export function isDoor(tile: number): boolean {
 }
 
 export function isInteractiveTile(tile: number, scene: "OUTSIDE" | "INSIDE"): boolean {
-  return tile === DOOR || tile === PC_DESK || tile === BOSS_DESK || tile === ROCKET_CRATE || tile === CYBER_WALL || tile === GLITCH_WALL || tile === KEY || tile === TREE || tile === WATER || isWalkable(tile, scene);
+  return (
+    tile === DOOR ||
+    tile === PC_DESK ||
+    tile === BOSS_DESK ||
+    tile === ROCKET_CRATE ||
+    tile === CYBER_WALL ||
+    tile === GLITCH_WALL ||
+    tile === KEY ||
+    tile === TREE ||
+    tile === WATER ||
+    tile === CASINO_MACHINE ||
+    tile === TRICK_TRAP ||
+    tile === CLONE_POD ||
+    tile === LOGIN_DESK ||
+    tile === CAVERN_WALL ||
+    isWalkable(tile, scene)
+  );
 }

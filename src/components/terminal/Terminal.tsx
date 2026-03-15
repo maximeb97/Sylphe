@@ -20,11 +20,33 @@ export default function Terminal({ onClose }: TerminalProps) {
     [executeCommand, onClose]
   );
 
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const data = e.dataTransfer.getData("text/plain");
+      if (data === "spectral_feather") {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("sylphe_spectral_feather", "true");
+          window.dispatchEvent(new Event("storage"));
+        }
+        handleSubmit("analyze_sample");
+      }
+    },
+    [handleSubmit],
+  );
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }, []);
+
   return (
     <div
       className="flex flex-col bg-[#0a0a0a] min-h-[500px] h-full crt-effect relative"
       style={{ animation: "terminal-open 0.5s ease-out" }}
-      onClick={(e) => {
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onClick={e => {
         const input = (e.currentTarget as HTMLElement).querySelector("input");
         input?.focus();
       }}
@@ -41,7 +63,7 @@ export default function Terminal({ onClose }: TerminalProps) {
           </span>
         </div>
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onClose();
           }}

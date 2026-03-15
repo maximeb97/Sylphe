@@ -11,6 +11,7 @@ import PixelSprite, {
   MEWTWO_SPRITE,
   PORYGON_SPRITE,
   BOSS_SPRITE,
+  NEUTRAL_NPC_SPRITE,
 } from "@/components/PixelSprite";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -27,6 +28,15 @@ const team = [
     maxHp: 999,
     desc: "Le véritable boss de la Sylphe, tapi dans les ombres.",
     sprite: BOSS_SPRITE,
+  },
+  {
+    name: "VISITEUR",
+    title: "??",
+    level: "??",
+    hp: 120,
+    maxHp: 120,
+    desc: "Un visiteur mystérieux dont l'identité est inconnue. Il semble être un expert en informatique, mais personne ne sait comment il est arrivé ici ni ce qu'il veut.",
+    sprite: NEUTRAL_NPC_SPRITE,
   },
   {
     name: "DEVELOPPEUR",
@@ -76,7 +86,7 @@ const team = [
     sprite: MEWTWO_SPRITE,
   },
   {
-    name: "VISITEUR",
+    name: "ANOMALIE",
     title: "Porygon Echo",
     level: 42,
     hp: 77,
@@ -98,6 +108,7 @@ export default function TeamSection() {
   const [showCali, setShowCali] = useState(false);
   const [hasArchivePortal, setHasArchivePortal] = useState(false);
   const [porygonSyncCount, setPorygonSyncCount] = useState(0);
+  const [giovanniTapCount, setGiovanniTapCount] = useState(0);
 
   // Easter Egg check
   useEffect(() => {
@@ -142,6 +153,16 @@ export default function TeamSection() {
       if (hasArchivePortal && nextSyncCount >= 4) {
         setPorygonSyncCount(0);
         router.push("/hall-of-fame");
+      }
+      return;
+    }
+
+    if (member.name === "BOSS") {
+      const nextTap = giovanniTapCount + 1;
+      setGiovanniTapCount(nextTap);
+      setSelectedMember(memberIndex);
+      if (nextTap >= 3) {
+        router.push("/employee-login");
       }
       return;
     }
@@ -240,7 +261,7 @@ export default function TeamSection() {
                 }
               />
               <ProgressBar
-                value={visibleTeam[selectedMember].level}
+                value={parseInt(`${visibleTeam[selectedMember].level}`) || 0}
                 max={100}
                 label={
                   visibleTeam[selectedMember].name === "???"
