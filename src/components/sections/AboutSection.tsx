@@ -1,11 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import PixelSprite, { SCIENTIST_SPRITE } from "@/components/PixelSprite";
 import DialogBox from "@/components/DialogBox";
 import useInView from "@/hooks/useInView";
+import { setGameFlag } from "@/lib/gameState";
 
 export default function AboutSection() {
   const { ref, isVisible } = useInView(0.2);
+  const [profileTapCount, setProfileTapCount] = useState(0);
+  const [hintUnlocked, setHintUnlocked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_museum_null_hint") === "true",
+  );
+
+  const handleProfileTap = () => {
+    const nextTapCount = profileTapCount + 1;
+    setProfileTapCount(nextTapCount);
+
+    if (!hintUnlocked && nextTapCount >= 3) {
+      setGameFlag("sylphe_museum_null_hint");
+      setHintUnlocked(true);
+    }
+  };
 
   return (
     <section
@@ -18,8 +36,9 @@ export default function AboutSection() {
       </div>
 
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"
-          }`}
+        className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-700 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
       >
         {/* Left: NPC Scientist */}
         <div
@@ -28,12 +47,23 @@ export default function AboutSection() {
             animation: isVisible ? "slide-in-left 0.8s ease-out" : undefined,
           }}
         >
-          <PixelSprite sprite={SCIENTIST_SPRITE} size={96} />
+          <button
+            type="button"
+            onClick={handleProfileTap}
+            className="cursor-pointer-pixel"
+          >
+            <PixelSprite sprite={SCIENTIST_SPRITE} size={96} />
+          </button>
           <div className="mt-3 text-[7px] text-gba-bg-darker text-center">
             Prof. SYLPHE
             <br />
             <span className="text-gba-accent">Directeur de Recherche</span>
           </div>
+          {hintUnlocked && (
+            <div className="mt-2 text-[6px] text-gba-shadow text-center opacity-70">
+              AILE N-ULL // badge visiteur relie a l&apos;identifiant 31415
+            </div>
+          )}
         </div>
 
         {/* Right: Dialog */}
@@ -47,8 +77,8 @@ export default function AboutSection() {
               SYLPHE CORP. est la plus grande entreprise technologique du monde.
             </p>
             <p className="text-[8px] leading-[16px] text-gba-text mb-3">
-              Nos recherches couvrent l&apos;intelligence artificielle, la biotechnologie
-              et les systèmes de communication avancés.
+              Nos recherches couvrent l&apos;intelligence artificielle, la
+              biotechnologie et les systèmes de communication avancés.
             </p>
             <p className="text-[8px] leading-[16px] text-gba-accent">
               Notre mission : repousser les limites de l&apos;innovation.

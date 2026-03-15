@@ -11,8 +11,6 @@ export default function PixelSprite({
   className?: string;
   animate?: boolean;
 }) {
-  const pixelSize = size / sprite[0].length;
-
   return (
     <div
       className={`inline-block ${className}`}
@@ -39,8 +37,8 @@ export default function PixelSprite({
                 height={1}
                 fill={color}
               />
-            ) : null
-          )
+            ) : null,
+          ),
         )}
       </svg>
     </div>
@@ -203,6 +201,19 @@ export const GHOST_SPRITE: string[][] = [
   ["#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "."],
   ["#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "#e0e0e0", "."],
   [".", "#e0e0e0", ".", "#e0e0e0", ".", "#e0e0e0", ".", "#e0e0e0", "."],
+  [".", ".", ".", ".", ".", ".", ".", ".", "."],
+];
+
+// Ghost Marowak-style guardian sprite
+export const MAROWAK_GHOST_SPRITE: string[][] = [
+  [".", ".", "#e0e0e0", "#e0e0e0", "#e0e0e0", ".", ".", ".", "."],
+  [".", "#e0e0e0", "#f4f4f4", "#384030", "#f4f4f4", "#e0e0e0", ".", ".", "."],
+  ["#e0e0e0", "#f4f4f4", "#f4f4f4", "#f4f4f4", "#f4f4f4", "#f4f4f4", "#e0e0e0", ".", "."],
+  [".", "#e0e0e0", "#b89cd8", "#f4f4f4", "#b89cd8", "#e0e0e0", ".", ".", "."],
+  [".", ".", "#e0e0e0", "#e0e0e0", "#e0e0e0", ".", "#f4f4f4", ".", "."],
+  [".", "#d8d8ff", "#d8d8ff", "#d8d8ff", "#d8d8ff", "#d8d8ff", "#f4f4f4", ".", "."],
+  [".", "#d8d8ff", "#d8d8ff", "#b89cd8", "#d8d8ff", "#d8d8ff", ".", ".", "."],
+  [".", "#384030", ".", "#384030", ".", "#384030", ".", ".", "."],
   [".", ".", ".", ".", ".", ".", ".", ".", "."],
 ];
 

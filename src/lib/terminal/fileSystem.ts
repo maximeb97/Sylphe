@@ -21,21 +21,27 @@ export function createFileSystem(): FSNode {
           "=== BIENVENUE SUR LE TERMINAL SYLPHE ===\n\n" +
             "Vous avez trouvé le terminal secret de Sylphe Corp.\n" +
             "Explorez les fichiers pour découvrir nos secrets...\n\n" +
-            "Tapez 'help' pour voir les commandes disponibles."
+            "Tapez 'help' pour voir les commandes disponibles.",
         ),
         ".profile": file(
-          "# Profil utilisateur Sylphe\nexport LANG=fr_FR.UTF-8\nexport EDITOR=vi\nalias ll='ls -la'\nalias cls='clear'\n\n# Message du jour\ncat /etc/motd"
+          "# Profil utilisateur Sylphe\nexport LANG=fr_FR.UTF-8\nexport EDITOR=vi\nalias ll='ls -la'\nalias cls='clear'\n\n# Message du jour\ncat /etc/motd",
         ),
         "notes.txt": file(
           "TODO:\n" +
             "- Finir le projet MEWTWO\n" +
             "- Vérifier les logs du Scope Sylphe\n" +
-            "- Ne pas oublier de nourrir les Pokémon du labo"
+            "- Ne pas oublier de nourrir les Pokémon du labo",
         ),
         downloads: dir({
-          "rapport_q1_2026.pdf": file("[FICHIER BINAIRE - Rapport trimestriel Q1 2026 - 2.4 Mo]"),
-          "photo_equipe.png": file("[FICHIER BINAIRE - Photo d'équipe Sylphe Corp - 856 Ko]"),
-          "budget_secret.xlsx": file("[FICHIER PROTÉGÉ - Accès refusé - Contactez l'administrateur]"),
+          "rapport_q1_2026.pdf": file(
+            "[FICHIER BINAIRE - Rapport trimestriel Q1 2026 - 2.4 Mo]",
+          ),
+          "photo_equipe.png": file(
+            "[FICHIER BINAIRE - Photo d'équipe Sylphe Corp - 856 Ko]",
+          ),
+          "budget_secret.xlsx": file(
+            "[FICHIER PROTÉGÉ - Accès refusé - Contactez l'administrateur]",
+          ),
         }),
         projects: dir({
           sylphe: dir({
@@ -44,23 +50,33 @@ export function createFileSystem(): FSNode {
                 "Application corporative de Sylphe Corp.\n" +
                 "Stack: Next.js + TypeScript + Tailwind CSS\n\n" +
                 "## Lancement\n" +
-                "```\nnpm run dev\n```"
+                "```\nnpm run dev\n```",
             ),
             src: dir({
               "main.ts": file(
-                '// Point d\'entrée principal\nconsole.log("Initialisation de Sylphe Corp...");\n\nimport { startServer } from "./server";\nstartServer(3000);'
+                '// Point d\'entrée principal\nconsole.log("Initialisation de Sylphe Corp...");\n\nimport { startServer } from "./server";\nstartServer(3000);',
               ),
               "server.ts": file(
                 "export function startServer(port: number) {\n" +
-                  '  console.log(`Serveur démarré sur le port ${port}`);\n' +
-                  "}"
+                  "  console.log(`Serveur démarré sur le port ${port}`);\n" +
+                  "}",
               ),
             }),
           }),
           secret: dir({
             "hint.txt": file(
               "Le mot de passe du labo est quelque part dans /var/log...\n" +
-                "Essayez la commande 'hack' si vous êtes courageux."
+                "Essayez la commande 'hack' si vous êtes courageux.",
+            ),
+            "museum_null.txt": file(
+              "AILE N-ULL // visite guidee suspendue\n" +
+                "Point d'entree interne: carte corporate 31415\n" +
+                "Ne pas publier dans les brochures visiteurs.",
+            ),
+            "lavender_mirror.txt": file(
+              "Miroir de Lavanville interne\n" +
+                "Activation reservee aux profils qui regardent vraiment le Scope Sylphe.\n" +
+                "Contact ancien: POKEGEAR 0800-SYLPHE poste 7",
             ),
             ".hidden_key": file("SYLPHE-KEY-2026-MEWTWO-APPROVED"),
           }),
@@ -73,7 +89,7 @@ export function createFileSystem(): FSNode {
           "║     SYLPHE CORP. TERMINAL v3.1.4    ║\n" +
           "║   Accès autorisé uniquement.        ║\n" +
           "║   Toute intrusion sera signalée.    ║\n" +
-          "╚══════════════════════════════════════╝"
+          "╚══════════════════════════════════════╝",
       ),
       hostname: file("sylphe-mainframe"),
       version: file("SylpheOS 3.1.4 (Kanto Build 151)"),
@@ -86,12 +102,13 @@ export function createFileSystem(): FSNode {
             "[2026-02-20 14:32] WARNING: Unauthorized access attempt from ROCKET_NET\n" +
             "[2026-02-20 14:33] Firewall activated. Threat neutralized.\n" +
             "[2026-03-01 09:00] Backup complete. Password: pr0t0type_151\n" +
-            "[2026-03-10 03:14] Anomaly detected in Sector 7..."
+            "[2026-03-10 03:14] Anomaly detected in Sector 7...",
         ),
         "access.log": file(
           "user@sylphe login 2026-03-10 08:00\n" +
             "admin@sylphe login 2026-03-09 23:45\n" +
-            "root@sylphe sudo 2026-03-09 23:46 -- CLASSIFIED"
+            "root@sylphe sudo 2026-03-09 23:46 -- CLASSIFIED\n" +
+            "curator.null badge-scan 2026-03-11 03:14 -- VISITOR_ID:31415",
         ),
       }),
     }),
@@ -99,23 +116,23 @@ export function createFileSystem(): FSNode {
       scripts: dir({
         "hello.sh": file(
           "#!/bin/bash\n# Un script d'accueil\necho '   _____ __  __   __    ____  __  __  ______'\necho '  / ___// / / /  / /   / __ \\/ / / / / ____/'\necho '  \\__ \\/ /_/ /  / /   / /_/ / /_/ / / __/   '\necho ' ___/ / __  /  / /___/ ____/ __  / / /___   '\necho '/____/_/ /_/  /_____/_/   /_/ /_/ /_____/   '\necho ''\necho 'Bienvenue, dresseur.'",
-          true
+          true,
         ),
         "scan.sh": file(
           "#!/bin/bash\n# Scanner réseau Sylphe\necho 'Scanning réseau Sylphe Corp...'\nsleep 1\necho 'Hôtes détectés:'\necho '  192.168.1.1   - sylphe-gateway'\necho '  192.168.1.10  - sylphe-mainframe'\necho '  192.168.1.42  - labo-mewtwo (RESTRICTED)'\necho '  192.168.1.151 - pokedex-server'\necho '  192.168.1.??  - ??? (signal inconnu)'\necho 'Scan terminé.'",
-          true
+          true,
         ),
         "matrix.sh": file(
           "#!/bin/bash\n# Affiche un effet Matrix\necho 'Initialisation de la matrice...'",
-          true
+          true,
         ),
         "pokemon.sh": file(
           "#!/bin/bash\n# Pokémon aléatoire\necho 'Recherche dans le Pokédex...'\necho 'Tapez: pokedex [1-1025] pour chercher un Pokémon'",
-          true
+          true,
         ),
         "rocket.sh": file(
           "#!/bin/bash\n# Message secret de la Team Rocket\necho ''\necho '  ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗'\necho '  ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝'\necho '  ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   '\necho '  ██╔══██╗██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   '\necho '  ██║  ██║╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   '\necho '  ╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   '\necho ''\necho 'Préparez-vous aux problèmes...'\necho 'Et faites-les doubles !'\necho ''\necho '- Jessie & James, agents infiltrés'",
-          true
+          true,
         ),
       }),
     }),
@@ -129,7 +146,10 @@ export function createFileSystem(): FSNode {
     usr: dir({
       local: dir({
         bin: dir({
-          "neofetch": file("#!/bin/bash\n# System information display\necho 'SylpheOS Neofetch'", true),
+          neofetch: file(
+            "#!/bin/bash\n# System information display\necho 'SylpheOS Neofetch'",
+            true,
+          ),
         }),
       }),
     }),

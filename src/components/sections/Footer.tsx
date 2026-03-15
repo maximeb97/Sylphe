@@ -1,4 +1,10 @@
+"use client";
+
+import { useState } from "react";
+
 export default function Footer() {
+  const [saveTapCount, setSaveTapCount] = useState(0);
+
   return (
     <footer className="bg-gba-text text-center py-6 px-4 relative overflow-hidden">
       {/* Decorative pixel border */}
@@ -8,7 +14,8 @@ export default function Footer() {
             key={i}
             className="w-[4px] h-[4px]"
             style={{
-              backgroundColor: i % 3 === 0 ? "#f8d830" : i % 3 === 1 ? "#f85858" : "#5898f8",
+              backgroundColor:
+                i % 3 === 0 ? "#f8d830" : i % 3 === 1 ? "#f85858" : "#5898f8",
               opacity: 0.6,
             }}
           />
@@ -25,9 +32,19 @@ export default function Footer() {
         <div className="mt-2 text-[6px] text-gba-shadow">
           ▲ Appuyez sur START pour sauvegarder ▲
         </div>
-        <div className="mt-3 text-[5px] text-gba-shadow opacity-40">
+        <button
+          type="button"
+          onClick={() => setSaveTapCount(count => count + 1)}
+          className="mt-3 text-[5px] text-gba-shadow opacity-40 cursor-pointer-pixel"
+        >
           ██ DONNÉES SAUVEGARDÉES ██ N&apos;ÉTEIGNEZ PAS ██
-        </div>
+        </button>
+        {saveTapCount >= 4 && (
+          <div className="mt-2 text-[5px] text-gba-gold opacity-60">
+            miroir discret: certains badges corporate repondent trop bien a
+            l&apos;ID 31415
+          </div>
+        )}
       </div>
 
       {/* Bottom pixel line */}
@@ -37,7 +54,8 @@ export default function Footer() {
             key={i}
             className="w-[4px] h-[4px]"
             style={{
-              backgroundColor: i % 3 === 0 ? "#f8d830" : i % 3 === 1 ? "#f85858" : "#5898f8",
+              backgroundColor:
+                i % 3 === 0 ? "#f8d830" : i % 3 === 1 ? "#f85858" : "#5898f8",
               opacity: 0.6,
             }}
           />

@@ -37,6 +37,8 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - `noclip`: autorise les collisions fantomes.
 - `lsd`: applique une distorsion visuelle temporaire.
 - `containment`: affiche un diagnostic clandestin des anomalies encore non contenues.
+- `checksum`: compare les archives publiques et l'aile corporate nulle apres recuperation du Badge NULL.
+- `requiem`: relit les noms effaces du Miroir de Lavanville apres recuperation du `Mirror Tag`.
 
 Ces commandes ne sont plus listees directement dans `help` ni dans l'autocompletion standard du terminal.
 
@@ -169,17 +171,66 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 - Sur la page Team, cliquer plusieurs fois sur Porygon Echo finit par ouvrir directement le Hall of Fame si l'archive est deja montee.
 - L'indice White Room apparait ensuite aussi dans le diagnostic `containment` et dans l'inventaire de supervision.
 
+## 8.ter. Quete parallele du Musee Null
+
+### Deblocage
+
+- Cliquer plusieurs fois sur le profil du Prof. SYLPHE dans la home revele un indice sur l'aile `N-ULL`.
+- Une fois l'indice obtenu, la carte stats corporate `ID No. 31415` peut etre activee plusieurs fois pour ouvrir `/museum-null`.
+- Cette quete est parallele au Projet M: elle peut etre faite sans attendre la White Room ou le Hall of Fame.
+
+### Musee Null
+
+- `/museum-null` est une aile corporate effacee des brochures officielles.
+- On y trouve des cartels truques, un conservateur, et avec le Scope des profils d'employes rayes qui remplacent les trophées.
+- Le socle central donne le `Badge NULL`, qui rejoint l'inventaire et rend la commande terminale `checksum` utile.
+- Si Porygon Echo a deja ete obtenu, un guide numerique parasite aussi l'aile et mentionne explicitement la divergence entre les archives publiques et nulles.
+
+## 8.quater. Quete parallele Lavender Mirror
+
+### Deblocage
+
+- Ouvrir plusieurs fois la fiche du `Scope Sylphe` dans les Produits revele une frequence de Lavanville interne.
+- Cliquer ensuite plusieurs fois sur `POKEGEAR 0800-SYLPHE poste 7` dans la section Contact ouvre `/lavender-mirror`.
+- Cette quete est parallele: elle ne depend ni de la White Room ni du Musee Null.
+
+### Lavender Mirror
+
+- `/lavender-mirror` est une salle memorielle qui imite la Tour Pokemon de Lavanville sous une forme corporate cachee.
+- La console haute active ou coupe une couche spectrale du lieu. En mode spectral, les cartels se transforment en epitaphes et des profils salaries fantomes apparaissent.
+- Un gardien osseux hante le reflet central. En l'ecoutant jusqu'au bout, on obtient le `Mirror Tag`.
+- Le `Mirror Tag` rend ensuite la commande terminale `requiem` utile et permet de relire les noms retires du miroir.
+
 ## 9. Inventaire et cartographie
 
 ### Inventaire
 
-- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, etc.
+- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, Badge NULL, Mirror Tag, etc.
 
 ### Maps visitees
 
 - Une route n'apparait dans la cartographie que lorsqu'elle a vraiment ete visitee.
 - Le Hall of Fame lui-meme rejoint la liste une fois monte.
 - `Beneath Stairs` et `White Room` rejoignent eux aussi la cartographie une fois trouves et ouverts.
+- `Musee Null` rejoint la cartographie une fois son aile debloquee puis visitee.
+- `Lavender Mirror` rejoint aussi la cartographie apres activation de la ligne poste 7.
+
+## 10.ter. Quete E: Ouvrir le Miroir de Lavanville
+
+1. Examiner plusieurs fois le `Scope Sylphe` dans les Produits.
+2. Composer plusieurs fois `POKEGEAR 0800-SYLPHE poste 7` dans Contact.
+3. Explorer `/lavender-mirror`.
+4. Basculer le miroir en couche spectrale.
+5. Ecouter le gardien osseux jusqu'a obtenir le `Mirror Tag`.
+6. Taper `requiem` dans le terminal.
+
+## 10.bis. Quete D: Auditer le patrimoine efface
+
+1. Reveler l'indice `N-ULL` dans la home.
+2. Activer plusieurs fois la carte stats `31415`.
+3. Explorer `/museum-null`.
+4. Recuperer le `Badge NULL`.
+5. Lancer `checksum` dans le terminal pour comparer les archives.
 
 ## 10. Liste rapide des principales quetes
 

@@ -9,6 +9,7 @@ import PixelSprite, {
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import useInView from "@/hooks/useInView";
+import { setGameFlag } from "@/lib/gameState";
 
 const products = [
   {
@@ -41,6 +42,27 @@ export default function ProductsSection() {
   const { ref, isVisible } = useInView(0.2);
   const [selectedItem, setSelectedItem] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scopeInspectCount, setScopeInspectCount] = useState(0);
+  const [lavenderHintUnlocked, setLavenderHintUnlocked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_lavender_hint") === "true",
+  );
+
+  const handleProductOpen = (index: number) => {
+    setSelectedItem(index);
+    setIsModalOpen(true);
+
+    if (index !== 2) return;
+
+    const nextCount = scopeInspectCount + 1;
+    setScopeInspectCount(nextCount);
+
+    if (!lavenderHintUnlocked && nextCount >= 3) {
+      setGameFlag("sylphe_lavender_hint");
+      setLavenderHintUnlocked(true);
+    }
+  };
 
   return (
     <section
@@ -53,22 +75,19 @@ export default function ProductsSection() {
       </div>
 
       <div
-        className={`transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"
-          }`}
+        className={`transition-all duration-700 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
       >
         {/* Item bag style layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {products.map((product, i) => (
             <button
               key={i}
-              onClick={() => {
-                setSelectedItem(i);
-                setIsModalOpen(true);
-              }}
-              className={`dialog-box text-left transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_0_rgba(40,64,40,1)] ${selectedItem === i
-                ? "ring-2 ring-gba-accent"
-                : ""
-                }`}
+              onClick={() => handleProductOpen(i)}
+              className={`dialog-box text-left transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_0_rgba(40,64,40,1)] ${
+                selectedItem === i ? "ring-2 ring-gba-accent" : ""
+              }`}
               style={{
                 animation: isVisible
                   ? `slide-in-up 0.6s ease-out ${i * 0.15}s both`
@@ -76,11 +95,7 @@ export default function ProductsSection() {
               }}
             >
               <div className="flex items-start gap-3">
-                <PixelSprite
-                  sprite={product.sprite}
-                  size={48}
-                  animate={true}
-                />
+                <PixelSprite sprite={product.sprite} size={48} animate={true} />
                 <div className="flex-1 min-w-0">
                   <div className="text-[8px] text-gba-text font-bold mb-1">
                     {selectedItem === i && (
@@ -112,8 +127,13 @@ export default function ProductsSection() {
           <span>
             ITEM {selectedItem + 1}/{products.length}
           </span>
-          <span className="text-gba-accent" style={{ animation: "pixel-pulse 2s infinite" }}>
-            CLIQUEZ POUR DÉTAILS
+          <span
+            className="text-gba-accent"
+            style={{ animation: "pixel-pulse 2s infinite" }}
+          >
+            {lavenderHintUnlocked
+              ? "POSTE 7 // LAVANVILLE"
+              : "CLIQUEZ POUR DÉTAILS"}
           </span>
         </div>
       </div>
@@ -126,19 +146,36 @@ export default function ProductsSection() {
         description={products[selectedItem].fullDesc}
       >
         <div className="flex justify-center mb-4">
-          <PixelSprite sprite={products[selectedItem].sprite} size={64} animate />
+          <PixelSprite
+            sprite={products[selectedItem].sprite}
+            size={64}
+            animate
+          />
         </div>
 
         <div className="bg-gba-bg p-2 mb-4 pixel-border">
           <div className="flex justify-between text-[8px] text-gba-text mb-2">
             <span>PRIX:</span>
-            <span className="text-gba-blue">{products[selectedItem].price}</span>
+            <span className="text-gba-blue">
+              {products[selectedItem].price}
+            </span>
           </div>
           <div className="flex justify-between text-[8px] text-gba-text">
             <span>PUISSANCE:</span>
-            <span className="text-gba-accent">{products[selectedItem].stat.split(' ')[1]}</span>
+            <span className="text-gba-accent">
+              {products[selectedItem].stat.split(" ")[1]}
+            </span>
           </div>
         </div>
+
+        {products[selectedItem].name === "SCOPE SYLPHE" &&
+          lavenderHintUnlocked && (
+            <div className="bg-gba-bg p-2 mb-4 pixel-border text-[7px] leading-[14px] text-gba-text">
+              Frequence spectrale supplementaire detectee: POKEGEAR 0800-SYLPHE,
+              poste 7. Le miroir de Lavanville interne n&apos;est pas liste au
+              catalogue.
+            </div>
+          )}
 
         <div className="flex gap-2 justify-end">
           <Button variant="secondary" onClick={() => setIsModalOpen(false)}>

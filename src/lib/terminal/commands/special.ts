@@ -68,8 +68,52 @@ function getContainmentReport() {
   if (readFlag("sylphe_white_room_unlocked") && !readFlag("sylphe_archive_151_reconciled")) {
     unresolved.push("ARCHIVE-151/WHITE-ROOM: confrontation finale non resolue. Piste: ecouter la memoire originelle jusqu'au bout.");
   }
+  if (
+    readFlag("sylphe_museum_null_unlocked") &&
+    !readFlag("sylphe_null_badge")
+  ) {
+    unresolved.push(
+      "MUSEE-NULL: aile annexe ouverte mais archive de visite non recuperee. Piste: inspecter le socle central et les profils effaces.",
+    );
+  }
+  if (
+    readFlag("sylphe_lavender_mirror_unlocked") &&
+    !readFlag("sylphe_mirror_tag")
+  ) {
+    unresolved.push(
+      "LAVENDER-MIRROR: miroir spectral ouvert, mais la plaque memoriale n'a pas encore ete ramenee du reflet.",
+    );
+  }
 
   return unresolved;
+}
+
+function printChecksumReport(ctx: CommandContext) {
+  const lines = [
+    "[CHECKSUM] PUBLIC_ARCHIVE != NULL_ARCHIVE",
+    "public.employees = 2547 // null.employees = 17 profils retires",
+    "public.projects = 894 // null.projects = 1 aile effacee des visites",
+  ];
+
+  if (readFlag("sylphe_silph_scope")) {
+    lines.push(
+      "scope.overlay = ACTIVE // les cartels du Musee Null montrent des noms rayes plutot que des trophées.",
+    );
+  }
+  if (readFlag("sylphe_prototype_151")) {
+    lines.push(
+      "subject.compare(150,151) = mismatch // 151 correspond a la matrice, 150 au produit mediatise.",
+    );
+  }
+  if (readFlag("sylphe_archive_151_reconciled")) {
+    lines.push(
+      "white_room.status = reconciled // l'archive originelle ne fuit plus dans les zones vides.",
+    );
+  }
+
+  for (const line of lines) {
+    ctx.addLine({ type: "system", content: line });
+  }
 }
 
 export const hackCommand: Command = {
@@ -541,6 +585,82 @@ export const containmentCommand: Command = {
       ctx.addLine({
         type: "system",
         content: "Les journaux complets du Projet M sont montes en memoire via archive-debug.",
+      });
+    }
+  },
+};
+
+export const checksumCommand: Command = {
+  name: "checksum",
+  description: "Comparer l'archive publique et la couche nulle",
+  usage: "checksum",
+  hidden: true,
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    if (!readFlag("sylphe_null_badge")) {
+      ctx.addLine({
+        type: "error",
+        content:
+          "CHECKSUM INCOMPLET: aucune archive de visite NULL n'est chargee.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: certaines statistiques corporate encaissent mal les clics repetes.",
+      });
+      return;
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "--- VERIFICATION DE L'INTEGRITE CORPORATE ---",
+    });
+    printChecksumReport(ctx);
+    ctx.addLine({
+      type: "output",
+      content:
+        "Le Musee Null confirme qu'une part du patrimoine Sylphe a ete museifiee puis effacee.",
+    });
+  },
+};
+
+export const requiemCommand: Command = {
+  name: "requiem",
+  description: "Relire les noms effaces du miroir de Lavanville",
+  usage: "requiem",
+  hidden: true,
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    if (!readFlag("sylphe_mirror_tag")) {
+      ctx.addLine({
+        type: "error",
+        content: "REQUiem ERROR: aucune plaque memorielle chargee.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: le Scope Sylphe n'etait pas seulement destine aux tours Pokemon officielles.",
+      });
+      return;
+    }
+
+    const memorial = [
+      "[LAVENDER MIRROR // MEMORIAL BUFFER]",
+      "EMPLOYEE_04 // efface des brochures apres evacuation de l'aile spectrale.",
+      "GUIDE_02 // a continue les visites meme apres la fermeture officielle.",
+      "CURATOR_NULL // a renomme la salle 'miroir' pour eviter le mot 'tour'.",
+      "GHOST_GUARDIAN // origine inconnue, comportement calque sur un deuil pokemon ancien.",
+    ];
+
+    memorial.forEach(line => ctx.addLine({ type: "system", content: line }));
+
+    if (readFlag("sylphe_silph_scope")) {
+      ctx.addLine({
+        type: "output",
+        content:
+          "Le Scope confirme que le miroir ne montre jamais des fantomes anonymes: il montre des noms qu'on a retire des rapports.",
       });
     }
   },

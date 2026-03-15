@@ -1,11 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import useInView from "@/hooks/useInView";
+import { setGameFlag } from "@/lib/gameState";
 
 export default function StatsSection() {
+  const router = useRouter();
   const { ref, isVisible } = useInView(0.2);
   const [counters, setCounters] = useState({ emp: 0, proj: 0, rev: 0 });
+  const [museumHintUnlocked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_museum_null_hint") === "true",
+  );
+  const [museumCardTaps, setMuseumCardTaps] = useState(0);
+  const [museumUnlocked, setMuseumUnlocked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_museum_null_unlocked") === "true",
+  );
 
   useEffect(() => {
     if (!isVisible) return;
@@ -35,6 +49,19 @@ export default function StatsSection() {
     { label: "SATISFACTION", value: counters.rev, max: 100, color: "bg-gba-accent" },
   ];
 
+  const handleTrainerCardClick = () => {
+    if (!museumHintUnlocked || museumUnlocked) return;
+
+    const nextTaps = museumCardTaps + 1;
+    setMuseumCardTaps(nextTaps);
+
+    if (nextTaps >= 5) {
+      setGameFlag("sylphe_museum_null_unlocked");
+      setMuseumUnlocked(true);
+      router.push("/museum-null");
+    }
+  };
+
   return (
     <section
       ref={ref}
@@ -51,12 +78,22 @@ export default function StatsSection() {
       >
         <div className="dialog-box">
           {/* Pokemon trainer card style */}
-          <div className="text-center mb-4">
+          <button
+            type="button"
+            onClick={handleTrainerCardClick}
+            className={`w-full text-center mb-4 ${museumHintUnlocked ? "cursor-pointer-pixel" : "cursor-default"}`}
+          >
             <div className="text-[10px] text-gba-text mb-1">SYLPHE CORP.</div>
             <div className="text-[7px] text-gba-bg-darker">
-              ID No. 31415 &nbsp;│&nbsp; KANTO REGION
+              {museumHintUnlocked ? "ID No. 31415 // AILE N-ULL" : "ID No. 31415"}
+              &nbsp;│&nbsp; KANTO REGION
             </div>
-          </div>
+            {museumHintUnlocked && !museumUnlocked && (
+              <div className="mt-2 text-[6px] text-gba-shadow opacity-70">
+                checksum visiteur: {museumCardTaps}/5
+              </div>
+            )}
+          </button>
 
           {/* HP-style bars */}
           <div className="space-y-4">
@@ -118,6 +155,12 @@ export default function StatsSection() {
               ))}
             </div>
           </div>
+
+          {museumUnlocked && (
+            <div className="mt-5 pt-3 border-t-2 border-gba-bg-dark text-[6px] text-gba-shadow">
+              MUSEE NULL synchronise. Une aile corporate non listee a ete ajoutee aux visites possibles.
+            </div>
+          )}
         </div>
       </div>
     </section>

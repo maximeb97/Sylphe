@@ -14,6 +14,8 @@ export default function robots(): MetadataRoute.Robots {
             "/hall-of-fame",
             "/beneath-stairs",
             "/white-room",
+            "/museum-null",
+            "/lavender-mirror",
           ],
         },
         {

@@ -35,6 +35,8 @@ import {
   prototype151Command,
   archiveDebugCommand,
   containmentCommand,
+  checksumCommand,
+  requiemCommand,
   inventoryCommand,
   mapCommand,
 } from "./special";
@@ -87,6 +89,8 @@ export function registerAllCommands() {
   registerCommand(prototype151Command);
   registerCommand(archiveDebugCommand);
   registerCommand(containmentCommand);
+  registerCommand(checksumCommand);
+  registerCommand(requiemCommand);
   registerCommand(inventoryCommand);
   registerCommand(mapCommand);
 

@@ -65,6 +65,18 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
       "L'archive originelle a cesse de se fragmenter. La White Room repond maintenant sans hostilite.",
   },
   {
+    key: "sylphe_null_badge",
+    name: "BADGE NULL",
+    detail:
+      "Badge de visite provenant d'une aile corporate effacee des plans publics.",
+  },
+  {
+    key: "sylphe_mirror_tag",
+    name: "MIRROR TAG",
+    detail:
+      "Plaque memorielle issue du Miroir de Lavanville interne. Elle force les archives a lire les noms effaces.",
+  },
+  {
     key: "sylphe_porygon_echo",
     name: "PORYGON ECHO",
     detail:
@@ -130,6 +142,16 @@ export const MAP_DEFINITIONS: MapDefinition[] = [
     href: "/white-room",
     name: "WHITE ROOM",
     unlockKey: "sylphe_white_room_unlocked",
+  },
+  {
+    href: "/museum-null",
+    name: "MUSEE NULL",
+    unlockKey: "sylphe_museum_null_unlocked",
+  },
+  {
+    href: "/lavender-mirror",
+    name: "LAVENDER MIRROR",
+    unlockKey: "sylphe_lavender_mirror_unlocked",
   },
 ];
 

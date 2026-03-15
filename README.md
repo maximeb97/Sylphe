@@ -43,6 +43,8 @@ npm run build
 - La Pokeball blanche peut se transformer en biosphere triangulee et declencher des evenements ambiants a raretes multiples.
 - Le Hall of Fame contient une "Archive Rouge" qui revele un indice persistant vers une future White Room.
 - La Grotte Azuree cache maintenant un acces vers `Beneath Stairs`, qui ouvre a son tour la `White Room` et la confrontation finale avec l'archive 151.
+- Une quete parallele `Musee Null` peut etre declenchee depuis la home et ajoute le `Badge NULL` ainsi que la commande cachee `checksum`.
+- Une seconde quete parallele `Lavender Mirror` transforme la home en piste telephonique vers un memorial spectral interne et debloque la commande cachee `requiem`.
 
 ## Documentation interne
 

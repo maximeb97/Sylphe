@@ -59,14 +59,21 @@
 - [x] Ajouter une commande terminal secrète de diagnostic (`containment`) qui résume les anomalies encore non résolues.
 - [x] Les commandes utilitaires cachées ne doivent pas être listées directement dans le "help" du terminal. Elles doivent être trouvées en explorant le site, elles devront être données via des indices variés/subtiles.
 - [x] Ajoute plusieurs évennements qui se déclenchent de façon aléatoire sous certaines conditions, il faut plusieurs niveau de rareté mais ces évennements ne doivent pas bloquer d'autres élements du lore.
-- [ ] Ajoute une nouvelle quête de lore complète, sans lien avec les autres (ou avec peu de liens).
+- [x] Ajoute une nouvelle quête de lore complète, sans lien avec les autres (ou avec peu de liens).
 - [x] Route white-room
 - [x] Route beneath_stairs
 
+## Checklist suite:
+
+- [ ] Mini-jeu de defragmentation Porygon dans le terminal.
+- [ ] Systeme de meteo secrete partage entre plusieurs routes.
+- [ ] Faux Pokedex Sylphe avec fiches truquees et variantes selon la progression.
+- [ ] Easter egg audio entre `/pokeball` et `/mew-cloning-chamber-042`.
+- [x] Quete "Lavender Mirror" comme seconde branche parallele au Musee Null.
+- [ ] Evenement rare global "Blackout Sylphe".
+
 ## Propositions pour la suite:
 
-- Quete "Musee Null": une aile de visite corporate immaculee qui s'effondre si l'on scanne trop de faux artefacts avec le Scope.
-- Quete "Lavender Mirror": une route annexe pseudo-funeraire avec des profils employes effaces qui reagissent selon les captures deja faites.
 - Easter egg terminal `checksum`: une commande pseudo-technique qui compare 150 et 151 et devoile des divergences de lore selon la progression.
 - Evenement rare "Blackout Sylphe": pendant quelques secondes, toute l'interface coupe sauf les entites deja liberees dans la Pokeball.
 - Mini-boss "Archiviste Porygon-Z": issue d'une mauvaise defragmentation de Glitch City, a utiliser pour une quete plus autonome.
