@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
-import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
+import CustomMapCanvas, {
+  CustomNPC,
+} from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
 import {
   NEUTRAL_NPC_SPRITE,
@@ -15,7 +17,7 @@ import { POKEBALL_FLOOR, POKEBALL_WALL } from "@/components/tilemap/tiles";
 
 import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
-import { hasRecentCyberVisit } from "@/lib/gameState";
+import { hasRecentCyberVisit, setGameFlag } from "@/lib/gameState";
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -33,6 +35,53 @@ const POKEBALL_MAP: number[][] = Array(MAP_H)
         return POKEBALL_FLOOR;
       }),
   );
+
+type AmbientEvent = {
+  title: string;
+  detail: string;
+  rarity: "COMMON" | "RARE" | "MYTHIC";
+};
+
+function rollAmbientEvent(options: {
+  capturedCount: number;
+  hasPrototype151: boolean;
+  hasTriangulatedBiosphere: boolean;
+}): AmbientEvent | null {
+  const { capturedCount, hasPrototype151, hasTriangulatedBiosphere } = options;
+
+  if (capturedCount === 0) return null;
+
+  const roll = Math.random();
+
+  if (hasTriangulatedBiosphere && roll < 0.05) {
+    return {
+      title: "CONVERGENCE TRIANGULEE",
+      detail:
+        "Les trajectoires de Mew, Mewtwo et Porygon se verrouillent en un biotope artificiel auto-stable.",
+      rarity: "MYTHIC",
+    };
+  }
+
+  if (hasPrototype151 && roll < 0.18) {
+    return {
+      title: "BRUME MEMOIRE",
+      detail:
+        "Une vapeur spectrale tapisse les parois. L'archive 151 reecrit les angles morts de la capsule.",
+      rarity: "RARE",
+    };
+  }
+
+  if (roll < 0.45) {
+    return {
+      title: "MICROCLIMAT DOCILE",
+      detail:
+        "Les sujets captures adaptent lentement l'interieur de la Masterball a leur propre ecologie.",
+      rarity: "COMMON",
+    };
+  }
+
+  return null;
+}
 
 export default function PokeballInterior() {
   const router = useRouter();
@@ -53,6 +102,22 @@ export default function PokeballInterior() {
       localStorage.getItem("sylphe_porygon_echo") === "true") ||
     hasRecentCyberVisit();
   const capturedCount = Number(hasMew) + Number(hasMewtwo);
+  const hasTriangulatedBiosphere = hasMew && hasMewtwo && hasPorygonEcho;
+  const ambientEvent = useMemo(
+    () =>
+      rollAmbientEvent({
+        capturedCount,
+        hasPrototype151,
+        hasTriangulatedBiosphere,
+      }),
+    [capturedCount, hasPrototype151, hasTriangulatedBiosphere],
+  );
+
+  useEffect(() => {
+    if (ambientEvent?.rarity === "MYTHIC") {
+      setGameFlag("sylphe_triangulated_biosphere");
+    }
+  }, [ambientEvent]);
 
   const npcs: CustomNPC[] = [
     ...(hasMew
@@ -103,13 +168,19 @@ export default function PokeballInterior() {
     setForceComplete(false);
     if (npcId === "mew") {
       playPokemonCry(151);
-      setDialog("Mew voltige joyeusement dans cet espace infini...");
+      setDialog(
+        hasTriangulatedBiosphere
+          ? "Mew glisse d'un point d'ancrage a l'autre. La biosphere triangulee semble repondre a ses mouvements."
+          : "Mew voltige joyeusement dans cet espace infini...",
+      );
     } else if (npcId === "mewtwo") {
       playPokemonCry(150);
       setDialog(
-        hasPrototype151
-          ? "Mewtwo tourne autour de l'echo 151 sans jamais l'atteindre. Le clone semble reconnaitre son origine."
-          : "Mewtwo flotte en silence. La Masterball interieure est devenue sa salle de contention volontaire.",
+        hasTriangulatedBiosphere
+          ? "Mewtwo ne force plus sa cage. Le clone #150 inspecte les lignes de force reliees a Mew et Porygon."
+          : hasPrototype151
+            ? "Mewtwo tourne autour de l'echo 151 sans jamais l'atteindre. Le clone semble reconnaitre son origine."
+            : "Mewtwo flotte en silence. La Masterball interieure est devenue sa salle de contention volontaire.",
       );
     } else if (npcId === "echo151") {
       setDialog(
@@ -120,17 +191,21 @@ export default function PokeballInterior() {
     } else if (npcId === "porygon") {
       playPokemonCry(137);
       setDialog(
-        "Porygon materialise une passerelle de donnees dans la Pokeball blanche. Les archives suggerent maintenant la commande terminale `archive-debug`.",
+        hasTriangulatedBiosphere
+          ? "Porygon triangule la capsule depuis le noeud 42. Les trois presences convertissent la Pokeball en biosphere auto-cartographiee."
+          : "Porygon materialise une passerelle de donnees dans la Pokeball blanche. Les archives suggerent maintenant la commande terminale `archive-debug`.",
       );
     } else if (tile === POKEBALL_WALL) {
       setDialog(
-        hasPrototype151
-          ? "Les parois vibrent. Une inscription apparait puis disparait: pr0t0type_151."
-          : capturedCount > 1
-            ? "La Masterball blanche pulse comme un biotope artificiel. Les sujets captures s'y deplacent librement."
-            : hasMew
-              ? "La paroi de la Masterball. C'est confortable à l'intérieur."
-              : "La Masterball est vide... Un immense espace blanc vide.",
+        hasTriangulatedBiosphere
+          ? "Les parois ont change de geometrie. La Masterball n'est plus vide: c'est un habitat triangule, presque vivant."
+          : hasPrototype151
+            ? "Les parois vibrent. Une inscription apparait puis disparait: pr0t0type_151."
+            : capturedCount > 1
+              ? "La Masterball blanche pulse comme un biotope artificiel. Les sujets captures s'y deplacent librement."
+              : hasMew
+                ? "La paroi de la Masterball. C'est confortable à l'intérieur."
+                : "La Masterball est vide... Un immense espace blanc vide.",
       );
     }
   };
@@ -157,9 +232,18 @@ export default function PokeballInterior() {
         {hasPrototype151 && (
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(248,168,184,0.35),transparent_35%)] pointer-events-none z-10" />
         )}
+        {hasTriangulatedBiosphere && (
+          <div className="absolute inset-0 pointer-events-none z-10 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(123,203,255,0.22),rgba(255,170,210,0.18),rgba(124,255,186,0.2),rgba(123,203,255,0.22))] mix-blend-multiply" />
+        )}
         {capturedCount > 0 && (
           <div className="absolute top-2 left-2 z-20 border-2 border-gba-window-border bg-white/80 px-3 py-2 text-[7px] leading-[14px] text-gba-text">
             SANCTUAIRE CAPTURES: {capturedCount}
+          </div>
+        )}
+        {ambientEvent && (
+          <div className="absolute top-2 right-2 z-20 max-w-[180px] border-2 border-gba-window-border bg-white/85 px-3 py-2 text-[7px] leading-[14px] text-gba-text">
+            <p>{`${ambientEvent.rarity} // ${ambientEvent.title}`}</p>
+            <p className="mt-1 text-gba-bg-darker">{ambientEvent.detail}</p>
           </div>
         )}
 
@@ -172,7 +256,7 @@ export default function PokeballInterior() {
             npcs={npcs}
             onInteract={handleInteract}
             onPlayerMove={handlePlayerMove}
-            className={`w-full h-auto ${hasPrototype151 ? "saturate-125 hue-rotate-[12deg]" : ""}`}
+            className={`w-full h-auto ${hasPrototype151 ? "saturate-125 hue-rotate-[12deg]" : ""} ${hasTriangulatedBiosphere ? "contrast-110 saturate-150" : ""}`}
           />
 
           {dialog && (

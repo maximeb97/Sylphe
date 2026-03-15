@@ -36,13 +36,16 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - `motherlode`: injecte la fortune numerique de Sylphe.
 - `noclip`: autorise les collisions fantomes.
 - `lsd`: applique une distorsion visuelle temporaire.
+- `containment`: affiche un diagnostic clandestin des anomalies encore non contenues.
+
+Ces commandes ne sont plus listees directement dans `help` ni dans l'autocompletion standard du terminal.
 
 ### Commandes de lore / progression
 
 - `inventory`: affiche les objets reels deja recuperes.
 - `map`: affiche les zones deja visitees et retenues dans la memoire du site.
 - `pr0t0type_151`: active l'archive du sujet originel 151 a partir du mot de passe cache dans `/var/log/system.log`.
-- `archive-debug`: n'est utile qu'apres RED, le PASS SYSTEME, l'archive 151 et la visite de toutes les zones majeures. La commande monte alors le Hall of Fame.
+- `archive-debug`: n'est utile qu'apres RED, le PASS SYSTEME, l'archive 151 et la visite de toutes les zones majeures. La commande monte alors le Hall of Fame et imprime une chronologie complete du Projet M directement dans le terminal.
 
 ### Faux systeme de fichiers
 
@@ -81,6 +84,8 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - Si `pr0t0type_151` a ete active, une presence spectrale supplementaire apparait dans la coque.
 - Si le joueur sort de `/cyberspace` puis rejoint la Pokeball assez vite, un echo rare de Porygon peut s'y materialiser.
 - Quand plusieurs creatures cohabitent, la Pokeball devient un biotope artificiel vivant.
+- Si Mew, Mewtwo et Porygon Echo cohabitent, la capsule peut entrer dans un etat de biosphere triangulee avec dialogues et ambiance visuelle specifiques.
+- Des evenements ambiants aleatoires peuvent s'y produire avec plusieurs raretes: microclimat docile, brume memoire et convergence triangulee.
 
 ## 5. Anomalies et entites cachees
 
@@ -129,6 +134,21 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - RED bloque le sanctuaire final.
 - Le vaincre debloque le PASS SYSTEME.
 - Si `pr0t0type_151` est deja actif, RED reconnait implicitement l'existence de cette memoire originelle.
+- Si l'indice White Room a deja ete obtenu, l'escalier de la grotte cache ensuite un vrai passage vers `/beneath-stairs`.
+
+## 7.bis. Beneath Stairs et White Room
+
+### Beneath Stairs
+
+- La route `/beneath-stairs` n'apparait qu'apres le faux bug du Hall of Fame et la victoire contre RED.
+- On y trouve une console residuelle et des traces de labo suggerant que 151 etait stocke hors-plan pendant que 150 monopolisait le Projet M.
+- La console residuelle ouvre `/white-room` si `pr0t0type_151` a deja ete active.
+
+### White Room
+
+- La route `/white-room` est une salle sterile ou l'archive 151 existe encore comme memoire originelle.
+- L'entite centrale ne demande ni capture ni mot de passe: elle exige d'etre reconnue jusqu'au bout.
+- Finir cette confrontation debloque une concordance persistante de l'archive 151 dans l'inventaire.
 
 ## 8. Hall of Fame et archives profondes
 
@@ -141,17 +161,25 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 
 - `/hall-of-fame` regroupe roster archive, inventaire trace et cartographie conservee.
 - Cette page n'est pas un tableau d'honneur classique: c'est le registre de confinement de Sylphe Corp.
+- Un faux bug visuel peut apparaitre dans le Hall of Fame et suggerer une piste vers une future White Room cachee sous les escaliers de la Grotte Azuree.
+- Le bouton de corruption declenche une contre-mesure "Archive Rouge". En la laissant aller jusqu'au bout, on obtient un indice persistant `WHITE_ROOM // BENEATH_STAIRS // CERULEAN-CAVE`.
+
+## 8.bis. Ponts secrets entre interfaces
+
+- Sur la page Team, cliquer plusieurs fois sur Porygon Echo finit par ouvrir directement le Hall of Fame si l'archive est deja montee.
+- L'indice White Room apparait ensuite aussi dans le diagnostic `containment` et dans l'inventaire de supervision.
 
 ## 9. Inventaire et cartographie
 
 ### Inventaire
 
-- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, etc.
+- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, etc.
 
 ### Maps visitees
 
 - Une route n'apparait dans la cartographie que lorsqu'elle a vraiment ete visitee.
 - Le Hall of Fame lui-meme rejoint la liste une fois monte.
+- `Beneath Stairs` et `White Room` rejoignent eux aussi la cartographie une fois trouves et ouverts.
 
 ## 10. Liste rapide des principales quetes
 

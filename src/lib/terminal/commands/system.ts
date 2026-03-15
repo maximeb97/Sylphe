@@ -1,6 +1,10 @@
 import type { Command, CommandContext } from "../types";
 import { getAllCommands } from "../commandRegistry";
 
+function getDocumentedCommands() {
+  return getAllCommands().filter(command => !command.hidden);
+}
+
 export const helpCommand: Command = {
   name: "help",
   description: "Afficher l'aide des commandes",
@@ -22,7 +26,9 @@ export const helpCommand: Command = {
     ctx.addLine({ type: "system", content: "=== COMMANDES DISPONIBLES ===" });
     ctx.addLine({ type: "output", content: "" });
 
-    const cmds = getAllCommands().sort((a, b) => a.name.localeCompare(b.name));
+    const cmds = getDocumentedCommands().sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
     for (const cmd of cmds) {
       ctx.addLine({
         type: "output",
@@ -32,6 +38,11 @@ export const helpCommand: Command = {
 
     ctx.addLine({ type: "output", content: "" });
     ctx.addLine({ type: "system", content: "Tapez 'help <commande>' pour plus de détails." });
+    ctx.addLine({
+      type: "system",
+      content:
+        "Certaines commandes classees n'apparaissent qu'apres exploration du site.",
+    });
   },
 };
 

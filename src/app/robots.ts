@@ -12,6 +12,8 @@ export default function robots(): MetadataRoute.Robots {
             "/mew-cloning-chamber-042",
             "/cerulean-cave",
             "/hall-of-fame",
+            "/beneath-stairs",
+            "/white-room",
           ],
         },
         {

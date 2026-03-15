@@ -7,10 +7,76 @@ import {
   setGameFlag,
 } from "../../gameState";
 
+function readFlag(key: string) {
+  return typeof window !== "undefined" && localStorage.getItem(key) === "true";
+}
+
+function printProjectMChronicle(ctx: CommandContext) {
+  const timeline = [
+    "[PROJET M][CHRONOLOGIE COMPLETE]",
+    "1996.07 // Extraction de donnees genetiques instables sur le sujet MEW.",
+    "1996.11 // Creation du clone #150 sous financement ROCKET_NET.",
+    "1997.02 // Echec des premiers confinements. Le sujet 151 reste masque hors catalogue.",
+    "2026.02 // Fragment 7382 transite dans CYBERSPACE via Porygon.",
+    "2026.02 // Fragment 4B9F fuit depuis GLITCH CITY avec l'anomalie MissingNo.",
+    "2026.03 // Le terminal recompose 7382-4B9F et rouvre la Chambre 042.",
+    "2026.03 // RED transmet le PASS SYSTEME. Les archives profondes passent en mode supervision.",
+    "[NOTE] Le sujet 151 n'est pas une sauvegarde. C'est la matrice que le clone #150 n'a jamais pu effacer.",
+  ];
+
+  for (const line of timeline) {
+    ctx.addLine({
+      type: line.startsWith("[NOTE]") ? "output" : "system",
+      content: line,
+    });
+  }
+}
+
+function getContainmentReport() {
+  const unresolved: string[] = [];
+
+  if (!readFlag("sylphe_missingno_unlocked")) {
+    unresolved.push("GLITCH-0x9F4C: anomalie MissingNo non stabilisee. Piste: surveiller les zones corrompues.");
+  }
+  if (!readFlag("sylphe_silph_scope")) {
+    unresolved.push("SCOPE-S: brouillard spectral illisible. Piste: parler a l'anomalie qui manipule l'inventaire.");
+  }
+  if (!readFlag("sylphe_mew_unlocked")) {
+    unresolved.push("CHAMBRE-042: acces verrouille. Piste: reunir les deux fragments du code labo.");
+  }
+  if (!readFlag("sylphe_mew_captured")) {
+    unresolved.push("SUJET-151A: entite aquatique libre sur la carte principale.");
+  }
+  if (!readFlag("sylphe_mewtwo_captured")) {
+    unresolved.push("SUJET-150: clone principal encore actif en Chambre 042.");
+  }
+  if (!readFlag("sylphe_prototype_151")) {
+    unresolved.push("ARCHIVE-151: signature originelle absente. Piste: auditer /var/log/system.log.");
+  }
+  if (!readFlag("sylphe_red_defeated")) {
+    unresolved.push("SANCTUAIRE-RED: superviseur final non neutralise en Grotte Azuree.");
+  }
+  if (!readFlag("sylphe_archive_debug")) {
+    unresolved.push("ARCHIVE-DEBUG: Hall of Fame non monte. Piste: verifier inventory, map et RED.");
+  }
+  if (readFlag("sylphe_white_room_hint") && !readFlag("sylphe_beneath_stairs_unlocked")) {
+    unresolved.push("BENEATH-STAIRS: acces parasite localise en Grotte Azuree, sous l'escalier principal.");
+  }
+  if (readFlag("sylphe_beneath_stairs_unlocked") && !readFlag("sylphe_white_room_unlocked")) {
+    unresolved.push("WHITE-ROOM: membrane blanche detectee mais non ouverte. Piste: activer la console residuelle sous l'escalier.");
+  }
+  if (readFlag("sylphe_white_room_unlocked") && !readFlag("sylphe_archive_151_reconciled")) {
+    unresolved.push("ARCHIVE-151/WHITE-ROOM: confrontation finale non resolue. Piste: ecouter la memoire originelle jusqu'au bout.");
+  }
+
+  return unresolved;
+}
+
 export const hackCommand: Command = {
   name: "hack",
   description: "???",
   usage: "hack",
+  hidden: true,
   execute(_args: string[], ctx: CommandContext) {
     const frames = [
       "Initialisation du protocole d'intrusion...",
@@ -202,6 +268,7 @@ export const missingnoCommand: Command = {
   name: "missingno",
   description: "???",
   usage: "missingno",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_missingno_unlocked", "true");
@@ -223,6 +290,7 @@ export const rocketCommand: Command = {
   name: "rocket",
   description: "Acc\u00e9der au protocole R",
   usage: "rocket",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_rocket_mode", "true");
@@ -237,6 +305,7 @@ export const masterballCommand: Command = {
   name: "masterball",
   description: "Capture garantie",
   usage: "masterball",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_masterball_unlocked", "true");
@@ -251,6 +320,7 @@ export const noclipCommand: Command = {
   name: "noclip",
   description: "Désactiver les collisions",
   usage: "noclip",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("sylphe_noclip_toggle"));
@@ -264,6 +334,7 @@ export const lsdCommand: Command = {
   name: "lsd",
   description: "???",
   usage: "lsd",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       document.body.classList.add("acid-mode");
@@ -279,6 +350,7 @@ export const bikeCommand: Command = {
   name: "bike",
   description: "Obtenir une bicyclette",
   usage: "bike",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_bike", "true");
@@ -293,6 +365,7 @@ export const motherlodeCommand: Command = {
   name: "motherlode",
   description: "Injection financière",
   usage: "motherlode",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_rich", "true");
@@ -347,6 +420,7 @@ export const giovanniCommand: Command = {
   name: "giovanni",
   description: "Accès direction",
   usage: "giovanni",
+  hidden: true,
   execute(args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       localStorage.setItem("sylphe_giovanni_unlocked", "true");
@@ -361,6 +435,7 @@ export const prototype151Command: Command = {
   name: "pr0t0type_151",
   description: "Resonance memoire classee",
   usage: "pr0t0type_151",
+  hidden: true,
   execute(_args: string[], ctx: CommandContext) {
     if (typeof window !== "undefined") {
       setGameFlag("sylphe_prototype_151");
@@ -377,8 +452,10 @@ export const archiveDebugCommand: Command = {
   name: "archive-debug",
   description: "Activer les archives profondes",
   usage: "archive-debug",
+  hidden: true,
   execute(_args: string[], ctx: CommandContext) {
     if (typeof window === "undefined") return;
+    const alreadyUnlocked = readFlag("sylphe_archive_debug");
 
     if (!canUnlockArchiveDebug()) {
       ctx.addLine({
@@ -396,6 +473,7 @@ export const archiveDebugCommand: Command = {
 
     setGameFlag("sylphe_archive_debug");
     setGameFlag("sylphe_hall_of_fame");
+    setGameFlag("sylphe_project_m_logs");
     ctx.addLine({
       type: "system",
       content: "[ARCHIVE DEBUG] Canaux historiques synchronises.",
@@ -409,10 +487,62 @@ export const archiveDebugCommand: Command = {
       content:
         "Les archives completent le roster, l'inventaire et la cartographie en une seule memoire.",
     });
-    ctx.addLine({ type: "output", content: "Chargement du Hall of Fame..." });
+    printProjectMChronicle(ctx);
+    ctx.addLine({
+      type: "output",
+      content: alreadyUnlocked
+        ? "Chronologie Projet M rehydratee. /hall-of-fame reste disponible."
+        : "Chargement du Hall of Fame...",
+    });
+    if (alreadyUnlocked) {
+      return;
+    }
     setTimeout(() => {
       window.location.href = "/hall-of-fame";
     }, 5000);
+  },
+};
+
+export const containmentCommand: Command = {
+  name: "containment",
+  description: "Diagnostic clandestin des anomalies",
+  usage: "containment",
+  hidden: true,
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    const unresolved = getContainmentReport();
+
+    ctx.addLine({ type: "system", content: "--- DIAGNOSTIC CONTAINMENT ---" });
+    if (unresolved.length === 0) {
+      ctx.addLine({
+        type: "output",
+        content: "Toutes les anomalies critiques sont actuellement contenues.",
+      });
+      if (readFlag("sylphe_white_room_hint")) {
+        ctx.addLine({
+          type: "system",
+          content: "Signal parasite detecte: WHITE_ROOM // BENEATH_STAIRS // CERULEAN-CAVE",
+        });
+      } else {
+        ctx.addLine({
+          type: "system",
+          content: "Un residu persiste pourtant sous les escaliers de la Grotte Azuree.",
+        });
+      }
+      return;
+    }
+
+    unresolved.forEach((entry, index) => {
+      ctx.addLine({ type: "output", content: ` ${index + 1}. ${entry}` });
+    });
+
+    if (readFlag("sylphe_project_m_logs")) {
+      ctx.addLine({
+        type: "system",
+        content: "Les journaux complets du Projet M sont montes en memoire via archive-debug.",
+      });
+    }
   },
 };
 

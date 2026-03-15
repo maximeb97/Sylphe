@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sylphe
 
-## Getting Started
+Sylphe est une experience Next.js qui melange faux site corporate, mini-aventure Pokemon et terminal secret. Le projet repose sur une coque de GBA interactive, des routes cachees, une progression persistante via `localStorage` et une couche de lore qui se debloque en explorant le site.
 
-First, run the development server:
+## Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+
+## Demarrage local
+
+```bash
+npm install
+npm run dev
+```
+
+Application locale: `http://localhost:3000`
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Systèmes principaux
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Navigation dans un monde retro pilotable au clavier et via les boutons de la coque GBA.
+- Terminal secret avec faux systeme de fichiers, pseudo-commandes shell et commandes lore cachees.
+- Gestion persistante des flags `sylphe_*`, de l'inventaire et de la cartographie des zones visitees.
+- Routes secretes pour Glitch City, Rocket HQ, Giovanni Office, Chambre 042, Pokeball interieure, Grotte Azuree et Hall of Fame.
+- Hall of Fame comme registre de confinement, avec anomalies visuelles et routines d'archive hostiles.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Secrets récents déjà implémentés
 
-## Learn More
+- `archive-debug` imprime maintenant une chronologie complete du Projet M dans le terminal.
+- `containment` dresse un diagnostic clandestin des anomalies encore non resolues.
+- Les commandes cachees ne sont plus exposees directement par `help` ni par l'autocompletion standard.
+- Porygon Echo peut ouvrir directement le Hall of Fame depuis la Team si l'archive est deja montee.
+- La Pokeball blanche peut se transformer en biosphere triangulee et declencher des evenements ambiants a raretes multiples.
+- Le Hall of Fame contient une "Archive Rouge" qui revele un indice persistant vers une future White Room.
+- La Grotte Azuree cache maintenant un acces vers `Beneath Stairs`, qui ouvre a son tour la `White Room` et la confrontation finale avec l'archive 151.
 
-To learn more about Next.js, take a look at the following resources:
+## Documentation interne
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `FEATURES.md` suit les easter eggs et l'avancement des phases.
+- `SECRETS.MD` contient l'ensemble des spoilers et commandes cachees.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Validation
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+```

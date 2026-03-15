@@ -53,6 +53,18 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
       "Console de supervision activee au plus profond des archives Sylphe.",
   },
   {
+    key: "sylphe_white_room_hint",
+    name: "INDICE WHITE ROOM",
+    detail:
+      "Residus extraits du Hall of Fame: WHITE_ROOM // BENEATH_STAIRS // CERULEAN-CAVE.",
+  },
+  {
+    key: "sylphe_archive_151_reconciled",
+    name: "CONCORDANCE 151",
+    detail:
+      "L'archive originelle a cesse de se fragmenter. La White Room repond maintenant sans hostilite.",
+  },
+  {
     key: "sylphe_porygon_echo",
     name: "PORYGON ECHO",
     detail:
@@ -108,6 +120,16 @@ export const MAP_DEFINITIONS: MapDefinition[] = [
     href: "/hall-of-fame",
     name: "HALL OF FAME",
     unlockKey: "sylphe_hall_of_fame",
+  },
+  {
+    href: "/beneath-stairs",
+    name: "BENEATH STAIRS",
+    unlockKey: "sylphe_beneath_stairs_unlocked",
+  },
+  {
+    href: "/white-room",
+    name: "WHITE ROOM",
+    unlockKey: "sylphe_white_room_unlocked",
   },
 ];
 

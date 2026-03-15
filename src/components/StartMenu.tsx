@@ -45,7 +45,7 @@ export default function StartMenu({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute inset-0 z-[90] flex items-center justify-center bg-black/55 px-4 backdrop-blur-[2px]">
+    <div className="absolute inset-0 z-[90] flex items-center justify-center bg-black/55 px-4 backdrop-blur-[2px] overflow-auto">
       <DialogBox className="w-full max-w-2xl !bg-[#d8e8c0]">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
@@ -73,7 +73,8 @@ export default function StartMenu({
                 : "border-gba-window-border bg-gba-bg text-gba-text"
             }`}
           >
-            INVENTAIRE {inventoryItems.length > 0 ? `(${inventoryItems.length})` : ""}
+            INVENTAIRE{" "}
+            {inventoryItems.length > 0 ? `(${inventoryItems.length})` : ""}
           </button>
           <button
             type="button"
@@ -92,21 +93,27 @@ export default function StartMenu({
           {tab === "inventory" ? (
             inventoryItems.length > 0 ? (
               <div className="space-y-3">
-                {inventoryItems.map((item) => (
-                  <div key={item.key} className="border-b border-gba-bg-dark/60 pb-3 last:border-b-0 last:pb-0">
+                {inventoryItems.map(item => (
+                  <div
+                    key={item.key}
+                    className="border-b border-gba-bg-dark/60 pb-3 last:border-b-0 last:pb-0"
+                  >
                     <p className="text-[8px] text-gba-text">▶ {item.name}</p>
-                    <p className="mt-2 text-[7px] leading-[14px] text-gba-bg-darker">{item.detail}</p>
+                    <p className="mt-2 text-[7px] leading-[14px] text-gba-bg-darker">
+                      {item.detail}
+                    </p>
                   </div>
                 ))}
               </div>
             ) : (
               <p className="text-[8px] leading-[16px] text-gba-bg-darker">
-                Aucun objet important detecte. Fouille davantage le terminal et les zones secretes.
+                Aucun objet important detecte. Fouille davantage le terminal et
+                les zones secretes.
               </p>
             )
           ) : visitedMaps.length > 0 ? (
             <div className="space-y-2">
-              {visitedMaps.map((map) => (
+              {visitedMaps.map(map => (
                 <button
                   key={map.href}
                   type="button"

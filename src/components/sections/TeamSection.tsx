@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PixelSprite, {
   SCIENTIST_SPRITE,
   COCKATIEL_SPRITE,
@@ -86,6 +87,7 @@ const team = [
 ];
 
 export default function TeamSection() {
+  const router = useRouter();
   const { ref, isVisible } = useInView(0.2);
   const [selectedMember, setSelectedMember] = useState<number | null>(null);
   const [showMissingNo, setShowMissingNo] = useState(false);
@@ -94,6 +96,8 @@ export default function TeamSection() {
   const [showPorygonEcho, setShowPorygonEcho] = useState(false);
   const [showGiovanni, setShowGiovanni] = useState(false);
   const [showCali, setShowCali] = useState(false);
+  const [hasArchivePortal, setHasArchivePortal] = useState(false);
+  const [porygonSyncCount, setPorygonSyncCount] = useState(0);
 
   // Easter Egg check
   useEffect(() => {
@@ -106,6 +110,10 @@ export default function TeamSection() {
       );
       setShowGiovanni(localStorage.getItem("sylphe_giovanni_unlocked") === "true");
       setShowCali(localStorage.getItem("sylphe_cali_unlocked") === "true");
+      setHasArchivePortal(
+        localStorage.getItem("sylphe_archive_debug") === "true" ||
+          localStorage.getItem("sylphe_hall_of_fame") === "true",
+      );
     };
     checkEggs();
     window.addEventListener("storage", checkEggs);
@@ -122,24 +130,41 @@ export default function TeamSection() {
     return true;
   });
 
+  const handleMemberClick = (memberIndex: number) => {
+    const member = visibleTeam[memberIndex];
+    if (!member) return;
+
+    if (member.title === "Porygon Echo") {
+      const nextSyncCount = porygonSyncCount + 1;
+      setPorygonSyncCount(nextSyncCount);
+      setSelectedMember(memberIndex);
+
+      if (hasArchivePortal && nextSyncCount >= 4) {
+        setPorygonSyncCount(0);
+        router.push("/hall-of-fame");
+      }
+      return;
+    }
+
+    setPorygonSyncCount(0);
+    setSelectedMember(memberIndex);
+  };
+
   return (
-    <section
-      ref={ref}
-      id="team"
-      className="bg-gba-bg-dark tile-bg p-4 md:p-6"
-    >
+    <section ref={ref} id="team" className="bg-gba-bg-dark tile-bg p-4 md:p-6">
       <div className="bg-gba-text text-gba-gold text-[8px] px-3 py-2 mb-4 pixel-border inline-block">
         ▶ ÉQUIPE
       </div>
 
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0"
-          }`}
+        className={`grid grid-cols-1 md:grid-cols-2 gap-3 transition-all duration-700 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
       >
         {visibleTeam.map((member, i) => (
           <button
             key={i}
-            onClick={() => setSelectedMember(i)}
+            onClick={() => handleMemberClick(i)}
             className="dialog-box text-left hover:-translate-y-1 hover:shadow-[0_8px_0_rgba(40,64,40,1)] transition-transform"
             style={{
               animation: isVisible
@@ -152,17 +177,27 @@ export default function TeamSection() {
                 sprite={member.sprite || SCIENTIST_SPRITE}
                 size={48}
                 animate={selectedMember === i}
-                className={member.name === "???" ? "hue-rotate-[120deg] mix-blend-difference" : ""}
+                className={
+                  member.name === "???"
+                    ? "hue-rotate-[120deg] mix-blend-difference"
+                    : ""
+                }
               />
               <div className="flex-1 w-full">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <div className={`text-[8px] font-bold ${member.name === "???" ? "text-red-500 blur-[0.5px]" : "text-gba-text"}`}>{member.name}</div>
+                    <div
+                      className={`text-[8px] font-bold ${member.name === "???" ? "text-red-500 blur-[0.5px]" : "text-gba-text"}`}
+                    >
+                      {member.name}
+                    </div>
                     <div className="text-[7px] text-gba-accent">
                       {member.title}
                     </div>
                   </div>
-                  <div className={`text-[7px] ${member.name === "???" ? "text-red-500 line-through" : "text-gba-bg-darker"}`}>
+                  <div
+                    className={`text-[7px] ${member.name === "???" ? "text-red-500 line-through" : "text-gba-bg-darker"}`}
+                  >
                     Lv{member.level}
                   </div>
                 </div>
@@ -179,16 +214,51 @@ export default function TeamSection() {
         <Modal
           isOpen={true}
           onClose={() => setSelectedMember(null)}
-          title={visibleTeam[selectedMember].name === "???" ? "$!#& M?S S INGN0 ¤" : `PROFILE : ${visibleTeam[selectedMember].title}`}
+          title={
+            visibleTeam[selectedMember].name === "???"
+              ? "$!#& M?S S INGN0 ¤"
+              : `PROFILE : ${visibleTeam[selectedMember].title}`
+          }
           description={visibleTeam[selectedMember].desc}
         >
-          <div className={`flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border ${visibleTeam[selectedMember].name === "???" ? "animate-pulse blur-[1px] rotate-1 hue-rotate-180" : ""}`}>
-            <PixelSprite sprite={visibleTeam[selectedMember].sprite || SCIENTIST_SPRITE} size={64} animate />
+          <div
+            className={`flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border ${visibleTeam[selectedMember].name === "???" ? "animate-pulse blur-[1px] rotate-1 hue-rotate-180" : ""}`}
+          >
+            <PixelSprite
+              sprite={visibleTeam[selectedMember].sprite || SCIENTIST_SPRITE}
+              size={64}
+              animate
+            />
             <div className="flex-1 space-y-3">
-              <ProgressBar value={visibleTeam[selectedMember].hp} max={visibleTeam[selectedMember].maxHp || 1} label={visibleTeam[selectedMember].name === "???" ? "E R R OR" : "SANTÉ"} />
-              <ProgressBar value={visibleTeam[selectedMember].level} max={100} label={visibleTeam[selectedMember].name === "???" ? "L V L" : "EXPÉRIENCE"} color="bg-gba-blue" />
+              <ProgressBar
+                value={visibleTeam[selectedMember].hp}
+                max={visibleTeam[selectedMember].maxHp || 1}
+                label={
+                  visibleTeam[selectedMember].name === "???"
+                    ? "E R R OR"
+                    : "SANTÉ"
+                }
+              />
+              <ProgressBar
+                value={visibleTeam[selectedMember].level}
+                max={100}
+                label={
+                  visibleTeam[selectedMember].name === "???"
+                    ? "L V L"
+                    : "EXPÉRIENCE"
+                }
+                color="bg-gba-blue"
+              />
             </div>
           </div>
+
+          {visibleTeam[selectedMember].title === "Porygon Echo" && (
+            <div className="mb-4 bg-gba-bg p-3 pixel-border text-[7px] leading-[14px] text-gba-text">
+              {hasArchivePortal
+                ? `SYNC ARCHIVE: ${porygonSyncCount}/4 impulsions. Continuez a cliquer pour ouvrir directement l'archive.`
+                : "Porygon Echo trouve encore une archive fermee quelque part dans le systeme."}
+            </div>
+          )}
 
           <div className="flex gap-2 justify-end">
             <Button variant="secondary" onClick={() => setSelectedMember(null)}>

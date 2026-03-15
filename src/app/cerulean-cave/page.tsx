@@ -49,6 +49,9 @@ export default function CeruleanCave() {
     const [redDefeated, setRedDefeated] = useState(() => typeof window !== "undefined" && localStorage.getItem("sylphe_red_defeated") === "true");
     const hasAccess = typeof window === "undefined" ? null : hasCompletedCeruleanPrerequisites();
     const hasPrototype151 = typeof window !== "undefined" && localStorage.getItem("sylphe_prototype_151") === "true";
+    const hasWhiteRoomHint =
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_white_room_hint") === "true";
 
     const npcs: CustomNPC[] = [
         {
@@ -80,13 +83,36 @@ export default function CeruleanCave() {
         } else if (tile === CERULEAN_WATER) {
             setDialog(hasPrototype151 ? "L'eau glaciale reflete des fragments du sujet 151 et des tentatives de clonage abandonnees." : "L'eau est glaciale et profonde.");
         } else if (tile === CERULEAN_STAIRS) {
-            setDialog("Ces escaliers semblent mener encore plus profondément... ou vers une sortie secrète.");
+            setDialog(
+              hasWhiteRoomHint
+                ? "Les escaliers vibrent a contretemps. Quelque chose persiste sous les marches, hors du plan initial de la grotte."
+                : "Ces escaliers semblent mener encore plus profondément... ou vers une sortie secrète.",
+            );
         } else if (x === 4 && y === 13) {
             setDialog("Des traces de pas anciennes s'arretent net. Quelqu'un a abandonne la grotte juste avant le sanctuaire final.");
         }
     };
 
     const handlePlayerMove = (x: number, y: number) => {
+        if (x === 18 && y === 1) {
+          if (!redDefeated) {
+            setDialog(
+              "L'aura de RED verrouille encore le passage derriere l'escalier.",
+            );
+            return;
+          }
+          if (!hasWhiteRoomHint) {
+            setDialog(
+              "Les marches grincent, mais aucun passage lisible n'apparait encore.",
+            );
+            return;
+          }
+
+          setGameFlag("sylphe_beneath_stairs_unlocked");
+          router.push("/beneath-stairs");
+          return;
+        }
+
         if (y >= MAP_H - 1) {
             router.push("/");
         }

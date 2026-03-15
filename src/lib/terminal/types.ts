@@ -27,5 +27,6 @@ export interface Command {
   name: string;
   description: string;
   usage?: string;
+  hidden?: boolean;
   execute: (args: string[], ctx: CommandContext) => void | Promise<void>;
 }

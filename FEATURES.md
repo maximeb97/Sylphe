@@ -38,7 +38,7 @@
 - [ ] Ajouter une mécanique de météo secrète: pluie acide Team Rocket, aurore cybernétique, brouillard spectral si le Scope est actif.
 - [ ] Ajouter un faux Pokédex interne Sylphe avec fiches truquées pour Mew, Mewtwo et le Prototype 151.
 - [ ] Cacher un easter egg audio: si l'utilisateur ouvre /pokeball puis /mew-cloning-chamber-042 en moins de 15 secondes, un cri inversé de Mew joue et débloque une note de labo.
-- [ ] Ajouter une salle blanche finale derrière les escaliers de /cerulean-cave pour confronter l'archive 151 elle-même.
+- [x] Ajouter une salle blanche finale derrière les escaliers de /cerulean-cave pour confronter l'archive 151 elle-même.
 - [x] Faire en sorte que le personnage soit aussi controllable avec les touche de la gameboy
 - [x] Tous les pokémons capturés doivent apparaitrent dans la "Team"
 - [x] La map pokeball doit contenir tous les pokémons capturés.
@@ -51,15 +51,25 @@
 
 ## Prochaines étapes (Phase 7):
 
-- [ ] Faire en sorte que `archive-debug` ouvre aussi des logs cachés dans le terminal avec chronologie complète du Projet M.
-- [ ] Ajouter un combat factice contre une "Archive Rouge" dans /hall-of-fame si le joueur tente de corrompre les archives.
-- [ ] Connecter la page Team au Hall of Fame: cliquer plusieurs fois sur Porygon Echo pourrait ouvrir directement l'archive.
-- [ ] Ajouter une variante de la Pokeball intérieure quand Mew, Mewtwo et Porygon sont présents ensemble: la pièce devient une mini biosphère triangulée.
-- [ ] Cacher un faux bug visuel dans le Hall of Fame qui révèle en réalité un indice pour la future salle blanche finale.
-- [ ] Ajouter une commande terminal secrète de diagnostic (`containment`) qui résume les anomalies encore non résolues.
-- [ ] Les commandes utilitaires cachées ne doivent pas être listées directement dans le "help" du terminal. Elles doivent être trouvées en explorant le site, elles devront être données via des indices variés/subtiles.
-- [ ] Ajoute plusieurs évennements qui se déclenchent de façon aléatoire sous certaines conditions, il faut plusieurs niveau de rareté mais ces évennements ne doivent pas bloquer d'autres élements du lore.
+- [x] Faire en sorte que `archive-debug` ouvre aussi des logs cachés dans le terminal avec chronologie complète du Projet M.
+- [x] Ajouter un combat factice contre une "Archive Rouge" dans /hall-of-fame si le joueur tente de corrompre les archives.
+- [x] Connecter la page Team au Hall of Fame: cliquer plusieurs fois sur Porygon Echo pourrait ouvrir directement l'archive.
+- [x] Ajouter une variante de la Pokeball intérieure quand Mew, Mewtwo et Porygon sont présents ensemble: la pièce devient une mini biosphère triangulée.
+- [x] Cacher un faux bug visuel dans le Hall of Fame qui révèle en réalité un indice pour la future salle blanche finale.
+- [x] Ajouter une commande terminal secrète de diagnostic (`containment`) qui résume les anomalies encore non résolues.
+- [x] Les commandes utilitaires cachées ne doivent pas être listées directement dans le "help" du terminal. Elles doivent être trouvées en explorant le site, elles devront être données via des indices variés/subtiles.
+- [x] Ajoute plusieurs évennements qui se déclenchent de façon aléatoire sous certaines conditions, il faut plusieurs niveau de rareté mais ces évennements ne doivent pas bloquer d'autres élements du lore.
 - [ ] Ajoute une nouvelle quête de lore complète, sans lien avec les autres (ou avec peu de liens).
+- [x] Route white-room
+- [x] Route beneath_stairs
+
+## Propositions pour la suite:
+
+- Quete "Musee Null": une aile de visite corporate immaculee qui s'effondre si l'on scanne trop de faux artefacts avec le Scope.
+- Quete "Lavender Mirror": une route annexe pseudo-funeraire avec des profils employes effaces qui reagissent selon les captures deja faites.
+- Easter egg terminal `checksum`: une commande pseudo-technique qui compare 150 et 151 et devoile des divergences de lore selon la progression.
+- Evenement rare "Blackout Sylphe": pendant quelques secondes, toute l'interface coupe sauf les entites deja liberees dans la Pokeball.
+- Mini-boss "Archiviste Porygon-Z": issue d'une mauvaise defragmentation de Glitch City, a utiliser pour une quete plus autonome.
 
 ## Idées de lore additionnel:
 

@@ -8,6 +8,10 @@ import { registerAllCommands } from "@/lib/terminal/commands";
 
 let commandsRegistered = false;
 
+function getVisibleCommands() {
+  return getAllCommands().filter(command => !command.hidden);
+}
+
 export default function useTerminal() {
   const [lines, setLines] = useState<TerminalLine[]>([]);
   const [cwd, setCwd] = useState("/home/user");
@@ -134,7 +138,7 @@ export default function useTerminal() {
       if (parts.length <= 1) {
         // Complete command name
         const partial = parts[0] || "";
-        const allCmds = getAllCommands();
+        const allCmds = getVisibleCommands();
         const matches = allCmds.filter((c) => c.name.startsWith(partial));
         if (matches.length === 1) return matches[0].name + " ";
         if (matches.length > 1) {
