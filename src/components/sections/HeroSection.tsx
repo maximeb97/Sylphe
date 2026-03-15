@@ -43,10 +43,6 @@ export default function HeroSection({
       setHasMasterball(localStorage.getItem("sylphe_masterball_unlocked") === "true");
       setIsRich(localStorage.getItem("sylphe_rich") === "true");
       setHasPrototype151(localStorage.getItem("sylphe_prototype_151") === "true");
-
-      if (localStorage.getItem("sylphe_night_mode") === "true") {
-        document.body.classList.add("night-mode");
-      }
     };
     checkEggs();
     window.addEventListener("storage", checkEggs);
@@ -77,13 +73,11 @@ export default function HeroSection({
     const newClicks = nightModeClicks + 1;
     setNightModeClicks(newClicks);
     if (newClicks >= 5) {
-      const isNight = localStorage.getItem("sylphe_night_mode") === "true";
+      const isNight = document.body.classList.contains("night-mode");
       if (isNight) {
-        localStorage.setItem("sylphe_night_mode", "false");
         document.body.classList.remove("night-mode");
         handleShowDialog("Le soleil se lève sur Jadielle !");
       } else {
-        localStorage.setItem("sylphe_night_mode", "true");
         document.body.classList.add("night-mode");
         handleShowDialog("La nuit tombe soudainement. Bonne nuit zZz...");
       }

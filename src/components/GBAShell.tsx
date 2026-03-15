@@ -40,6 +40,13 @@ export default function GBAShell({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [overlay]);
 
+  const dispatchVirtualInput = (
+    key: "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight",
+  ) => {
+    if (overlay) return;
+    window.dispatchEvent(new KeyboardEvent("keydown", { key }));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8 bg-[#1a1a2e]">
       {/* GBA Device outer shell */}
@@ -60,7 +67,9 @@ export default function GBAShell({
           <div className="absolute top-3 left-8 flex items-center gap-2">
             <div
               className={`w-[8px] h-[8px] rounded-full transition-colors duration-500 ${
-                powered ? "bg-[#88f058] shadow-[0_0_8px_#88f058]" : "bg-[#404040]"
+                powered
+                  ? "bg-[#88f058] shadow-[0_0_8px_#88f058]"
+                  : "bg-[#404040]"
               }`}
             />
             <span className="text-[6px] text-[#8888aa] uppercase tracking-wider">
@@ -82,10 +91,11 @@ export default function GBAShell({
               }}
             >
               {/* Overlay (terminal) replaces visible content */}
-              {overlay && (
-                <div className="relative z-[60]">{overlay}</div>
-              )}
-              <StartMenu isOpen={startMenuOpen && !overlay} onClose={() => setStartMenuOpen(false)} />
+              {overlay && <div className="relative z-[60]">{overlay}</div>}
+              <StartMenu
+                isOpen={startMenuOpen && !overlay}
+                onClose={() => setStartMenuOpen(false)}
+              />
               <div style={{ display: overlay ? "none" : undefined }}>
                 {children}
               </div>
@@ -98,10 +108,34 @@ export default function GBAShell({
           <div className="flex items-center justify-between">
             {/* D-Pad */}
             <div className="relative w-[72px] h-[72px]">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-t-sm border border-[#222] active:bg-[#3a3a4a] transition-colors" />
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-b-sm border border-[#222] active:bg-[#3a3a4a] transition-colors" />
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-l-sm border border-[#222] active:bg-[#3a3a4a] transition-colors" />
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-r-sm border border-[#222] active:bg-[#3a3a4a] transition-colors" />
+              <button
+                type="button"
+                aria-label="Move up"
+                disabled={Boolean(overlay)}
+                onClick={() => dispatchVirtualInput("ArrowUp")}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-t-sm border border-[#222] active:bg-[#3a3a4a] transition-colors disabled:opacity-50"
+              />
+              <button
+                type="button"
+                aria-label="Move down"
+                disabled={Boolean(overlay)}
+                onClick={() => dispatchVirtualInput("ArrowDown")}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-b-sm border border-[#222] active:bg-[#3a3a4a] transition-colors disabled:opacity-50"
+              />
+              <button
+                type="button"
+                aria-label="Move left"
+                disabled={Boolean(overlay)}
+                onClick={() => dispatchVirtualInput("ArrowLeft")}
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-l-sm border border-[#222] active:bg-[#3a3a4a] transition-colors disabled:opacity-50"
+              />
+              <button
+                type="button"
+                aria-label="Move right"
+                disabled={Boolean(overlay)}
+                onClick={() => dispatchVirtualInput("ArrowRight")}
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-[#2a2a3a] rounded-r-sm border border-[#222] active:bg-[#3a3a4a] transition-colors disabled:opacity-50"
+              />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[24px] h-[24px] bg-[#2a2a3a] border border-[#222]" />
             </div>
 
@@ -116,12 +150,16 @@ export default function GBAShell({
             <div className="flex gap-3 -rotate-[25deg]">
               <div className="flex flex-col items-center gap-1">
                 <div className="w-[32px] h-[32px] rounded-full bg-[#8858a8] border-2 border-[#6a4088] shadow-[inset_0_2px_0_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center active:shadow-[inset_0_1px_3px_rgba(0,0,0,0.3)] active:translate-y-[1px] transition-all">
-                  <span className="text-[8px] text-white font-bold rotate-[25deg]">B</span>
+                  <span className="text-[8px] text-white font-bold rotate-[25deg]">
+                    B
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1 -mt-3">
                 <div className="w-[32px] h-[32px] rounded-full bg-[#8858a8] border-2 border-[#6a4088] shadow-[inset_0_2px_0_rgba(255,255,255,0.2),0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center active:shadow-[inset_0_1px_3px_rgba(0,0,0,0.3)] active:translate-y-[1px] transition-all">
-                  <span className="text-[8px] text-white font-bold rotate-[25deg]">A</span>
+                  <span className="text-[8px] text-white font-bold rotate-[25deg]">
+                    A
+                  </span>
                 </div>
               </div>
             </div>
@@ -131,14 +169,16 @@ export default function GBAShell({
           <div className="flex justify-center gap-4 mt-4">
             <div className="flex items-center gap-1">
               <div className="w-[28px] h-[10px] bg-[#3a3a5a] rounded-full border border-[#2a2a4a] active:bg-[#4a4a6a] transition-colors" />
-              <span className="text-[5px] text-[#6a6a8a] uppercase">Select</span>
+              <span className="text-[5px] text-[#6a6a8a] uppercase">
+                Select
+              </span>
             </div>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 aria-label="Open start menu"
                 disabled={Boolean(overlay)}
-                onClick={() => setStartMenuOpen((current) => !current)}
+                onClick={() => setStartMenuOpen(current => !current)}
                 className={`w-[28px] h-[10px] rounded-full border transition-colors ${overlay ? "bg-[#2b2b3b] border-[#252535] opacity-50 cursor-not-allowed" : "bg-[#3a3a5a] border-[#2a2a4a] hover:bg-[#4a4a6a] cursor-pointer-pixel"}`}
               />
               <span className="text-[5px] text-[#6a6a8a] uppercase">Start</span>
@@ -152,7 +192,10 @@ export default function GBAShell({
                 <div
                   key={i}
                   className="h-[2px] bg-[#3a3a5a] rounded-full"
-                  style={{ width: `${18 + i * 3}px`, marginLeft: `${(4 - i) * 1.5}px` }}
+                  style={{
+                    width: `${18 + i * 3}px`,
+                    marginLeft: `${(4 - i) * 1.5}px`,
+                  }}
                 />
               ))}
             </div>

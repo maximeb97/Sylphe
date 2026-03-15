@@ -10,6 +10,7 @@ import { CYBER_FLOOR, CYBER_WALL } from "@/components/tilemap/tiles";
 
 import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
+import { setGameFlag } from "@/lib/gameState";
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -37,6 +38,7 @@ export default function CyberSpace() {
         setForceComplete(false);
         if (npcId === "pory") {
             playPokemonCry(137);
+            setGameFlag("sylphe_porygon_echo");
             setDialog("Porygon: bzzz... FRAGMENT CODE: 7382... TRANSFERT VERS PROJET M...");
         }
         else if (tile === CYBER_WALL) setDialog("Alerte: Pare-feu Sylphe.net actif.");

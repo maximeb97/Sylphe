@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { isWalkableInside, isInteractiveTile, TILE_SIZE, DOOR, WATER, PC_DESK } from "./tiles";
+import { isWalkableInside, TILE_SIZE } from "./tiles";
 import { drawTile, drawSprite } from "./renderer";
 import { findPath, Point } from "./pathfinding";
 
@@ -25,7 +25,6 @@ export default function CustomMapCanvas({
   season = "Spring",
   onInteract,
   onPlayerMove,
-  onShowDialog,
 }: {
   className?: string;
   mapData: number[][];
@@ -36,11 +35,14 @@ export default function CustomMapCanvas({
   season?: "Winter" | "Spring" | "Summer" | "Autumn";
   onInteract?: (tile: number, x: number, y: number, npcId?: string) => void;
   onPlayerMove?: (x: number, y: number) => void;
-  onShowDialog?: (text: string) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [player, setPlayer] = useState({ x: initialPlayerX, y: initialPlayerY });
+  const [player, setPlayer] = useState({
+    x: initialPlayerX,
+    y: initialPlayerY,
+  });
   const playerRef = useRef(player);
+  const [liveNpcs, setLiveNpcs] = useState<CustomNPC[]>(npcs);
   const moveQueueRef = useRef<Point[]>([]);
   const [isMoving, setIsMoving] = useState(false);
   const [hoveredTile, setHoveredTile] = useState<Point | null>(null);
@@ -52,11 +54,16 @@ export default function CustomMapCanvas({
   const [noclipMode, setNoclipMode] = useState(false);
 
   useEffect(() => {
-    setPlayer({ x: initialPlayerX, y: initialPlayerY });
-  }, [initialPlayerX, initialPlayerY]);
+    const syncId = window.requestAnimationFrame(() => {
+      setLiveNpcs(npcs);
+    });
+
+    return () => window.cancelAnimationFrame(syncId);
+  }, [npcs]);
 
   useEffect(() => {
-    const checkBike = () => setBikeMode(localStorage.getItem("sylphe_bike") === "true");
+    const checkBike = () =>
+      setBikeMode(localStorage.getItem("sylphe_bike") === "true");
     checkBike();
     window.addEventListener("storage", checkBike);
 
@@ -69,7 +76,54 @@ export default function CustomMapCanvas({
     };
   }, []);
 
-  useEffect(() => { playerRef.current = player; }, [player]);
+  useEffect(() => {
+    playerRef.current = player;
+  }, [player]);
+
+  useEffect(() => {
+    if (npcs.every(npc => npc.type !== "wander")) return;
+
+    const intervalId = window.setInterval(() => {
+      setLiveNpcs(currentNpcs => {
+        const occupied = new Set(currentNpcs.map(npc => `${npc.x},${npc.y}`));
+        occupied.add(`${playerRef.current.x},${playerRef.current.y}`);
+
+        return currentNpcs.map(npc => {
+          if (npc.type !== "wander" || Math.random() < 0.35) return npc;
+
+          const candidates = [
+            { x: npc.x, y: npc.y },
+            { x: npc.x, y: npc.y - 1 },
+            { x: npc.x + 1, y: npc.y },
+            { x: npc.x, y: npc.y + 1 },
+            { x: npc.x - 1, y: npc.y },
+          ].filter(candidate => {
+            if (
+              candidate.y < 0 ||
+              candidate.y >= mapData.length ||
+              candidate.x < 0 ||
+              candidate.x >= mapData[0].length
+            )
+              return false;
+            if (!isWalkableInside(mapData[candidate.y][candidate.x]))
+              return false;
+            const key = `${candidate.x},${candidate.y}`;
+            return key === `${npc.x},${npc.y}` || !occupied.has(key);
+          });
+
+          if (candidates.length <= 1) return npc;
+
+          const next =
+            candidates[Math.floor(Math.random() * candidates.length)];
+          occupied.delete(`${npc.x},${npc.y}`);
+          occupied.add(`${next.x},${next.y}`);
+          return { ...npc, x: next.x, y: next.y };
+        });
+      });
+    }, 900);
+
+    return () => window.clearInterval(intervalId);
+  }, [mapData, npcs]);
 
   // ── Helpers ────────────────────────────────────────────────
   const screenToTile = (clientX: number, clientY: number): Point | null => {
@@ -80,7 +134,7 @@ export default function CustomMapCanvas({
     const sy = canvas.height / rect.height;
     return {
       x: Math.floor(((clientX - rect.left) * sx) / TILE),
-      y: Math.floor(((clientY - rect.top) * sy) / TILE)
+      y: Math.floor(((clientY - rect.top) * sy) / TILE),
     };
   };
 
@@ -89,7 +143,10 @@ export default function CustomMapCanvas({
     if (!isMoving) return;
     const step = () => {
       const queue = moveQueueRef.current;
-      if (queue.length === 0) { setIsMoving(false); return; }
+      if (queue.length === 0) {
+        setIsMoving(false);
+        return;
+      }
 
       const next = queue[0];
       setPlayer({ x: next.x, y: next.y });
@@ -104,7 +161,12 @@ export default function CustomMapCanvas({
           cb();
         }
       } else {
-        animFrameRef.current = window.setTimeout(() => { step(); }, bikeMode ? 60 : 150);
+        animFrameRef.current = window.setTimeout(
+          () => {
+            step();
+          },
+          bikeMode ? 60 : 150,
+        );
       }
     };
     step();
@@ -139,11 +201,18 @@ export default function CustomMapCanvas({
       }
 
       // Player
-      drawSprite(ctx, playerSprite, playerRef.current.x * TILE, playerRef.current.y * TILE, 0);
+      drawSprite(
+        ctx,
+        playerSprite,
+        playerRef.current.x * TILE,
+        playerRef.current.y * TILE,
+        0,
+      );
 
       // NPCs
-      npcs.forEach(npc => {
-        const bob = npc.type === "wander" ? Math.sin(frame * 0.1 + npc.x) * 1 : 0;
+      liveNpcs.forEach(npc => {
+        const bob =
+          npc.type === "wander" ? Math.sin(frame * 0.1 + npc.x) * 1 : 0;
         drawSprite(ctx, npc.sprite, npc.x * TILE, npc.y * TILE, bob);
       });
 
@@ -152,12 +221,16 @@ export default function CustomMapCanvas({
 
     render();
     return () => cancelAnimationFrame(animFrameRef.current);
-  }, [mapData, npcs, playerSprite, season]);
+  }, [liveNpcs, mapData, playerSprite, season]);
 
   // ── Keyboard controls ─────────────────────────────────────
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") return;
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      )
+        return;
       if (!mapData || mapData.length === 0) return;
 
       let { x, y } = playerRef.current;
@@ -167,9 +240,10 @@ export default function CustomMapCanvas({
       else if (e.key === "ArrowRight" || e.key === "d") x += 1;
       else return;
 
-      if (y < 0 || y >= mapData.length || x < 0 || x >= mapData[0].length) return;
+      if (y < 0 || y >= mapData.length || x < 0 || x >= mapData[0].length)
+        return;
 
-      const targetNpc = npcs.find(npc => npc.x === x && npc.y === y);
+      const targetNpc = liveNpcs.find(npc => npc.x === x && npc.y === y);
       if (targetNpc) {
         if (onInteract) onInteract(-1, x, y, targetNpc.id);
         return;
@@ -188,35 +262,59 @@ export default function CustomMapCanvas({
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [mapData, npcs, onInteract, noclipMode, onPlayerMove]);
+  }, [liveNpcs, mapData, onInteract, noclipMode, onPlayerMove]);
 
   // ── Click handler ─────────────────────────────────────────
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const pt = screenToTile(e.clientX, e.clientY);
     if (!pt || !mapData || mapData.length === 0) return;
-    if (pt.y < 0 || pt.y >= mapData.length || pt.x < 0 || pt.x >= mapData[0].length) return;
+    if (
+      pt.y < 0 ||
+      pt.y >= mapData.length ||
+      pt.x < 0 ||
+      pt.x >= mapData[0].length
+    )
+      return;
 
-    const clickedNpc = npcs.find(npc => npc.x === pt.x && npc.y === pt.y);
+    const clickedNpc = liveNpcs.find(npc => npc.x === pt.x && npc.y === pt.y);
 
     const tile = mapData[pt.y][pt.x];
     if (clickedNpc || !isWalkableInside(tile)) {
       if (!noclipMode) {
-        if (Math.abs(playerRef.current.x - pt.x) <= 1 && Math.abs(playerRef.current.y - pt.y) <= 1) {
+        if (
+          Math.abs(playerRef.current.x - pt.x) <= 1 &&
+          Math.abs(playerRef.current.y - pt.y) <= 1
+        ) {
           if (onInteract) onInteract(tile, pt.x, pt.y, clickedNpc?.id);
           return;
         }
 
         // walk to adjacent then interact
         const adj = [
-          { x: pt.x, y: pt.y + 1 }, { x: pt.x - 1, y: pt.y },
-          { x: pt.x + 1, y: pt.y }, { x: pt.x, y: pt.y - 1 }
-        ].find(a => a.y >= 0 && a.y < mapData.length && a.x >= 0 && a.x < mapData[0].length && isWalkableInside(mapData[a.y][a.x]));
+          { x: pt.x, y: pt.y + 1 },
+          { x: pt.x - 1, y: pt.y },
+          { x: pt.x + 1, y: pt.y },
+          { x: pt.x, y: pt.y - 1 },
+        ].find(
+          a =>
+            a.y >= 0 &&
+            a.y < mapData.length &&
+            a.x >= 0 &&
+            a.x < mapData[0].length &&
+            isWalkableInside(mapData[a.y][a.x]),
+        );
 
         if (adj) {
-          const path = findPath({ x: playerRef.current.x, y: playerRef.current.y }, adj, mapData, "INSIDE");
+          const path = findPath(
+            { x: playerRef.current.x, y: playerRef.current.y },
+            adj,
+            mapData,
+            "INSIDE",
+          );
           if (path.length > 0) {
             moveQueueRef.current = path;
-            pendingInteractionRef.current = () => onInteract && onInteract(tile, pt.x, pt.y, clickedNpc?.id);
+            pendingInteractionRef.current = () =>
+              onInteract && onInteract(tile, pt.x, pt.y, clickedNpc?.id);
             setIsMoving(true);
           }
         }
@@ -226,12 +324,18 @@ export default function CustomMapCanvas({
 
     const path = noclipMode
       ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, pt)
-      : findPath({ x: playerRef.current.x, y: playerRef.current.y }, pt, mapData, "INSIDE");
+      : findPath(
+          { x: playerRef.current.x, y: playerRef.current.y },
+          pt,
+          mapData,
+          "INSIDE",
+        );
 
     if (path.length > 0) {
       moveQueueRef.current = path;
       if (clickedNpc || (!isWalkableInside(tile) && noclipMode)) {
-        pendingInteractionRef.current = () => onInteract && onInteract(tile, pt.x, pt.y, clickedNpc?.id);
+        pendingInteractionRef.current = () =>
+          onInteract && onInteract(tile, pt.x, pt.y, clickedNpc?.id);
       }
       setIsMoving(true);
     }
@@ -257,8 +361,16 @@ export default function CustomMapCanvas({
 
   const cursorClass = (() => {
     if (!hoveredTile || !mapData || mapData.length === 0) return "cursor-pixel";
-    if (hoveredTile.y < 0 || hoveredTile.y >= mapData.length || hoveredTile.x < 0 || hoveredTile.x >= mapData[0].length) return "cursor-pixel";
-    const npcHovered = npcs.some(npc => npc.x === hoveredTile.x && npc.y === hoveredTile.y);
+    if (
+      hoveredTile.y < 0 ||
+      hoveredTile.y >= mapData.length ||
+      hoveredTile.x < 0 ||
+      hoveredTile.x >= mapData[0].length
+    )
+      return "cursor-pixel";
+    const npcHovered = liveNpcs.some(
+      npc => npc.x === hoveredTile.x && npc.y === hoveredTile.y,
+    );
     if (npcHovered) return "cursor-pointer-pixel";
     // Check if tile is interactive
     const tile = mapData[hoveredTile.y][hoveredTile.x];

@@ -33,17 +33,41 @@
 
 ## Prochaines étapes (Phase 5):
 
-- [ ] Ajouter une route "/hall-of-fame" qui s'ouvre après RED et rejoue toute la progression sous forme d'archives corrompues.
+- [x] Ajouter une route "/hall-of-fame" qui s'ouvre après RED et rejoue toute la progression sous forme d'archives corrompues.
 - [ ] Créer un mini-jeu de terminal où Porygon défragmente les données de Glitch City pour révéler une nouvelle commande cachée.
 - [ ] Ajouter une mécanique de météo secrète: pluie acide Team Rocket, aurore cybernétique, brouillard spectral si le Scope est actif.
 - [ ] Ajouter un faux Pokédex interne Sylphe avec fiches truquées pour Mew, Mewtwo et le Prototype 151.
 - [ ] Cacher un easter egg audio: si l'utilisateur ouvre /pokeball puis /mew-cloning-chamber-042 en moins de 15 secondes, un cri inversé de Mew joue et débloque une note de labo.
 - [ ] Ajouter une salle blanche finale derrière les escaliers de /cerulean-cave pour confronter l'archive 151 elle-même.
-- [ ] Faire en sorte que le personnage soit aussi controllable avec les touche de la gameboy
-- [ ] Tous les pokémons capturés doivent apparaitrent dans la "Team"
+- [x] Faire en sorte que le personnage soit aussi controllable avec les touche de la gameboy
+- [x] Tous les pokémons capturés doivent apparaitrent dans la "Team"
+- [x] La map pokeball doit contenir tous les pokémons capturés.
+- [x] Les pokémons dans la map pokeball peuvent se déplacer librement par eux-mêmes
+
+## Prochaines étapes (Phase 6):
+
+- [x] Débloquer un mode "Archive Debug" si l'utilisateur possède RED + Prototype 151 + toutes les maps visitées.
+- [x] Ajouter une présence rare de Porygon dans la Pokeball si le joueur passe par /cyberspace juste avant.
+
+## Prochaines étapes (Phase 7):
+
+- [ ] Faire en sorte que `archive-debug` ouvre aussi des logs cachés dans le terminal avec chronologie complète du Projet M.
+- [ ] Ajouter un combat factice contre une "Archive Rouge" dans /hall-of-fame si le joueur tente de corrompre les archives.
+- [ ] Connecter la page Team au Hall of Fame: cliquer plusieurs fois sur Porygon Echo pourrait ouvrir directement l'archive.
+- [ ] Ajouter une variante de la Pokeball intérieure quand Mew, Mewtwo et Porygon sont présents ensemble: la pièce devient une mini biosphère triangulée.
+- [ ] Cacher un faux bug visuel dans le Hall of Fame qui révèle en réalité un indice pour la future salle blanche finale.
+- [ ] Ajouter une commande terminal secrète de diagnostic (`containment`) qui résume les anomalies encore non résolues.
+- [ ] Les commandes utilitaires cachées ne doivent pas être listées directement dans le "help" du terminal. Elles doivent être trouvées en explorant le site, elles devront être données via des indices variés/subtiles.
+- [ ] Ajoute plusieurs évennements qui se déclenchent de façon aléatoire sous certaines conditions, il faut plusieurs niveau de rareté mais ces évennements ne doivent pas bloquer d'autres élements du lore.
+- [ ] Ajoute une nouvelle quête de lore complète, sans lien avec les autres (ou avec peu de liens).
 
 ## Idées de lore additionnel:
 
 - Le mot de passe `pr0t0type_151` n'est pas juste un code de sauvegarde: c'est une clef memoire qui reveille l'empreinte du sujet originel cache dans la Masterball.
 - RED n'est pas seulement le boss final: il surveille le point ou la recherche Sylphe bascule d'une simple capture vers la recreation du vivant.
 - La Pokeball blanche agit comme une chambre d'echo mentale: plus le joueur accumule de secrets, plus elle cesse d'etre vide.
+- Mewtwo ne reste pas enferme par contrainte: il choisit peu a peu de revenir dans la Pokeball blanche pour observer l'empreinte du sujet 151.
+- La Team visible sur le site n'est pas un simple trombinoscope: c'est une projection du roster reel du système Sylphe.
+- Les boutons physiques de la console semblent maintenant conectés au monde virtuel, comme si la coque GBA était devenue une télécommande de confinement.
+- Le Hall of Fame n'est pas un tableau d'honneur mais un registre de confinement classe, consultable seulement par les operateurs qui ont vu trop de choses.
+- Porygon ne rejoint jamais vraiment l'equipe: il traverse les couches du système comme un paquet reseau devenu vivant.

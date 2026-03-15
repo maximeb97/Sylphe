@@ -11,6 +11,19 @@ export type MapDefinition = {
 };
 
 const VISITED_MAPS_KEY = "sylphe_visited_maps";
+const LAST_ROUTE_KEY = "sylphe_last_route";
+const LAST_ROUTE_AT_KEY = "sylphe_last_route_at";
+
+const CORE_ROUTE_PATHS = [
+  "/",
+  "/rocket-hq",
+  "/giovanni-office",
+  "/cyberspace",
+  "/glitch-city",
+  "/mew-cloning-chamber-042",
+  "/pokeball",
+  "/cerulean-cave",
+];
 
 export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
   {
@@ -34,6 +47,18 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
     detail: "Memoire residuelle d'un sujet originel jamais catalogue.",
   },
   {
+    key: "sylphe_archive_debug",
+    name: "MODE ARCHIVE DEBUG",
+    detail:
+      "Console de supervision activee au plus profond des archives Sylphe.",
+  },
+  {
+    key: "sylphe_porygon_echo",
+    name: "PORYGON ECHO",
+    detail:
+      "Fragment numerique detourne depuis le noeud 42 jusque dans la Masterball blanche.",
+  },
+  {
     key: "sylphe_mewtwo_captured",
     name: "MEWTWO (CAPTURED)",
     detail: "Clone #150 stabilise a l'interieur d'une Masterball.",
@@ -53,12 +78,37 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
 export const MAP_DEFINITIONS: MapDefinition[] = [
   { href: "/", name: "ACCUEIL" },
   { href: "/rocket-hq", name: "ROCKET-HQ", unlockKey: "sylphe_rocket_mode" },
-  { href: "/giovanni-office", name: "BUREAU GIOVANNI", unlockKey: "sylphe_giovanni_unlocked" },
+  {
+    href: "/giovanni-office",
+    name: "BUREAU GIOVANNI",
+    unlockKey: "sylphe_giovanni_unlocked",
+  },
   { href: "/cyberspace", name: "CYBERSPACE" },
-  { href: "/glitch-city", name: "GLITCH CITY", unlockKey: "sylphe_missingno_unlocked" },
-  { href: "/mew-cloning-chamber-042", name: "CHAMBRE 042", unlockKey: "sylphe_mew_unlocked" },
-  { href: "/pokeball", name: "MASTERBALL INTERIEURE", unlockKey: "sylphe_masterball_unlocked" },
-  { href: "/cerulean-cave", name: "GROTTE AZUREE", unlockKey: "sylphe_mewtwo_captured" },
+  {
+    href: "/glitch-city",
+    name: "GLITCH CITY",
+    unlockKey: "sylphe_missingno_unlocked",
+  },
+  {
+    href: "/mew-cloning-chamber-042",
+    name: "CHAMBRE 042",
+    unlockKey: "sylphe_mew_unlocked",
+  },
+  {
+    href: "/pokeball",
+    name: "MASTERBALL INTERIEURE",
+    unlockKey: "sylphe_masterball_unlocked",
+  },
+  {
+    href: "/cerulean-cave",
+    name: "GROTTE AZUREE",
+    unlockKey: "sylphe_mewtwo_captured",
+  },
+  {
+    href: "/hall-of-fame",
+    name: "HALL OF FAME",
+    unlockKey: "sylphe_hall_of_fame",
+  },
 ];
 
 function readVisitedMaps(): string[] {
@@ -69,7 +119,9 @@ function readVisitedMaps(): string[] {
     if (!raw) return [];
 
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((entry) => typeof entry === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter(entry => typeof entry === "string")
+      : [];
   } catch {
     return [];
   }
@@ -92,22 +144,45 @@ export function markMapVisited(pathname: string) {
   const normalizedPath = pathname || "/";
   const current = readVisitedMaps();
 
+  localStorage.setItem(LAST_ROUTE_KEY, normalizedPath);
+  localStorage.setItem(LAST_ROUTE_AT_KEY, Date.now().toString());
+
   if (current.includes(normalizedPath)) return;
 
-  localStorage.setItem(VISITED_MAPS_KEY, JSON.stringify([...current, normalizedPath]));
+  localStorage.setItem(
+    VISITED_MAPS_KEY,
+    JSON.stringify([...current, normalizedPath]),
+  );
   emitGameStateChange();
+}
+
+export function getLastVisitedRoute(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(LAST_ROUTE_KEY);
+}
+
+export function hasRecentCyberVisit(maxAgeMs: number = 120000): boolean {
+  if (typeof window === "undefined") return false;
+
+  const lastRoute = localStorage.getItem(LAST_ROUTE_KEY);
+  const lastRouteAt = Number(localStorage.getItem(LAST_ROUTE_AT_KEY) || "0");
+  if (lastRoute !== "/cyberspace" || !lastRouteAt) return false;
+
+  return Date.now() - lastRouteAt <= maxAgeMs;
 }
 
 export function getUnlockedInventoryItems(): InventoryItemDefinition[] {
   if (typeof window === "undefined") return [];
-  return INVENTORY_ITEMS.filter((item) => localStorage.getItem(item.key) === "true");
+  return INVENTORY_ITEMS.filter(
+    item => localStorage.getItem(item.key) === "true",
+  );
 }
 
 export function getVisitedMaps(): MapDefinition[] {
   if (typeof window === "undefined") return [];
   const visited = new Set(readVisitedMaps());
 
-  return MAP_DEFINITIONS.filter((map) => {
+  return MAP_DEFINITIONS.filter(map => {
     if (!visited.has(map.href)) return false;
     if (!map.unlockKey) return true;
     return localStorage.getItem(map.unlockKey) === "true";
@@ -129,5 +204,29 @@ export function hasCompletedCeruleanPrerequisites(): boolean {
     "sylphe_mewtwo_captured",
   ];
 
-  return requiredFlags.every((flag) => localStorage.getItem(flag) === "true");
+  return requiredFlags.every(flag => localStorage.getItem(flag) === "true");
+}
+
+export function hasVisitedEveryCoreRoute(): boolean {
+  if (typeof window === "undefined") return false;
+  const visited = new Set(readVisitedMaps());
+  return CORE_ROUTE_PATHS.every(route => visited.has(route));
+}
+
+export function canUnlockArchiveDebug(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const requiredFlags = [
+    "sylphe_red_defeated",
+    "sylphe_system_pass",
+    "sylphe_prototype_151",
+    "sylphe_masterball_unlocked",
+    "sylphe_mew_captured",
+    "sylphe_mewtwo_captured",
+  ];
+
+  return (
+    requiredFlags.every(flag => localStorage.getItem(flag) === "true") &&
+    hasVisitedEveryCoreRoute()
+  );
 }

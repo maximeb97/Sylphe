@@ -1,6 +1,11 @@
 import type { Command, CommandContext } from "../types";
 import { resolvePath, getNode } from "../fileSystem";
-import { getUnlockedInventoryItems, getVisitedMaps, setGameFlag } from "../../gameState";
+import {
+  canUnlockArchiveDebug,
+  getUnlockedInventoryItems,
+  getVisitedMaps,
+  setGameFlag,
+} from "../../gameState";
 
 export const hackCommand: Command = {
   name: "hack",
@@ -365,6 +370,49 @@ export const prototype151Command: Command = {
     ctx.addLine({ type: "system", content: "[ARCHIVE 151] La Masterball blanche repond a un sujet originel non catalogue." });
     ctx.addLine({ type: "output", content: "Une resonance s'installe dans les zones vides du systeme." });
     ctx.addLine({ type: "output", content: "Nouvel objet ajoute: ARCHIVE PROTOTYPE 151." });
+  },
+};
+
+export const archiveDebugCommand: Command = {
+  name: "archive-debug",
+  description: "Activer les archives profondes",
+  usage: "archive-debug",
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    if (!canUnlockArchiveDebug()) {
+      ctx.addLine({
+        type: "error",
+        content:
+          "Acces refuse: les archives profondes exigent RED, le PASS SYSTEME, l'archive 151 et l'ensemble des zones visitees.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Conseil: utilise `inventory` et `map` pour verifier l'etat du dossier.",
+      });
+      return;
+    }
+
+    setGameFlag("sylphe_archive_debug");
+    setGameFlag("sylphe_hall_of_fame");
+    ctx.addLine({
+      type: "system",
+      content: "[ARCHIVE DEBUG] Canaux historiques synchronises.",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "[ARCHIVE DEBUG] Hall of Fame monte sur /hall-of-fame.",
+    });
+    ctx.addLine({
+      type: "output",
+      content:
+        "Les archives completent le roster, l'inventaire et la cartographie en une seule memoire.",
+    });
+    ctx.addLine({ type: "output", content: "Chargement du Hall of Fame..." });
+    setTimeout(() => {
+      window.location.href = "/hall-of-fame";
+    }, 5000);
   },
 };
 

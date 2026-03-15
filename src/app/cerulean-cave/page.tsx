@@ -108,6 +108,9 @@ export default function CeruleanCave() {
         setIsBattleStarted(false);
         setDialog(hasPrototype151 ? "RED : ... ! (Il vous remet un PASS SYSTEME et confirme que le vrai boss n'etait pas 150, mais la memoire du sujet 151.)" : "RED : ... ! (Il vous remet un mystérieux PASS... L'accès au coeur du système est désormais possible.)");
         setGameFlag("sylphe_system_pass");
+        if (hasPrototype151) {
+          setGameFlag("sylphe_hall_of_fame");
+        }
     };
 
     if (hasAccess === null) return null;
