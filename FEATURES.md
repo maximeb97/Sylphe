@@ -34,10 +34,10 @@
 ## Prochaines étapes (Phase 5):
 
 - [x] Ajouter une route "/hall-of-fame" qui s'ouvre après RED et rejoue toute la progression sous forme d'archives corrompues.
-- [ ] Créer un mini-jeu de terminal où Porygon défragmente les données de Glitch City pour révéler une nouvelle commande cachée.
-- [ ] Ajouter une mécanique de météo secrète: pluie acide Team Rocket, aurore cybernétique, brouillard spectral si le Scope est actif.
-- [ ] Ajouter un faux Pokédex interne Sylphe avec fiches truquées pour Mew, Mewtwo et le Prototype 151.
-- [ ] Cacher un easter egg audio: si l'utilisateur ouvre /pokeball puis /mew-cloning-chamber-042 en moins de 15 secondes, un cri inversé de Mew joue et débloque une note de labo.
+- [x] Créer un mini-jeu de terminal où Porygon défragmente les données de Glitch City pour révéler une nouvelle commande cachée.
+- [x] Ajouter une mécanique de météo secrète: pluie acide Team Rocket, aurore cybernétique, brouillard spectral si le Scope est actif.
+- [x] Ajouter un faux Pokédex interne Sylphe avec fiches truquées pour Mew, Mewtwo et le Prototype 151.
+- [x] Cacher un easter egg audio: si l'utilisateur ouvre /pokeball puis /mew-cloning-chamber-042 en moins de 15 secondes, un cri inversé de Mew joue et débloque une note de labo.
 - [x] Ajouter une salle blanche finale derrière les escaliers de /cerulean-cave pour confronter l'archive 151 elle-même.
 - [x] Faire en sorte que le personnage soit aussi controllable avec les touche de la gameboy
 - [x] Tous les pokémons capturés doivent apparaitrent dans la "Team"
@@ -65,26 +65,41 @@
 
 ## Checklist suite:
 
-- [ ] Mini-jeu de defragmentation Porygon dans le terminal.
-- [ ] Systeme de meteo secrete partage entre plusieurs routes.
-- [ ] Faux Pokedex Sylphe avec fiches truquees et variantes selon la progression.
-- [ ] Easter egg audio entre `/pokeball` et `/mew-cloning-chamber-042`.
+- [x] Mini-jeu de defragmentation Porygon dans le terminal.
+- [x] Systeme de meteo secrete partage entre plusieurs routes.
+- [x] Faux Pokedex Sylphe avec fiches truquees et variantes selon la progression.
+- [x] Easter egg audio entre `/pokeball` et `/mew-cloning-chamber-042`.
 - [x] Quete "Lavender Mirror" comme seconde branche parallele au Musee Null.
-- [ ] Evenement rare global "Blackout Sylphe".
+- [x] Evenement rare global "Blackout Sylphe": pendant quelques secondes, toute l'interface coupe sauf les entites deja liberees dans la Pokeball..
 
-## Propositions pour la suite:
+## Idées de Nouvelles Features / Quêtes / Easter Eggs (Phase 8+)
 
-- Easter egg terminal `checksum`: une commande pseudo-technique qui compare 150 et 151 et devoile des divergences de lore selon la progression.
-- Evenement rare "Blackout Sylphe": pendant quelques secondes, toute l'interface coupe sauf les entites deja liberees dans la Pokeball.
-- Mini-boss "Archiviste Porygon-Z": issue d'une mauvaise defragmentation de Glitch City, a utiliser pour une quete plus autonome.
+Voici une vingtaine de propositions audacieuses tirant parti des technologies web pour créer du meta-gaming et de nouveaux secrets :
 
-## Idées de lore additionnel:
+### 1. Manipulation du Navigateur & Web APIs
+- [ ] **Quête de l'Hors-Ligne (Service Worker) :** Si l'utilisateur coupe physiquement sa connexion internet, le site est remplacé par une version corrompue (mise en cache) hébergée par MissingNo avec le message "L'abîme réseau est ma maison".
+- [ ] **Écholocalisation dans la Grotte Noire (Web Audio / Microphone API) :** Une route `/mt-moon-cavern` dans le noir absolu. Le joueur doit faire du bruit au micro de son PC. Le son génère des flashs lumineux circulaires qui éclairent la map une ou deux secondes (façon Nosferapti).
+- [ ] **Spectre en Réalité Augmentée (MediaStream API) :** Une page `/spectre-mirror` active la webcam, applique un filtre Gameboy (pixels verts), et affiche aléatoirement l'ombre d'un Ectoplasma ou de Spectrum derrière l'utilisateur sur le flux vidéo.
+- [ ] **Labyrinthe Gyroscopique (Device Orientation API) :** Sur mobile, une épreuve `/trick-house-maze` où incliner physiquement son téléphone fait rouler une Pokéball virtuelle pour éviter les dalles piégées de la Team Rocket.
+- [ ] **Fréquences Radio Cachées (Web Audio API) :** Ajout d'une "Radio Pokématos" interactive dans le header. Régler la fréquence sur 20.5 MHz fait jouer la "Pokéflûte" et réveille un Ronflex bloquant un module ; la fréquence 10.5 GHz (Lavanville) dévoile des dialogues chuchotés et invisibles à l'œil.
 
-- Le mot de passe `pr0t0type_151` n'est pas juste un code de sauvegarde: c'est une clef memoire qui reveille l'empreinte du sujet originel cache dans la Masterball.
-- RED n'est pas seulement le boss final: il surveille le point ou la recherche Sylphe bascule d'une simple capture vers la recreation du vivant.
-- La Pokeball blanche agit comme une chambre d'echo mentale: plus le joueur accumule de secrets, plus elle cesse d'etre vide.
-- Mewtwo ne reste pas enferme par contrainte: il choisit peu a peu de revenir dans la Pokeball blanche pour observer l'empreinte du sujet 151.
-- La Team visible sur le site n'est pas un simple trombinoscope: c'est une projection du roster reel du système Sylphe.
-- Les boutons physiques de la console semblent maintenant conectés au monde virtuel, comme si la coque GBA était devenue une télécommande de confinement.
-- Le Hall of Fame n'est pas un tableau d'honneur mais un registre de confinement classe, consultable seulement par les operateurs qui ont vu trop de choses.
-- Porygon ne rejoint jamais vraiment l'equipe: il traverse les couches du système comme un paquet reseau devenu vivant.
+### 2. Meta-Gaming & Interactions Inter-Navigateurs
+- [ ] **Synchronisation des Pods (Broadcast Channel API) :** Le joueur doit ouvrir deux onglets : l'un sur `/cloning-pod-a`, l'autre sur `/cloning-pod-b`, et déclencher une "Séquence de stabilisation ADN" sur les deux fenêtres en moins de 3 secondes pour réussir un mini-jeu.
+- [ ] **Le Boss de la Console DevTools :** Un combat secret accessible en ouvrant l'inspecteur (`F12`). Une entité "Glitch" vit dans la section `console.log`. Le joueur la bat en exécutant des appels manuels (ex: `window.sylphe.useMasterball()`).
+- [ ] **Piratage du LocalStorage :** Porygon laisse un indice: "La dernière clef n'est pas sur nos serveurs, mais chez vous". Le joueur doit aller dans le LocalStorage du navigateur et passer la variable `sylphe_root_access` de `false` à `true` et recharger la page.
+- [ ] **Secrets Cachés dans le CSS (Inspecteur DOM) :** Des mémos d'employés de Sylphe ou des bouts de mots de passe sont dissimulés sur la Home page avec `color: transparent` ou `display: none`. Ils nécessitent une inspection du code ou de surligner la page entière.
+- [ ] **Glisser-Déposer Inter-Fonctionnel :** Drag & drop d'un objet visuel (comme une plume spectrale) depuis la page `/museum-null` directement dans le bloc du Web Terminal sur une ligne de commande `analyze_sample`.
+
+### 3. Profondeur du Terminal & Faux OS
+- [ ] **Éditeur de Fichier VIM intégré :** Lancement de `nano /etc/sylphe/containment.conf` depuis le terminal qui ouvre une interface d'édition textuelle au clavier. Modifier `status=ON` en `OFF` coupe le courant du site et libère des anomalies temporelles.
+- [ ] **Commande PING et Paquets Réseau :** Une commande `ping mansion.cinnabar.gov` simulant une trace réseau. Elle renvoie au hasard des "paquets corrompus" qui sont en fait des chaines Base64 à décoder pour lire les notes du Dr Fuji.
+- [ ] **Simulation d'Intranet Corporate (Phishing) :** Créer un portail `/employee-login`. Pour se connecter, le joueur enquête sur un membre de la Team Rocket, trouve son Pokémon préféré, et en déduit son mot de passe pour lire ses emails compromettants.
+- [ ] **Chronologie Système (Date/Heure Système) :** Un easter egg qui ne se manifeste que si l'utilisateur change l'heure de son propre ordinateur pour la mettre exactement à Minuit : apparition de routes fantômes en haut de la page.
+
+### 4. Nouvelles Routes et Expériences Innovantes
+- [ ] **Le Système de Stockage de Bill (`/pc-bill`) :** Un bureau virtuel facon Windows 95 très daté. Dans la poubelle, on retrouve les brouillons des emails de "Léo/Bill" paniquant et expliquant comment il a accidentellement transféré son ADN dans une machine.
+- [ ] **Casino Clandestin (`/casino-game-corner`) :** Une machine à sous purement CSS/TS. Gagner débloque le mode "Porygon-Z" dans le Terminal. Mais jouer plus de 10 fois provoque une rançon numérique ("Team Rocket Ransomware") qui bloque temporairement certains menus.
+- [ ] **L'Easter Egg `robots.txt` et `humans.txt` :** Rendre le fichier `/humans.txt` accessible avec le message d'appel à l'aide d'un développeur enfermé au siège de la Team Rocket. Ajouter des règles absurdes au `/robots.txt` comme `User-agent: Pokedex-Crawler Disallow: /`.
+- [ ] **Le Bug de Scroll (Scroll Hijacking Glitch) :** Si l'utilisateur possède l'archive 151, une fois arrivé au footer, le scroll de la page "casse" et permet de descendre encore plus bas, dans le vide intersidéral d'une zone glitch noire, où de multiples MissingNos errent sur la molette de la souris.
+- [ ] **Faux Geofencing (Geolocation API) :** Le site demande la position géographique de l'utilisateur. S'il l'accepte en Europe, il affiche "Signal lointain". Si l'utilisateur s'amuse à *fausser* (spoof) sa position en DevTools pour l'établir à Tokyo (Kanto), il reçoit un passe pour le Train Magnétique caché.
+- [ ] **Notifications PUSH Fantômes :** Demander la permission de notification web. S'il est 3h du matin, envoyer une simple notification système qui dit : `"Sujet 150 : J'ai mal..."`, sans que l'utilisateur soit sur l'onglet actif du site.

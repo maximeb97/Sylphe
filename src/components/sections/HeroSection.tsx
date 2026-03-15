@@ -10,6 +10,7 @@ import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import useInView from "@/hooks/useInView";
 import useKonamiCode from "@/hooks/useKonamiCode";
 import { setGameFlag } from "@/lib/gameState";
+import WeatherOverlay from "@/components/WeatherOverlay";
 
 export default function HeroSection({
   onOpenTerminal,
@@ -101,20 +102,35 @@ export default function HeroSection({
   };
 
   return (
-    <section ref={ref} className={`relative tile-bg pixel-grid ${isRocketMode ? "bg-red-950" : "bg-gba-bg"}`}>
+    <section
+      ref={ref}
+      className={`relative tile-bg pixel-grid ${isRocketMode ? "bg-red-950" : "bg-gba-bg"}`}
+    >
+      {/* Weather system overlay */}
+      <WeatherOverlay />
+
       {/* Top bar - Location header */}
-      <div className={`${isRocketMode ? "bg-red-900 border-b-2 border-red-700 text-red-100" : "bg-gba-bg-darker text-gba-white"} text-[8px] px-4 py-2 flex justify-between items-center z-10 relative cursor-pointer select-none`} onClick={handleNightModeClick}>
+      <div
+        className={`${isRocketMode ? "bg-red-900 border-b-2 border-red-700 text-red-100" : "bg-gba-bg-darker text-gba-white"} text-[8px] px-4 py-2 flex justify-between items-center z-10 relative cursor-pointer select-none`}
+        onClick={handleNightModeClick}
+      >
         <span>📍 JADIELLE CITY</span>
         <div className="flex items-center gap-2">
           {isRich && <span className="text-yellow-400">♦ 999 999 ₽</span>}
-          {hasMasterball && <PixelSprite sprite={MASTERBALL_SPRITE} size={12} animate={false} />}
+          {hasMasterball && (
+            <PixelSprite sprite={MASTERBALL_SPRITE} size={12} animate={false} />
+          )}
           {hasPrototype151 && <span className="text-pink-300">PROTO_151</span>}
-          <span className="opacity-60">{isRocketMode ? "TEAM ROCKET HQ" : "SYLPHE CORP. HQ"}</span>
+          <span className="opacity-60">
+            {isRocketMode ? "TEAM ROCKET HQ" : "SYLPHE CORP. HQ"}
+          </span>
         </div>
       </div>
 
       {/* Tile Map */}
-      <div className={`relative transition-transform duration-[5000ms] ease-in-out ${isSpinning ? 'rotate-[3600deg]' : ''}`}>
+      <div
+        className={`relative transition-transform duration-[5000ms] ease-in-out ${isSpinning ? "rotate-[3600deg]" : ""}`}
+      >
         <TileMap
           className="opacity-90"
           onInteractPC={onOpenTerminal}
@@ -135,7 +151,11 @@ export default function HeroSection({
             pokemonName="Mew"
             pokemonSprite={MEW_SPRITE}
             accentClassName="from-[#fff2fb] via-[#f8c5df] to-[#a9d8ff]"
-            introText={hasPrototype151 ? "Le sujet 151 sauvage materialise une silhouette rose au-dessus de l'eau." : undefined}
+            introText={
+              hasPrototype151
+                ? "Le sujet 151 sauvage materialise une silhouette rose au-dessus de l'eau."
+                : undefined
+            }
             onComplete={handleCaptureComplete}
           />
         )}
@@ -143,10 +163,11 @@ export default function HeroSection({
         {/* Overlay dialog */}
         {dialogText !== null && (
           <div
-            className={`absolute bottom-0 left-0 right-0 p-3 transition-all duration-700 ${isVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-8 opacity-0"
-              }`}
+            className={`absolute bottom-0 left-0 right-0 p-3 transition-all duration-700 ${
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
+            }`}
           >
             <DialogBox
               isClickable={isTypewriterDone}

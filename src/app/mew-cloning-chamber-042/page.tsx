@@ -11,8 +11,17 @@ import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas
 import GBAShell from "@/components/GBAShell";
 import { NEUTRAL_NPC_SPRITE, MEWTWO_SPRITE, MEW_SPRITE } from "@/components/PixelSprite";
 import { IN_FLOOR, IN_WALL, VAT_BG, PC_DESK } from "@/components/tilemap/tiles";
-import { playPokemonCry } from "@/lib/audio";
+import { playPokemonCry, playReversedMewCry } from "@/lib/audio";
 import { setGameFlag } from "@/lib/gameState";
+import WeatherOverlay from "@/components/WeatherOverlay";
+
+function checkPokeballRushEasterEgg(): boolean {
+  if (typeof window === "undefined") return false;
+  const lastRoute = localStorage.getItem("sylphe_last_route");
+  const lastAt = Number(localStorage.getItem("sylphe_last_route_at") || "0");
+  if (lastRoute !== "/pokeball" || !lastAt) return false;
+  return Date.now() - lastAt <= 15000;
+}
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -38,6 +47,15 @@ export default function MewChamber() {
     const [isPasswordPrompt, setIsPasswordPrompt] = useState(() => typeof window !== "undefined" ? localStorage.getItem("sylphe_mew_unlocked") !== "true" : false);
     const [passwordInput, setPasswordInput] = useState("");
     const hasPrototype151 = typeof window !== "undefined" && localStorage.getItem("sylphe_prototype_151") === "true";
+    const [labNoteUnlocked] = useState(() => {
+      if (typeof window === "undefined") return false;
+      if (checkPokeballRushEasterEgg()) {
+        playReversedMewCry();
+        setGameFlag("sylphe_mew_reverse_cry");
+        return true;
+      }
+      return localStorage.getItem("sylphe_mew_reverse_cry") === "true";
+    });
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -133,59 +151,92 @@ export default function MewChamber() {
     }
 
     return (
-        <GBAShell>
-            <section className="relative tile-bg pixel-grid bg-[#0a110a] h-full shadow-[0_0_50px_rgba(0,255,100,0.1)]">
-                {/* Top bar */}
-                <div className="bg-[#051105] border-b-2 border-green-900 text-green-500 text-[8px] px-4 py-2 flex justify-between items-center z-10 relative select-none">
-                    <span>📍 CHAMBRE 042</span>
-                    <span className="opacity-60 animate-pulse">PROJET M</span>
-                </div>
+      <GBAShell>
+        <section className="relative tile-bg pixel-grid bg-[#0a110a] h-full shadow-[0_0_50px_rgba(0,255,100,0.1)]">
+          <WeatherOverlay />
+          {/* Top bar */}
+          <div className="bg-[#051105] border-b-2 border-green-900 text-green-500 text-[8px] px-4 py-2 flex justify-between items-center z-10 relative select-none">
+            <span>📍 CHAMBRE 042</span>
+            <span className="opacity-60 animate-pulse">PROJET M</span>
+          </div>
 
-                <div className="relative isolate h-full">
-                    {/* Glass Overlay over vats */}
-                    <div className="absolute inset-x-0 top-0 h-[40%] bg-green-500/10 mix-blend-color-dodge pointer-events-none z-10 border-b border-green-400/20" />
+          <div className="relative isolate h-full">
+            {/* Glass Overlay over vats */}
+            <div className="absolute inset-x-0 top-0 h-[40%] bg-green-500/10 mix-blend-color-dodge pointer-events-none z-10 border-b border-green-400/20" />
 
-                    <CustomMapCanvas
-                        mapData={MEW_MAP}
-                        playerSprite={NEUTRAL_NPC_SPRITE}
-                        initialPlayerX={10}
-                        initialPlayerY={10}
-                        npcs={npcs}
-                        onInteract={handleInteract}
-                        onPlayerMove={handlePlayerMove}
-                        className="w-full h-auto hue-rotate-90 saturate-50"
-                    />
+            {/* Lab Note unlocked by Pokeball rush easter egg */}
+            {labNoteUnlocked && (
+              <div
+                className="absolute top-12 right-2 z-30 max-w-[180px] border-2 border-green-800 bg-[#0a110a]/95 px-3 py-2 text-[6px] leading-[12px] text-green-400"
+                style={{ animation: "weather-fade 8s ease-in-out forwards" }}
+              >
+                <p className="font-bold text-green-300 mb-1">
+                  NOTE DE LABO — DR FUJI
+                </p>
+                <p>
+                  Le cri de Mew inverse revele une frequence subsonic. Le sujet
+                  151 a laisse une empreinte acoustique dans la cuve #42.
+                </p>
+                <p className="mt-1 text-green-600">
+                  Ce signal precede la creation du clone #150. La matrice
+                  vivante chantait avant d&apos;etre copiee.
+                </p>
+                <p className="mt-1 text-green-700 italic">
+                  Commande deverrouillee: `sylphedex`
+                </p>
+              </div>
+            )}
 
-                    {showBattleTransition && (
-                        <BattleTransition onComplete={() => setShowBattleTransition(false)} />
-                    )}
+            <CustomMapCanvas
+              mapData={MEW_MAP}
+              playerSprite={NEUTRAL_NPC_SPRITE}
+              initialPlayerX={10}
+              initialPlayerY={10}
+              npcs={npcs}
+              onInteract={handleInteract}
+              onPlayerMove={handlePlayerMove}
+              className="w-full h-auto hue-rotate-90 saturate-50"
+            />
 
-                    {captureTarget === "mewtwo" && !showBattleTransition && (
-                        <PokemonCaptureSequence
-                            pokemonName="Mewtwo"
-                            pokemonSprite={MEWTWO_SPRITE}
-                            accentClassName="from-[#f3f0ff] via-[#cab8ff] to-[#98c8ff]"
-                            introText={hasPrototype151 ? "Le clone #150 force l'ouverture d'une archive interdite avant de charger." : undefined}
-                            onComplete={handleCaptureComplete}
-                        />
-                    )}
+            {showBattleTransition && (
+              <BattleTransition
+                onComplete={() => setShowBattleTransition(false)}
+              />
+            )}
 
-                    {dialog && (
-                        <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-20">
-                            <DialogBox isClickable={isTypewriterDone} onClick={handleDialogClick}>
-                                <TypewriterText
-                                    key={dialog}
-                                    text={dialog}
-                                    speed={40}
-                                    forceComplete={forceComplete}
-                                    className="text-[8px] md:text-[9px] leading-[18px] text-gba-text block"
-                                    onComplete={() => setIsTypewriterDone(true)}
-                                />
-                            </DialogBox>
-                        </div>
-                    )}
-                </div>
-            </section>
-        </GBAShell>
+            {captureTarget === "mewtwo" && !showBattleTransition && (
+              <PokemonCaptureSequence
+                pokemonName="Mewtwo"
+                pokemonSprite={MEWTWO_SPRITE}
+                accentClassName="from-[#f3f0ff] via-[#cab8ff] to-[#98c8ff]"
+                introText={
+                  hasPrototype151
+                    ? "Le clone #150 force l'ouverture d'une archive interdite avant de charger."
+                    : undefined
+                }
+                onComplete={handleCaptureComplete}
+              />
+            )}
+
+            {dialog && (
+              <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-20">
+                <DialogBox
+                  isClickable={isTypewriterDone}
+                  onClick={handleDialogClick}
+                >
+                  <TypewriterText
+                    key={dialog}
+                    text={dialog}
+                    speed={40}
+                    forceComplete={forceComplete}
+                    className="text-[8px] md:text-[9px] leading-[18px] text-gba-text block"
+                    onComplete={() => setIsTypewriterDone(true)}
+                  />
+                </DialogBox>
+              </div>
+            )}
+          </div>
+        </section>
+      </GBAShell>
     );
 }

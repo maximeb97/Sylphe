@@ -10,6 +10,7 @@ import { NEUTRAL_NPC_SPRITE, RED_SPRITE } from "@/components/PixelSprite";
 import { CERULEAN_FLOOR, CERULEAN_WALL, CERULEAN_WATER, CERULEAN_STAIRS, IN_FLOOR } from "@/components/tilemap/tiles";
 import { useRouter } from "next/navigation";
 import { hasCompletedCeruleanPrerequisites, setGameFlag } from "@/lib/gameState";
+import WeatherOverlay from "@/components/WeatherOverlay";
 
 const MAP_H = 15;
 
@@ -199,45 +200,51 @@ export default function CeruleanCave() {
     }
 
     return (
-        <GBAShell>
-            <section className="relative tile-bg pixel-grid bg-[#2d2d2d] h-full shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]">
-                {/* Cave darkening overlay */}
-                <div className="absolute inset-0 bg-black/40 pointer-events-none z-10" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(147,197,253,0.18),transparent_25%),radial-gradient(circle_at_75%_30%,rgba(167,139,250,0.15),transparent_24%)] pointer-events-none z-10" />
+      <GBAShell>
+        <section className="relative tile-bg pixel-grid bg-[#2d2d2d] h-full shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]">
+          <WeatherOverlay />
+          {/* Cave darkening overlay */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(147,197,253,0.18),transparent_25%),radial-gradient(circle_at_75%_30%,rgba(167,139,250,0.15),transparent_24%)] pointer-events-none z-10" />
 
-                <div className="bg-[#1a1a1a] border-b-2 border-[#111] text-[#777] text-[8px] px-4 py-2 flex justify-between items-center z-20 relative select-none">
-                    <span>📍 GROTTE AZURÉE</span>
-                    <span className="opacity-60 animate-pulse">{hasPrototype151 ? "SANCTUAIRE 151" : "FONDE DU SYSTÈME"}</span>
-                </div>
+          <div className="bg-[#1a1a1a] border-b-2 border-[#111] text-[#777] text-[8px] px-4 py-2 flex justify-between items-center z-20 relative select-none">
+            <span>📍 GROTTE AZURÉE</span>
+            <span className="opacity-60 animate-pulse">
+              {hasPrototype151 ? "SANCTUAIRE 151" : "FONDE DU SYSTÈME"}
+            </span>
+          </div>
 
-                <div className="relative isolate h-full">
-                    <CustomMapCanvas
-                        mapData={CAV_MAP}
-                        playerSprite={NEUTRAL_NPC_SPRITE}
-                        initialPlayerX={10}
-                        initialPlayerY={13}
-                        npcs={npcs}
-                        onInteract={handleInteract}
-                        onPlayerMove={handlePlayerMove}
-                        className="w-full h-auto"
-                    />
+          <div className="relative isolate h-full">
+            <CustomMapCanvas
+              mapData={CAV_MAP}
+              playerSprite={NEUTRAL_NPC_SPRITE}
+              initialPlayerX={10}
+              initialPlayerY={13}
+              npcs={npcs}
+              onInteract={handleInteract}
+              onPlayerMove={handlePlayerMove}
+              className="w-full h-auto"
+            />
 
-                    {dialog && (
-                        <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-30">
-                            <DialogBox isClickable={isTypewriterDone} onClick={handleDialogClick}>
-                                <TypewriterText
-                                    key={dialog}
-                                    text={dialog}
-                                    speed={40}
-                                    forceComplete={forceComplete}
-                                    className="text-[8px] md:text-[9px] leading-[18px] text-gba-text block"
-                                    onComplete={() => setIsTypewriterDone(true)}
-                                />
-                            </DialogBox>
-                        </div>
-                    )}
-                </div>
-            </section>
-        </GBAShell>
+            {dialog && (
+              <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-30">
+                <DialogBox
+                  isClickable={isTypewriterDone}
+                  onClick={handleDialogClick}
+                >
+                  <TypewriterText
+                    key={dialog}
+                    text={dialog}
+                    speed={40}
+                    forceComplete={forceComplete}
+                    className="text-[8px] md:text-[9px] leading-[18px] text-gba-text block"
+                    onComplete={() => setIsTypewriterDone(true)}
+                  />
+                </DialogBox>
+              </div>
+            )}
+          </div>
+        </section>
+      </GBAShell>
     );
 }

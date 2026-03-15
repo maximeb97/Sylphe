@@ -39,6 +39,9 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - `containment`: affiche un diagnostic clandestin des anomalies encore non contenues.
 - `checksum`: compare les archives publiques et l'aile corporate nulle apres recuperation du Badge NULL.
 - `requiem`: relit les noms effaces du Miroir de Lavanville apres recuperation du `Mirror Tag`.
+- `defrag`: lance le mini-jeu de defragmentation Porygon. Necessite Porygon Echo et Glitch City deverrouilles. Revele la commande `reconstruct`.
+- `reconstruct`: reconstitue les archives defragmentees par Porygon. Accessible uniquement apres `defrag`.
+- `sylphedex`: consulte le Pokedex interne Sylphe Corp. avec fiches truquees et variantes selon la progression du joueur.
 
 Ces commandes ne sont plus listees directement dans `help` ni dans l'autocompletion standard du terminal.
 
@@ -256,7 +259,98 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 4. Taper `archive-debug`.
 5. Consulter `/hall-of-fame`.
 
-## 11. Secrets mineurs supplementaires
+## 11. Systeme de meteo secrete
+
+### Conditions de declenchement
+
+- La meteo est tiree aleatoirement toutes les 30 secondes sur les routes qui comportent un overlay meteo.
+- La meteo s'applique en couche visuelle semi-transparente sur les routes principales, la Pokeball, le Cyberespace, Glitch City, Rocket HQ, le Bureau Giovanni, le Labo 042 et la Grotte Azuree.
+
+### Types de meteo
+
+- **Pluie acide Rocket** (~22% si `sylphe_rocket_mode` actif): precipitations toxiques teintees de violet, signees Team Rocket. Les emissions du labo corrompu contaminent l'atmosphere.
+- **Aurore cybernetique** (~30% si `sylphe_porygon_echo` actif): Porygon projette des fragments de cyberespace dans le ciel sous forme d'aurore boreale numerique. Teintes cyan/vert/rose.
+- **Brouillard spectral** (~12% si `sylphe_silph_scope` actif): le Scope Sylphe reagit. Des residus de memoire flottent sous forme de brume lilas quasi-transparente.
+- **Temps clair**: aucun effet visible (probabilite restante).
+
+### Notification
+
+- Chaque changement de meteo affiche une notification evanescente en haut de l'ecran pendant 6 secondes avec le nom et la description du phenomene.
+
+## 12. Defragmentation Porygon (mini-jeu terminal)
+
+### Conditions d'acces
+
+- Necessite `sylphe_porygon_echo` (avoir rencontre Porygon dans le Cyberespace).
+- Necessite `sylphe_missingno_unlocked` (avoir ouvert Glitch City).
+
+### Deroulement
+
+- La commande `defrag` initialise un protocole de defragmentation en 4 passes.
+- Chaque passe montre une grille de caracteres corrompus (16x6) qui se nettoie progressivement.
+- Des fragments de donnees sont recuperes a chaque etape: 7382, 4B9F, PRJM, 151@.
+- Une barre de progression accompagne l'operation.
+
+### Recompense
+
+- A la fin, Porygon revele la commande cachee `reconstruct`.
+- `reconstruct` affiche les archives defragmentees: les blocs recuperes racontent l'histoire complete du Projet M, incluant la note supprimee du Dr Fuji sur le sujet 151.
+
+## 13. Pokedex interne Sylphe (SYLPHEDEX)
+
+### Acces
+
+- La commande `sylphedex` est cachee (non listee dans help).
+- L'indice pour la trouver est donne par la note de labo du Dr Fuji (easter egg audio) et par Porygon dans la Pokeball.
+
+### Contenu
+
+- Le SYLPHEDEX liste les sujets enregistres selon la progression du joueur: Mew, Mewtwo, MissingNo, Archive 151, Porygon Echo, Gardien Osseux.
+- Chaque fiche est truquee avec des classifications internes Sylphe Corp.
+- Les notes de chaque fiche varient selon les flags actifs (capture, archive 151, concordance, badge null, scope...).
+- Les fiches marquees [RESTREINT] indiquent un niveau d'acces eleve.
+- `sylphedex <nom>` affiche le detail complet d'un sujet specifique.
+
+## 14. Easter egg audio (Pokeball rush)
+
+### Condition
+
+- Ouvrir `/pokeball` puis naviguer vers `/mew-cloning-chamber-042` en moins de 15 secondes.
+
+### Effet
+
+- Un cri inverse de Mew est genere via Web Audio API (le buffer audio est inverse echantillon par echantillon).
+- Une note de labo du Dr Fuji apparait en overlay dans la Chambre 042 pendant 8 secondes.
+- La note mentionne une frequence subsonique laissee par le sujet 151 dans la cuve #42 et donne l'indice `sylphedex`.
+- Le flag `sylphe_mew_reverse_cry` est pose: l'easter egg ne se declenche qu'une seule fois.
+
+## 15. Blackout Sylphe (evenement rare global)
+
+### Conditions
+
+- Au moins un Pokemon capture (Mew, Mewtwo ou Porygon Echo).
+- Pas de cooldown actif (5 minutes minimum entre deux blackouts).
+- Ne se declenche pas sur les routes `/hall-of-fame`, `/white-room` ou `/beneath-stairs`.
+- Probabilite de 3% a chaque chargement de page, avec un delai aleatoire de 3 a 11 secondes.
+
+### Deroulement
+
+- L'ecran GBA passe entierement au noir pendant 4.5 secondes.
+- Un flash initial simule une coupure de courant.
+- Un message d'alerte s'affiche en rouge sombre au centre de l'ecran (parmi 4 variantes).
+- Les noms des entites capturees persistantes (Mew, Mewtwo, Porygon Echo) s'affichent en vert sous le message, pulsant faiblement.
+- Apres la duree, l'interface revient a la normale.
+
+## 16. Quete F: Defragmenter les donnees de Glitch City
+
+1. Obtenir Porygon Echo via `/cyberspace`.
+2. Ouvrir Glitch City via la commande `missingno`.
+3. Taper `defrag` dans le terminal.
+4. Observer la defragmentation en 4 passes.
+5. Taper `reconstruct` pour lire les archives restaurees.
+6. Consulter `sylphedex` pour lire les fiches internes Sylphe.
+
+## 17. Secrets mineurs supplementaires
 
 - 500 pas sur la map principale declenchent une blague Safari Zone.
 - Le site contient plusieurs references de developpeur dans la console et dans les scripts shell du faux systeme.

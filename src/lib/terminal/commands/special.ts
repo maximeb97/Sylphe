@@ -6,6 +6,7 @@ import {
   getVisitedMaps,
   setGameFlag,
 } from "../../gameState";
+import { getSylphedexEntries } from "../../sylphedex";
 
 function readFlag(key: string) {
   return typeof window !== "undefined" && localStorage.getItem(key) === "true";
@@ -709,3 +710,416 @@ export const mapCommand: Command = {
     ctx.addLine({ type: "output", content: "" });
   },
 };
+
+/* ================================================================
+   DEFRAG — Porygon defragmentation mini-game
+   ================================================================ */
+
+const DEFRAG_GRID_W = 16;
+const DEFRAG_GRID_H = 6;
+const DEFRAG_PHASES = 4;
+
+function makeCorruptedGrid(): string[][] {
+  const glyphs = "░▒▓█▄▀■□◘◙♦♣♠•◄►▲▼«»┼╬╫╪┤├┬┴│─";
+  const clean = "∙";
+  const grid: string[][] = [];
+  for (let y = 0; y < DEFRAG_GRID_H; y++) {
+    const row: string[] = [];
+    for (let x = 0; x < DEFRAG_GRID_W; x++) {
+      row.push(
+        Math.random() < 0.65
+          ? glyphs[Math.floor(Math.random() * glyphs.length)]
+          : clean,
+      );
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+function defragPass(
+  grid: string[][],
+  phase: number,
+): { grid: string[][]; recovered: string } {
+  const fragments = [
+    "7382..OK",
+    "4B9F..OK",
+    "PRJM..OK",
+    "151@..OK",
+  ];
+  const clean = "∙";
+  const next = grid.map((row) => [...row]);
+  let cleaned = 0;
+  for (let y = 0; y < DEFRAG_GRID_H; y++) {
+    for (let x = 0; x < DEFRAG_GRID_W; x++) {
+      if (next[y][x] !== clean && Math.random() < 0.4 + phase * 0.15) {
+        next[y][x] = clean;
+        cleaned++;
+      }
+    }
+  }
+  return { grid: next, recovered: fragments[phase] || `BLK${cleaned}` };
+}
+
+function renderGrid(grid: string[][]): string[] {
+  const border = "+" + "─".repeat(DEFRAG_GRID_W) + "+";
+  const lines = [border];
+  for (const row of grid) {
+    lines.push("|" + row.join("") + "|");
+  }
+  lines.push(border);
+  return lines;
+}
+
+export const defragCommand: Command = {
+  name: "defrag",
+  description: "Defragmenter les donnees de Glitch City",
+  usage: "defrag",
+  hidden: true,
+  async execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    if (!readFlag("sylphe_porygon_echo")) {
+      ctx.addLine({
+        type: "error",
+        content:
+          "ERREUR: Aucun agent numerique connecte. Porygon Echo requis.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: un echo persiste dans le cyberespace, noeud 42.",
+      });
+      return;
+    }
+
+    if (!readFlag("sylphe_missingno_unlocked")) {
+      ctx.addLine({
+        type: "error",
+        content:
+          "ERREUR: Aucune donnee corrompue detectee. La zone Glitch City n'est pas ouverte.",
+      });
+      return;
+    }
+
+    if (readFlag("sylphe_defrag_complete")) {
+      ctx.addLine({
+        type: "system",
+        content:
+          "[PORYGON] Defragmentation deja terminee. La commande `reconstruct` reste disponible.",
+      });
+      return;
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "[PORYGON ECHO] Connexion au noeud 42...",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "Initialisation du protocole de defragmentation...",
+    });
+    ctx.addLine({ type: "output", content: "" });
+
+    let grid = makeCorruptedGrid();
+
+    const delay = (ms: number) =>
+      new Promise<void>((r) => setTimeout(r, ms));
+
+    // Show initial corrupted state
+    ctx.addLine({
+      type: "system",
+      content: "ETAT INITIAL — Secteurs corrompus detectes:",
+    });
+    for (const line of renderGrid(grid)) {
+      ctx.addLine({ type: "output", content: line });
+    }
+
+    for (let phase = 0; phase < DEFRAG_PHASES; phase++) {
+      await delay(1200);
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "system",
+        content: `[PASSE ${phase + 1}/${DEFRAG_PHASES}] Porygon scanne le secteur...`,
+      });
+
+      const result = defragPass(grid, phase);
+      grid = result.grid;
+
+      await delay(800);
+
+      for (const line of renderGrid(grid)) {
+        ctx.addLine({ type: "output", content: line });
+      }
+
+      ctx.addLine({
+        type: "system",
+        content: `Fragment recupere: ${result.recovered}`,
+      });
+
+      // Progress bar
+      const pct = Math.round(((phase + 1) / DEFRAG_PHASES) * 100);
+      const filled = Math.round(pct / 5);
+      const bar =
+        "[" + "█".repeat(filled) + "░".repeat(20 - filled) + "] " + pct + "%";
+      ctx.addLine({ type: "output", content: bar });
+    }
+
+    await delay(1000);
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({
+      type: "system",
+      content: "═══════════════════════════════════",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "DEFRAGMENTATION TERMINEE",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "═══════════════════════════════════",
+    });
+    ctx.addLine({
+      type: "output",
+      content:
+        "Porygon a restaure les blocs de donnees corrompus par MissingNo.",
+    });
+    ctx.addLine({
+      type: "output",
+      content:
+        "Fragments rassembles: 7382 + 4B9F + PROJET_M + SUJET_151",
+    });
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({
+      type: "system",
+      content:
+        "[PORYGON] J'ai trouve quelque chose dans les debris. Nouvelle commande deverrouillee: `reconstruct`.",
+    });
+    ctx.addLine({
+      type: "output",
+      content:
+        "Tapez `reconstruct` pour reconstituer les archives defragmentees.",
+    });
+
+    setGameFlag("sylphe_defrag_complete");
+  },
+};
+
+/* ================================================================
+   RECONSTRUCT — Hidden command unlocked by defrag
+   ================================================================ */
+
+export const reconstructCommand: Command = {
+  name: "reconstruct",
+  description: "Reconstituer les archives defragmentees",
+  usage: "reconstruct",
+  hidden: true,
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    if (!readFlag("sylphe_defrag_complete")) {
+      ctx.addLine({
+        type: "error",
+        content: "ERREUR: Aucune donnee defragmentee disponible.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: Porygon pourrait restaurer les secteurs corrompus de Glitch City.",
+      });
+      return;
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "[RECONSTRUCT] Assemblage des blocs recuperes...",
+    });
+    ctx.addLine({ type: "output", content: "" });
+
+    const archive = [
+      "╔════════════════════════════════════════╗",
+      "║   ARCHIVES DEFRAGMENTEES — PORYGON     ║",
+      "╠════════════════════════════════════════╣",
+      "║  BLOC 1: Code Labo 7382               ║",
+      "║    > Genere dans le Cyberespace        ║",
+      "║    > Transmis via reseau SYLPHE_NET    ║",
+      "║                                        ║",
+      "║  BLOC 2: Code Labo 4B9F               ║",
+      "║    > Extrait de Glitch City            ║",
+      "║    > Corrompu par MissingNo            ║",
+      "║                                        ║",
+      "║  BLOC 3: Manifeste PROJET_M            ║",
+      "║    > Objectif: cloner le sujet 151     ║",
+      "║    > Resultat: clone #150 (Mewtwo)     ║",
+      "║    > Le modele original a survecu.      ║",
+      "║                                        ║",
+      "║  BLOC 4: Note du Dr Fuji (supprimee)   ║",
+      "║    > 'Le sujet 151 n'est pas un echec. ║",
+      "║    >  C'est la matrice vivante que le   ║",
+      "║    >  clone n'a jamais pu remplacer.'   ║",
+      "║                                        ║",
+      "║  BLOC 5: Metadonnees Porygon           ║",
+      "║    > Le noeud 42 contient encore des    ║",
+      "║    > residus du transfert initial.      ║",
+      "║    > Porygon garde une copie de la      ║",
+      "║    > cartographie pre-corruption.       ║",
+      "╚════════════════════════════════════════╝",
+    ];
+
+    for (const line of archive) {
+      ctx.addLine({ type: "output", content: line });
+    }
+
+    ctx.addLine({ type: "output", content: "" });
+    ctx.addLine({
+      type: "system",
+      content:
+        "[PORYGON] Les donnees sont reconstituees. La verite sur le Projet M etait enfouie dans les octets corrompus.",
+    });
+
+    if (readFlag("sylphe_prototype_151")) {
+      ctx.addLine({
+        type: "system",
+        content:
+          "[NOTE] L'archive 151 confirme la note du Dr Fuji. La matrice et le clone ne sont pas interchangeables.",
+      });
+    }
+  },
+};
+
+/* ================================================================
+   SYLPHEDEX — Faux Pokédex interne Sylphe Corp.
+   ================================================================ */
+
+export const sylphedexCommand: Command = {
+  name: "sylphedex",
+  description: "Consulter le Pokedex interne Sylphe",
+  usage: "sylphedex [sujet]",
+  hidden: true,
+  execute(args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    const entries = getSylphedexEntries();
+
+    if (entries.length === 0) {
+      ctx.addLine({
+        type: "error",
+        content: "SYLPHEDEX VIDE: aucun sujet enregistre.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: explorez les zones anomaliques pour alimenter la base.",
+      });
+      return;
+    }
+
+    const query = args.join(" ").toUpperCase();
+
+    if (query) {
+      const match = entries.find(
+        (e) =>
+          e.name.toUpperCase().includes(query) ||
+          e.id.toUpperCase().includes(query),
+      );
+      if (!match) {
+        ctx.addLine({
+          type: "error",
+          content: `SYLPHEDEX: Aucune entree trouvee pour '${args.join(" ")}'.`,
+        });
+        ctx.addLine({
+          type: "system",
+          content: `Sujets disponibles: ${entries.map((e) => e.name).join(", ")}`,
+        });
+        return;
+      }
+      printSylphedexEntry(match, ctx);
+      return;
+    }
+
+    // List all entries
+    ctx.addLine({
+      type: "system",
+      content: "╔══════════════════════════════════════╗",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "║       SYLPHEDEX — BASE INTERNE       ║",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "║      Sylphe Corp. // Confidentiel     ║",
+    });
+    ctx.addLine({
+      type: "system",
+      content: "╠══════════════════════════════════════╣",
+    });
+
+    for (const entry of entries) {
+      const tag = entry.restricted ? " [RESTREINT]" : "";
+      ctx.addLine({
+        type: "output",
+        content: `║  ${entry.id.padEnd(8)} ${entry.name.padEnd(18)}${tag.padEnd(12)}║`,
+      });
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "╚══════════════════════════════════════╝",
+    });
+    ctx.addLine({
+      type: "output",
+      content: `${entries.length} sujet(s) enregistre(s). Tapez 'sylphedex <nom>' pour le detail.`,
+    });
+  },
+};
+
+function printSylphedexEntry(
+  entry: ReturnType<typeof getSylphedexEntries>[number],
+  ctx: CommandContext,
+) {
+  ctx.addLine({
+    type: "system",
+    content: "╔══════════════════════════════════════════╗",
+  });
+  ctx.addLine({
+    type: "system",
+    content: `║  ${entry.id}  ${entry.name.padEnd(30)}║`,
+  });
+  ctx.addLine({
+    type: "system",
+    content: "╠══════════════════════════════════════════╣",
+  });
+  ctx.addLine({
+    type: "output",
+    content: `║  Type: ${entry.type.padEnd(34)}║`,
+  });
+  ctx.addLine({
+    type: "output",
+    content: `║  Class: ${entry.classification}`,
+  });
+  ctx.addLine({
+    type: "output",
+    content: `║  Statut: ${entry.status}`,
+  });
+
+  if (entry.restricted) {
+    ctx.addLine({
+      type: "error",
+      content: "║  ⚠ FICHE RESTREINTE — Niveau d'accès élevé requis",
+    });
+  }
+
+  ctx.addLine({
+    type: "system",
+    content: "╠══════════════════════════════════════════╣",
+  });
+  ctx.addLine({ type: "system", content: "║  NOTES:" });
+  for (const note of entry.notes) {
+    ctx.addLine({ type: "output", content: `║    ${note}` });
+  }
+  ctx.addLine({
+    type: "system",
+    content: "╚══════════════════════════════════════════╝",
+  });
+}

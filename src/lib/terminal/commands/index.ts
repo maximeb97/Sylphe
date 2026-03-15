@@ -39,6 +39,9 @@ import {
   requiemCommand,
   inventoryCommand,
   mapCommand,
+  defragCommand,
+  reconstructCommand,
+  sylphedexCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -93,6 +96,9 @@ export function registerAllCommands() {
   registerCommand(requiemCommand);
   registerCommand(inventoryCommand);
   registerCommand(mapCommand);
+  registerCommand(defragCommand);
+  registerCommand(reconstructCommand);
+  registerCommand(sylphedexCommand);
 
   // Aliases
   registerAlias("ll", "ls");

@@ -22,7 +22,11 @@ export default function TileMapCanvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [scene, setScene] = useState<"OUTSIDE" | "INSIDE">("OUTSIDE");
-  const [player, setPlayer] = useState({ x: 14, y: 29, sprite: NEUTRAL_NPC_SPRITE });
+  const [player, setPlayer] = useState({
+    x: 14,
+    y: 29,
+    sprite: NEUTRAL_NPC_SPRITE,
+  });
   const playerRef = useRef(player);
 
   const [hasKey, setHasKey] = useState(false);
@@ -57,16 +61,44 @@ export default function TileMapCanvas({
 
   // NPCs
   const npcs = useRef([
-    { id: "rocket_guard", x: 7, y: 26, sprite: TEAM_ROCKET_SPRITE, type: "static" as const, scene: "OUTSIDE" as const },
-    { id: "rocket_patrol", x: 4, y: 28, sprite: TEAM_ROCKET_SPRITE, type: "wander" as const, scene: "OUTSIDE" as const },
+    {
+      id: "rocket_guard",
+      x: 7,
+      y: 26,
+      sprite: TEAM_ROCKET_SPRITE,
+      type: "static" as const,
+      scene: "OUTSIDE" as const,
+    },
+    {
+      id: "rocket_patrol",
+      x: 4,
+      y: 28,
+      sprite: TEAM_ROCKET_SPRITE,
+      type: "wander" as const,
+      scene: "OUTSIDE" as const,
+    },
   ]);
 
   useEffect(() => {
     if (localStorage.getItem("sylphe_silph_scope") === "true") {
       const g1 = npcs.current.find(n => n.id === "ghost1");
       if (!g1) {
-        npcs.current.push({ id: "ghost1", x: 14, y: 31, sprite: GHOST_SPRITE, type: "wander", scene: "OUTSIDE" });
-        npcs.current.push({ id: "ghost2", x: 4, y: 32, sprite: GHOST_SPRITE, type: "wander", scene: "OUTSIDE" });
+        npcs.current.push({
+          id: "ghost1",
+          x: 14,
+          y: 31,
+          sprite: GHOST_SPRITE,
+          type: "wander",
+          scene: "OUTSIDE",
+        });
+        npcs.current.push({
+          id: "ghost2",
+          x: 4,
+          y: 32,
+          sprite: GHOST_SPRITE,
+          type: "wander",
+          scene: "OUTSIDE",
+        });
       }
     }
   }, []);
@@ -82,7 +114,10 @@ export default function TileMapCanvas({
   const [noclipMode, setNoclipMode] = useState(false);
 
   useEffect(() => {
-    stepsCountRef.current = parseInt(localStorage.getItem("sylphe_steps") || "0", 10);
+    stepsCountRef.current = parseInt(
+      localStorage.getItem("sylphe_steps") || "0",
+      10,
+    );
 
     const checkBike = () => {
       setBikeMode(localStorage.getItem("sylphe_bike") === "true");
@@ -99,13 +134,22 @@ export default function TileMapCanvas({
     };
   }, []);
 
-  useEffect(() => { playerRef.current = player; }, [player]);
-  useEffect(() => { sceneRef.current = scene; }, [scene]);
-  useEffect(() => { hasKeyRef.current = hasKey; }, [hasKey]);
-  useEffect(() => { outsideMapRef.current = outsideMap; }, [outsideMap]);
+  useEffect(() => {
+    playerRef.current = player;
+  }, [player]);
+  useEffect(() => {
+    sceneRef.current = scene;
+  }, [scene]);
+  useEffect(() => {
+    hasKeyRef.current = hasKey;
+  }, [hasKey]);
+  useEffect(() => {
+    outsideMapRef.current = outsideMap;
+  }, [outsideMap]);
 
   // ── Helpers ────────────────────────────────────────────────
-  const getMap = () => sceneRef.current === "OUTSIDE" ? outsideMapRef.current : INSIDE_MAP;
+  const getMap = () =>
+    sceneRef.current === "OUTSIDE" ? outsideMapRef.current : INSIDE_MAP;
 
   const screenToTile = (clientX: number, clientY: number): Point | null => {
     const canvas = canvasRef.current;
@@ -132,7 +176,10 @@ export default function TileMapCanvas({
 
     const step = () => {
       const queue = moveQueueRef.current;
-      if (queue.length === 0) { setIsMoving(false); return; }
+      if (queue.length === 0) {
+        setIsMoving(false);
+        return;
+      }
 
       const next = queue[0];
       const map = getMap();
@@ -148,14 +195,19 @@ export default function TileMapCanvas({
           return m2;
         });
         if (onShowDialog) {
-          onShowDialog("Vous avez trouvé la Carte d'Accès Sylphe Corp ! La porte principale est désormais déverrouillée.");
+          onShowDialog(
+            "Vous avez trouvé la Carte d'Accès Sylphe Corp ! La porte principale est désormais déverrouillée.",
+          );
         }
       }
 
       // Door transitions
       if (sceneRef.current === "OUTSIDE" && tile === DOOR) {
         if (!hasKeyRef.current) {
-          if (onShowDialog) onShowDialog("La porte est fermée... Il faut que je trouve la carte d'accès d'abord.");
+          if (onShowDialog)
+            onShowDialog(
+              "La porte est fermée... Il faut que je trouve la carte d'accès d'abord.",
+            );
           moveQueueRef.current = [];
           setIsMoving(false);
           return;
@@ -180,7 +232,9 @@ export default function TileMapCanvas({
       stepsCountRef.current += 1;
       localStorage.setItem("sylphe_steps", stepsCountRef.current.toString());
       if (stepsCountRef.current === 500 && onShowDialog) {
-        onShowDialog("DING ! Vous avez fait 500 pas. Le système détecte la fin de votre session dans le Parc Safari... Oh attendez, on n'a plus cette feature.");
+        onShowDialog(
+          "DING ! Vous avez fait 500 pas. Le système détecte la fin de votre session dans le Parc Safari... Oh attendez, on n'a plus cette feature.",
+        );
       }
 
       moveQueueRef.current = queue.slice(1);
@@ -192,9 +246,12 @@ export default function TileMapCanvas({
           cb();
         }
       } else {
-        animFrameRef.current = window.setTimeout(() => {
-          step();
-        }, bikeMode ? 60 : 150);
+        animFrameRef.current = window.setTimeout(
+          () => {
+            step();
+          },
+          bikeMode ? 60 : 150,
+        );
       }
     };
 
@@ -227,11 +284,13 @@ export default function TileMapCanvas({
       let cameraY = 0;
       if (sceneRef.current === "OUTSIDE") {
         const maxCamY = (currentMap.length - VIEW_ROWS) * TILE;
-        const HOLD = 80, PAN = 120;
+        const HOLD = 80,
+          PAN = 120;
         if (frame < HOLD) cameraY = 0;
         else if (frame < HOLD + PAN) {
           const p = (frame - HOLD) / PAN;
-          cameraY = (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2) * maxCamY;
+          cameraY =
+            (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2) * maxCamY;
         } else cameraY = maxCamY;
       }
 
@@ -244,7 +303,8 @@ export default function TileMapCanvas({
 
       // Tiles
       for (let y = 0; y < currentMap.length; y++) {
-        if (y * TILE < cameraY - TILE || y * TILE > cameraY + viewH + TILE) continue;
+        if (y * TILE < cameraY - TILE || y * TILE > cameraY + viewH + TILE)
+          continue;
         for (let x = 0; x < currentMap[y].length; x++) {
           drawTile(ctx, currentMap[y][x], x, y, frame, season);
         }
@@ -253,7 +313,13 @@ export default function TileMapCanvas({
       // Player
       const py = playerRef.current.y * TILE;
       if (py >= cameraY - TILE * 2 && py <= cameraY + viewH + TILE * 2) {
-        drawSprite(ctx, playerRef.current.sprite, playerRef.current.x * TILE, py, 0);
+        drawSprite(
+          ctx,
+          playerRef.current.sprite,
+          playerRef.current.x * TILE,
+          py,
+          0,
+        );
       }
 
       // NPCs
@@ -261,7 +327,8 @@ export default function TileMapCanvas({
         if (npc.scene !== sceneRef.current) return;
         const ny = npc.y * TILE;
         if (ny >= cameraY - TILE * 2 && ny <= cameraY + viewH + TILE * 2) {
-          const bob = npc.type === "wander" ? Math.sin(frame * 0.1 + npc.x) * 1 : 0;
+          const bob =
+            npc.type === "wander" ? Math.sin(frame * 0.1 + npc.x) * 1 : 0;
           drawSprite(ctx, npc.sprite, npc.x * TILE, ny, bob);
         }
       });
@@ -289,12 +356,18 @@ export default function TileMapCanvas({
       if (y < 0 || y >= map.length || x < 0 || x >= map[0].length) return;
 
       // Check NPC collision
-      const targetNpc = npcs.current.find(npc => npc.x === x && npc.y === y && npc.scene === scene);
+      const targetNpc = npcs.current.find(
+        npc => npc.x === x && npc.y === y && npc.scene === scene,
+      );
       if (targetNpc && onShowDialog) {
         if (targetNpc.id === "rocket_guard") {
-          onShowDialog("Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.");
+          onShowDialog(
+            "Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.",
+          );
         } else if (targetNpc.id === "rocket_patrol") {
-          onShowDialog("Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.");
+          onShowDialog(
+            "Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.",
+          );
         } else if (targetNpc.id.startsWith("ghost")) {
           onShowDialog("Va-t-en... Le clone #150 nous a détruits...");
         }
@@ -304,7 +377,8 @@ export default function TileMapCanvas({
       const tile = map[y][x];
       if (!noclipMode && !isWalkable(tile, scene)) {
         // PC interaction on walk-into
-        if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) onInteractPC();
+        if (scene === "INSIDE" && tile === PC_DESK && onInteractPC)
+          onInteractPC();
         return;
       }
 
@@ -317,14 +391,20 @@ export default function TileMapCanvas({
           if (m2[y]) m2[y][x] = GRASS;
           return m2;
         });
-        if (onShowDialog) onShowDialog("Vous avez trouvé la Carte d'Accès Sylphe Corp ! La porte principale est désormais déverrouillée.");
+        if (onShowDialog)
+          onShowDialog(
+            "Vous avez trouvé la Carte d'Accès Sylphe Corp ! La porte principale est désormais déverrouillée.",
+          );
       }
 
       // Door transitions
       if (tile === DOOR) {
         if (scene === "OUTSIDE") {
           if (!hasKeyRef.current) {
-            if (onShowDialog) onShowDialog("La porte est fermée... Il faut que je trouve la carte d'accès d'abord.");
+            if (onShowDialog)
+              onShowDialog(
+                "La porte est fermée... Il faut que je trouve la carte d'accès d'abord.",
+              );
             return;
           }
           setScene("INSIDE");
@@ -344,7 +424,9 @@ export default function TileMapCanvas({
       stepsCountRef.current += 1;
       localStorage.setItem("sylphe_steps", stepsCountRef.current.toString());
       if (stepsCountRef.current === 500 && onShowDialog) {
-        onShowDialog("DING ! Vous avez fait 500 pas. Le système détecte la fin de votre session dans le Parc Safari... Oh attendez, on n'a plus cette feature.");
+        onShowDialog(
+          "DING ! Vous avez fait 500 pas. Le système détecte la fin de votre session dans le Parc Safari... Oh attendez, on n'a plus cette feature.",
+        );
       }
     };
 
@@ -358,15 +440,22 @@ export default function TileMapCanvas({
     if (!pt) return;
 
     const map = scene === "OUTSIDE" ? outsideMap : INSIDE_MAP;
-    if (pt.y < 0 || pt.y >= map.length || pt.x < 0 || pt.x >= map[0].length) return;
+    if (pt.y < 0 || pt.y >= map.length || pt.x < 0 || pt.x >= map[0].length)
+      return;
 
     // Check NPC clicks first
-    const clickedNpc = npcs.current.find(npc => npc.x === pt.x && npc.y === pt.y && npc.scene === scene);
+    const clickedNpc = npcs.current.find(
+      npc => npc.x === pt.x && npc.y === pt.y && npc.scene === scene,
+    );
     if (clickedNpc && onShowDialog) {
       if (clickedNpc.id === "rocket_guard") {
-        onShowDialog("Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.");
+        onShowDialog(
+          "Hé, toi ! Ne t'approche pas trop près ! On surveille le bâtiment... euh, pour Sylphe Corp bien sûr.",
+        );
       } else if (clickedNpc.id === "rocket_patrol") {
-        onShowDialog("Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.");
+        onShowDialog(
+          "Je me demande ce que le Boss mijote à l'intérieur... il m'a dit de faire les cent pas ici en attendant.",
+        );
       } else if (clickedNpc.id.startsWith("ghost")) {
         onShowDialog("Va-t-en... Le clone #150 nous a détruits...");
       }
@@ -380,23 +469,35 @@ export default function TileMapCanvas({
       waterClickCountRef.current += 1;
       if (waterClickCountRef.current >= 10) {
         if (waterClickCountRef.current >= 20) {
-          onShowDialog?.("Vous apercevez un vieux camion rouillé gisant dans les profondeurs... Vous cherchez en dessous, mais il n'y a rien.");
-        } else if (localStorage.getItem("sylphe_masterball_unlocked") === "true") {
+          onShowDialog?.(
+            "Vous apercevez un vieux camion rouillé gisant dans les profondeurs... Vous cherchez en dessous, mais il n'y a rien.",
+          );
+        } else if (
+          localStorage.getItem("sylphe_masterball_unlocked") === "true"
+        ) {
           if (localStorage.getItem("sylphe_mew_captured") === "true") {
-            onShowDialog?.("Le courant est calme. Une onde residuelle indique que MEW a deja ete capture ici.");
+            onShowDialog?.(
+              "Le courant est calme. Une onde residuelle indique que MEW a deja ete capture ici.",
+            );
           } else if (onSpecialEncounter) {
             onSpecialEncounter("mew");
           } else {
-            onShowDialog?.("Un étrange Pokémon rose flotte... Vous lancez la Masterball ! MEW est capturé et rejoint l'équipe !");
+            onShowDialog?.(
+              "Un étrange Pokémon rose flotte... Vous lancez la Masterball ! MEW est capturé et rejoint l'équipe !",
+            );
             localStorage.setItem("sylphe_mew_captured", "true");
             window.dispatchEvent(new Event("storage"));
           }
         } else {
-          onShowDialog?.("Un étrange Pokémon rose flotte au deçà de la surface. Vous avez découvert MEW !! (si seulement vous aviez une Masterball...)");
+          onShowDialog?.(
+            "Un étrange Pokémon rose flotte au deçà de la surface. Vous avez découvert MEW !! (si seulement vous aviez une Masterball...)",
+          );
         }
         waterClickCountRef.current = 0;
       } else {
-        onShowDialog?.("L'eau est limpide. Oh attendez, on dirait bien qu'il y a un Magicarpe au fond...");
+        onShowDialog?.(
+          "L'eau est limpide. Oh attendez, on dirait bien qu'il y a un Magicarpe au fond...",
+        );
       }
       return;
     }
@@ -404,22 +505,31 @@ export default function TileMapCanvas({
       treeClickCountRef.current += 1;
       if (treeClickCountRef.current >= 5) {
         if (localStorage.getItem("sylphe_cali_unlocked") === "true") {
-          onShowDialog?.("Un PIKACHU pixelisé sauvage apparaît ! ... Ah non, ce n'est qu'un oiseau étrange.");
+          onShowDialog?.(
+            "Un PIKACHU pixelisé sauvage apparaît ! ... Ah non, ce n'est qu'un oiseau étrange.",
+          );
         } else {
-          onShowDialog?.("Vous trouvez une petite plume grise sous les feuilles... Cali veillera sur l'équipe pour toujours.");
+          onShowDialog?.(
+            "Vous trouvez une petite plume grise sous les feuilles... Cali veillera sur l'équipe pour toujours.",
+          );
           localStorage.setItem("sylphe_cali_unlocked", "true");
           window.dispatchEvent(new Event("storage"));
         }
         treeClickCountRef.current = 0;
       } else {
-        onShowDialog?.("Un bel arbre feuillu et robuste. Vous ne pouvez pas couper ce petit buisson avec la CS Coupe.");
+        onShowDialog?.(
+          "Un bel arbre feuillu et robuste. Vous ne pouvez pas couper ce petit buisson avec la CS Coupe.",
+        );
       }
       return;
     }
 
     // PC interaction: walk to adjacent tile, then callback
     if (scene === "INSIDE" && tile === PC_DESK && onInteractPC) {
-      if (Math.abs(playerRef.current.x - pt.x) <= 1 && Math.abs(playerRef.current.y - pt.y) <= 1) {
+      if (
+        Math.abs(playerRef.current.x - pt.x) <= 1 &&
+        Math.abs(playerRef.current.y - pt.y) <= 1
+      ) {
         onInteractPC();
         return;
       }
@@ -432,15 +542,26 @@ export default function TileMapCanvas({
       ];
 
       for (const adj of adjacentTiles) {
-        if (adj.y < 0 || adj.y >= map.length || adj.x < 0 || adj.x >= map[0].length) continue;
+        if (
+          adj.y < 0 ||
+          adj.y >= map.length ||
+          adj.x < 0 ||
+          adj.x >= map[0].length
+        )
+          continue;
         if (!noclipMode && !isWalkable(map[adj.y][adj.x], scene)) continue;
 
-        const path = noclipMode ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, adj) : findPath(
-          { x: playerRef.current.x, y: playerRef.current.y },
-          adj,
-          map,
-          scene,
-        );
+        const path = noclipMode
+          ? getStraightPath(
+              { x: playerRef.current.x, y: playerRef.current.y },
+              adj,
+            )
+          : findPath(
+              { x: playerRef.current.x, y: playerRef.current.y },
+              adj,
+              map,
+              scene,
+            );
 
         if (path.length > 0) {
           pendingInteractionRef.current = onInteractPC;
@@ -454,12 +575,14 @@ export default function TileMapCanvas({
 
     if (!noclipMode && !isWalkable(tile, scene)) return;
 
-    const path = noclipMode ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, pt) : findPath(
-      { x: playerRef.current.x, y: playerRef.current.y },
-      pt,
-      map,
-      scene,
-    );
+    const path = noclipMode
+      ? getStraightPath({ x: playerRef.current.x, y: playerRef.current.y }, pt)
+      : findPath(
+          { x: playerRef.current.x, y: playerRef.current.y },
+          pt,
+          map,
+          scene,
+        );
 
     if (path.length > 0) {
       moveQueueRef.current = path;
@@ -490,12 +613,25 @@ export default function TileMapCanvas({
   const cursorClass = (() => {
     if (!hoveredTile) return "cursor-pixel";
     const map = scene === "OUTSIDE" ? outsideMap : INSIDE_MAP;
-    if (hoveredTile.y < 0 || hoveredTile.y >= map.length || hoveredTile.x < 0 || hoveredTile.x >= map[0].length) return "cursor-pixel";
+    if (
+      hoveredTile.y < 0 ||
+      hoveredTile.y >= map.length ||
+      hoveredTile.x < 0 ||
+      hoveredTile.x >= map[0].length
+    )
+      return "cursor-pixel";
 
-    const npcHovered = npcs.current.some(npc => npc.x === hoveredTile.x && npc.y === hoveredTile.y && npc.scene === scene);
+    const npcHovered = npcs.current.some(
+      npc =>
+        npc.x === hoveredTile.x &&
+        npc.y === hoveredTile.y &&
+        npc.scene === scene,
+    );
     if (npcHovered) return "cursor-pointer-pixel";
 
-    return isInteractiveTile(map[hoveredTile.y][hoveredTile.x], scene) ? "cursor-pointer-pixel" : "cursor-pixel";
+    return isInteractiveTile(map[hoveredTile.y][hoveredTile.x], scene)
+      ? "cursor-pointer-pixel"
+      : "cursor-pixel";
   })();
 
   return (

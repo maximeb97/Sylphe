@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import StartMenu from "@/components/StartMenu";
 import { markMapVisited } from "@/lib/gameState";
+import {
+  shouldTriggerBlackout,
+  getBlackoutInfo,
+  recordBlackout,
+  BLACKOUT_DURATION,
+  type BlackoutInfo,
+} from "@/lib/blackout";
 
 export default function GBAShell({
   children,
@@ -14,6 +21,7 @@ export default function GBAShell({
 }) {
   const [powered, setPowered] = useState(false);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const [blackout, setBlackout] = useState<BlackoutInfo | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -26,6 +34,22 @@ export default function GBAShell({
     markMapVisited(pathname);
   }, [pathname]);
 
+  // Blackout Sylphe — rare event
+  useEffect(() => {
+    const timer = setTimeout(
+      () => {
+        if (shouldTriggerBlackout()) {
+          const info = getBlackoutInfo();
+          setBlackout(info);
+          recordBlackout();
+          setTimeout(() => setBlackout(null), BLACKOUT_DURATION);
+        }
+      },
+      3000 + Math.random() * 8000,
+    ); // random delay after page load
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const tagName = document.activeElement?.tagName;
@@ -33,7 +57,7 @@ export default function GBAShell({
       if (event.key !== "Enter" || overlay) return;
 
       event.preventDefault();
-      setStartMenuOpen((current) => !current);
+      setStartMenuOpen(current => !current);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -90,6 +114,28 @@ export default function GBAShell({
                 animation: powered ? "screen-on 0.8s ease-out" : undefined,
               }}
             >
+              {/* Blackout Sylphe overlay */}
+              {blackout && (
+                <div
+                  className="absolute inset-0 z-[80] bg-black flex flex-col items-center justify-center"
+                  style={{ animation: "blackout-flash 0.3s ease-in-out" }}
+                >
+                  <p className="text-[7px] text-red-900 animate-pulse mb-3 px-4 text-center">
+                    {blackout.message}
+                  </p>
+                  {blackout.survivors.length > 0 && (
+                    <div className="text-[6px] text-green-900 text-center space-y-1">
+                      <p>ENTITES PERSISTANTES:</p>
+                      {blackout.survivors.map(name => (
+                        <p key={name} className="text-green-700 animate-pulse">
+                          {name}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Overlay (terminal) replaces visible content */}
               {overlay && <div className="relative z-[60]">{overlay}</div>}
               <StartMenu

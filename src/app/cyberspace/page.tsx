@@ -11,6 +11,7 @@ import { CYBER_FLOOR, CYBER_WALL } from "@/components/tilemap/tiles";
 import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
 import { setGameFlag } from "@/lib/gameState";
+import WeatherOverlay from "@/components/WeatherOverlay";
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -61,45 +62,50 @@ export default function CyberSpace() {
     };
 
     return (
-        <GBAShell>
-            <section className="relative tile-bg pixel-grid bg-[#001] h-full shadow-[0_0_50px_rgba(0,128,255,0.2)]">
-                {/* Top bar */}
-                <div className="bg-[#002] border-b-2 border-cyan-800 text-cyan-400 text-[8px] px-4 py-2 flex justify-between items-center z-10 relative select-none font-[PressStart2P]">
-                    <span>📍 SYLPHE_NET // NODE_42</span>
-                    <span className="opacity-60 animate-pulse">CYBER-ESPACE V2.1</span>
-                </div>
+      <GBAShell>
+        <section className="relative tile-bg pixel-grid bg-[#001] h-full shadow-[0_0_50px_rgba(0,128,255,0.2)]">
+          <WeatherOverlay />
+          {/* Top bar */}
+          <div className="bg-[#002] border-b-2 border-cyan-800 text-cyan-400 text-[8px] px-4 py-2 flex justify-between items-center z-10 relative select-none font-[PressStart2P]">
+            <span>📍 SYLPHE_NET // NODE_42</span>
+            <span className="opacity-60 animate-pulse">CYBER-ESPACE V2.1</span>
+          </div>
 
-                <div className="relative isolate h-full">
-                    {/* Cyber Overlays */}
-                    <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-30 bg-[linear-gradient(rgba(0,255,255,0.4)_1px,transparent_1px)] bg-[length:100%_4px] animate-pulse" />
+          <div className="relative isolate h-full">
+            {/* Cyber Overlays */}
+            <div className="absolute inset-0 z-10 pointer-events-none mix-blend-screen opacity-30 bg-[linear-gradient(rgba(0,255,255,0.4)_1px,transparent_1px)] bg-[length:100%_4px] animate-pulse" />
 
-                    <CustomMapCanvas
-                        mapData={CYBER_MAP}
-                        playerSprite={NEUTRAL_NPC_SPRITE}
-                        initialPlayerX={10}
-                        initialPlayerY={9}
-                        npcs={npcs}
-                        onInteract={handleInteract}
-                        onPlayerMove={handlePlayerMove}
-                        className="w-full h-auto"
-                    />
+            <CustomMapCanvas
+              mapData={CYBER_MAP}
+              playerSprite={NEUTRAL_NPC_SPRITE}
+              initialPlayerX={10}
+              initialPlayerY={9}
+              npcs={npcs}
+              onInteract={handleInteract}
+              onPlayerMove={handlePlayerMove}
+              className="w-full h-auto"
+            />
 
-                    {dialog && (
-                        <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-20">
-                            <DialogBox isClickable={isTypewriterDone} onClick={handleDialogClick} className="!bg-[#001] !border-cyan-900 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
-                                <TypewriterText
-                                    key={dialog}
-                                    text={dialog}
-                                    speed={40}
-                                    forceComplete={forceComplete}
-                                    className="text-[8px] md:text-[9px] leading-[18px] text-cyan-400 block"
-                                    onComplete={() => setIsTypewriterDone(true)}
-                                />
-                            </DialogBox>
-                        </div>
-                    )}
-                </div>
-            </section>
-        </GBAShell>
+            {dialog && (
+              <div className="absolute bottom-0 left-0 right-0 p-3 transition-opacity z-20">
+                <DialogBox
+                  isClickable={isTypewriterDone}
+                  onClick={handleDialogClick}
+                  className="!bg-[#001] !border-cyan-900 shadow-[0_0_20px_rgba(0,255,255,0.2)]"
+                >
+                  <TypewriterText
+                    key={dialog}
+                    text={dialog}
+                    speed={40}
+                    forceComplete={forceComplete}
+                    className="text-[8px] md:text-[9px] leading-[18px] text-cyan-400 block"
+                    onComplete={() => setIsTypewriterDone(true)}
+                  />
+                </DialogBox>
+              </div>
+            )}
+          </div>
+        </section>
+      </GBAShell>
     );
 }

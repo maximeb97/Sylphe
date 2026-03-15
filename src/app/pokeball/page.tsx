@@ -18,6 +18,7 @@ import { POKEBALL_FLOOR, POKEBALL_WALL } from "@/components/tilemap/tiles";
 import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
 import { hasRecentCyberVisit, setGameFlag } from "@/lib/gameState";
+import WeatherOverlay from "@/components/WeatherOverlay";
 
 const MAP_W = 20;
 const MAP_H = 12;
@@ -229,6 +230,7 @@ export default function PokeballInterior() {
   return (
     <GBAShell>
       <section className="relative tile-bg pixel-grid bg-white overflow-hidden h-full">
+        <WeatherOverlay />
         {hasPrototype151 && (
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(248,168,184,0.35),transparent_35%)] pointer-events-none z-10" />
         )}
