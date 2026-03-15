@@ -2,10 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import BattleTransition from "@/components/BattleTransition";
 import { setGameFlag } from "@/lib/gameState";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
+import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import TypewriterText from "@/components/TypewriterText";
+import { FANTOMINUS_SPRITE } from "@/components/PixelSprite";
 
 const GHOSTS = [
   { name: "ECTOPLASMA", x: 0.3, y: 0.4, size: 40 },
@@ -22,6 +25,13 @@ export default function SpectreMirror() {
   const [ghostIndex, setGhostIndex] = useState(-1);
   const [ghostsSpotted, setGhostsSpotted] = useState<Set<string>>(new Set());
   const [showGhost, setShowGhost] = useState(false);
+  const [showBattleTransition, setShowBattleTransition] = useState(false);
+  const [captureTarget, setCaptureTarget] = useState<"fantominus" | null>(null);
+  const [hasFantominus, setHasFantominus] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_fantominus_captured") === "true",
+  );
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
@@ -169,21 +179,23 @@ export default function SpectreMirror() {
   const handleCapture = () => {
     if (showGhost && ghostIndex >= 0) {
       const ghost = GHOSTS[ghostIndex];
-      setGhostsSpotted(prev => {
-        const next = new Set(prev);
-        next.add(ghost.name);
-        return next;
-      });
+      const nextSpotted = new Set(ghostsSpotted);
+      nextSpotted.add(ghost.name);
+      setGhostsSpotted(nextSpotted);
       setShowGhost(false);
       setDialog(`Spectre detecte: ${ghost.name} ! Le Scope Sylphe enregistre l'empreinte residuelle dans les archives.`);
 
-      if (ghostsSpotted.size + 1 >= GHOSTS.length) {
+      if (nextSpotted.size >= GHOSTS.length) {
         setGameFlag("sylphe_spectre_mirror_complete");
-        if (typeof window !== "undefined" && localStorage.getItem("sylphe_masterball_unlocked") === "true") {
-          setGameFlag("sylphe_fantominus_captured");
+        if (
+          typeof window !== "undefined" &&
+          localStorage.getItem("sylphe_masterball_unlocked") === "true" &&
+          !hasFantominus
+        ) {
           setTimeout(() => {
-            setDialog("Tous les spectres documentes. Un Fantominus primordial se materialise ! La Masterball le capture. Le miroir porte maintenant la marque du Scope.");
-          }, 3000);
+            setCaptureTarget("fantominus");
+            setShowBattleTransition(true);
+          }, 1200);
         } else {
           setTimeout(() => {
             setDialog("Tous les spectres ont ete documentes. Le miroir revele un reflet different: le votre porte maintenant la marque du Scope.");
@@ -192,6 +204,13 @@ export default function SpectreMirror() {
       }
     }
   };
+
+  const handleFantominusCaptureComplete = useCallback(() => {
+    setCaptureTarget(null);
+    setHasFantominus(true);
+    setGameFlag("sylphe_fantominus_captured");
+    setDialog("Le reflet se condense en une seule respiration violette. FANTOMINUS est capture, et le miroir garde votre contour en archive.");
+  }, []);
 
   // Cleanup camera stream
   useEffect(() => {
@@ -245,6 +264,20 @@ export default function SpectreMirror() {
             className="border-2 border-[#2a2a3a] cursor-pointer"
             style={{ imageRendering: "pixelated", width: 480, height: 320 }}
           />
+
+          {showBattleTransition && (
+            <BattleTransition onComplete={() => setShowBattleTransition(false)} />
+          )}
+
+          {captureTarget === "fantominus" && !showBattleTransition && (
+            <PokemonCaptureSequence
+              pokemonName="Fantominus"
+              pokemonSprite={FANTOMINUS_SPRITE}
+              accentClassName="from-[#eee8ff] via-[#b38cff] to-[#3a255f]"
+              introText="Tous les residus spectraux fusionnent enfin. Une forme stable ose se montrer derriere vous."
+              onComplete={handleFantominusCaptureComplete}
+            />
+          )}
 
           {/* CRT effect overlay */}
           <div className="absolute inset-0 pointer-events-none z-10 mix-blend-overlay opacity-20 bg-[linear-gradient(rgba(0,255,0,0.1)_1px,transparent_1px)] bg-[length:100%_3px]" />

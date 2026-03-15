@@ -62,6 +62,12 @@ export default function EmployeeLogin() {
   const [passwordError, setPasswordError] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<number | null>(null);
   const [readEmails, setReadEmails] = useState<Set<string>>(new Set());
+  const [maintenanceUnlocked, setMaintenanceUnlocked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_intranet_complete") === "true" &&
+      localStorage.getItem("sylphe_bill_email") === "true",
+  );
 
   const handleLogin = useCallback(() => {
     setPhase("select-agent");
@@ -103,7 +109,15 @@ export default function EmployeeLogin() {
 
     if (agentEmailsRead === totalEmails) {
       setGameFlag("sylphe_intranet_complete");
-      setDialog("Tous les emails lus. Des informations compromettantes sur la Team Rocket ont ete decouvertes.");
+      const billEmailUnlocked =
+        typeof window !== "undefined" &&
+        localStorage.getItem("sylphe_bill_email") === "true";
+      setMaintenanceUnlocked(Boolean(billEmailUnlocked));
+      setDialog(
+        billEmailUnlocked
+          ? "Tous les emails lus. Le canal maintenance du 11e etage repond encore au mot de passe laisse par Leo."
+          : "Tous les emails lus. Des informations compromettantes sur la Team Rocket ont ete decouvertes.",
+      );
     }
   }, [selectedAgent, readEmails]);
 
@@ -222,6 +236,14 @@ export default function EmployeeLogin() {
                   </button>
                 );
               })}
+              {maintenanceUnlocked && (
+                <button
+                  onClick={() => window.location.assign("/11th-floor")}
+                  className="mt-3 border border-[#335577] bg-[#08111f] px-3 py-2 text-left text-[7px] text-[#7db8ff] hover:bg-[#10213b]"
+                >
+                  ↗ ASCENSEUR MAINTENANCE // 11E ETAGE
+                </button>
+              )}
               <button
                 onClick={() => { setPhase("select-agent"); setSelectedAgent(null); setDialog(null); }}
                 className="text-[6px] text-[#330000] mt-3 hover:text-[#550000]"
@@ -241,9 +263,17 @@ export default function EmployeeLogin() {
                 <p className="text-[7px] text-[#ff3333] mt-1 border-b border-[#1a0000] pb-1">
                   {EMPLOYEES[selectedAgent].inbox[selectedEmail].subject}
                 </p>
-                <p className="text-[7px] text-[#aa3333] mt-2 leading-[12px] whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: EMPLOYEES[selectedAgent].inbox[selectedEmail].body }}>
+                <p className="text-[7px] text-[#aa3333] mt-2 leading-[12px] whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: EMPLOYEES[selectedAgent].inbox[selectedEmail].body.replace("11e étage", "<a href='/11th-floor' style='color:#7db8ff'>11e étage</a>") }}>
                 </p>
               </div>
+              {maintenanceUnlocked && (
+                <button
+                  onClick={() => window.location.assign("/11th-floor")}
+                  className="mt-3 border border-[#335577] bg-[#08111f] px-3 py-2 text-[7px] text-[#7db8ff] hover:bg-[#10213b]"
+                >
+                  Ouvrir le canal maintenance vers le 11e etage
+                </button>
+              )}
               <button
                 onClick={() => { setPhase("inbox"); setSelectedEmail(null); }}
                 className="text-[6px] text-[#330000] mt-2 hover:text-[#550000]"

@@ -85,6 +85,33 @@ function getContainmentReport() {
       "LAVENDER-MIRROR: miroir spectral ouvert, mais la plaque memoriale n'a pas encore ete ramenee du reflet.",
     );
   }
+  if (readFlag("sylphe_intranet_complete") && !readFlag("sylphe_11f_access")) {
+    unresolved.push(
+      "11F-MAINT: le canal maintenance a ete revele par ROCKET_NET, mais l'ascenseur n'a pas encore ete ouvert avec le mot de passe de Leo.",
+    );
+  }
+  if (readFlag("sylphe_11f_access") && !readFlag("sylphe_maxime_rescued")) {
+    unresolved.push(
+      "11F-DEVELOPER: le developpeur est toujours retenu au 11e etage. Piste: relancer les trois noeuds de maintenance.",
+    );
+  }
+  if (readFlag("sylphe_maxime_rescued") && !readFlag("sylphe_lapras_captured")) {
+    unresolved.push(
+      "11F-LAPRAS: le dernier prototype logistique n'a pas encore ete exfiltre du 11e etage.",
+    );
+  }
+  if (
+    readFlag("sylphe_maxime_rescued") &&
+    readFlag("sylphe_trick_house_complete") &&
+    readFlag("sylphe_trick_house_item") &&
+    readFlag("sylphe_pokeflute_played") &&
+    readFlag("sylphe_cave_echo") &&
+    !readFlag("sylphe_electrode_captured")
+  ) {
+    unresolved.push(
+      "11F-OVERLOAD: les prerequis de surcharge sont reunis. Piste: couper les 3 disjoncteurs du 11e etage en moins de 20 secondes.",
+    );
+  }
 
   return unresolved;
 }

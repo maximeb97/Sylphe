@@ -295,12 +295,16 @@ body {
 
 @keyframes masterball-throw {
   0% {
-    transform: translate(0, 0) scale(0.7) rotate(0deg);
-    opacity: 0.3;
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+    opacity: 0.2;
+  }
+
+  30% {
+    opacity: 1;
   }
 
   100% {
-    transform: translate(270px, -170px) scale(1.1) rotate(720deg);
+    transform: translate(260px, -160px) scale(1.1) rotate(600deg);
     opacity: 1;
   }
 }

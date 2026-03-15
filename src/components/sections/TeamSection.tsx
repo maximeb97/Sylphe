@@ -12,6 +12,10 @@ import PixelSprite, {
   PORYGON_SPRITE,
   BOSS_SPRITE,
   NEUTRAL_NPC_SPRITE,
+  KABUTO_SPRITE,
+  FANTOMINUS_SPRITE,
+  LAPRAS_SPRITE,
+  ELECTRODE_SPRITE,
 } from "@/components/PixelSprite";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -94,6 +98,42 @@ const team = [
     desc: "Residus d'un transfert depuis le noeud 42. Ce Porygon ne vit ni vraiment dans le cyber-espace, ni vraiment dans la Pokeball.",
     sprite: PORYGON_SPRITE,
   },
+  {
+    name: "FOSSILE",
+    title: "Kabuto",
+    level: 37,
+    hp: 54,
+    maxHp: 54,
+    desc: "Fossile reveille dans les profondeurs du Mont Selenite. Son exosquelette retient encore la memoire humide de la grotte.",
+    sprite: KABUTO_SPRITE,
+  },
+  {
+    name: "SPECTRE",
+    title: "Fantominus",
+    level: 28,
+    hp: 36,
+    maxHp: 36,
+    desc: "Condensation violette recueillie dans le Miroir Spectral. Il flotte comme une erreur de lumiere qui aurait decide de rester.",
+    sprite: FANTOMINUS_SPRITE,
+  },
+  {
+    name: "NAVETTE",
+    title: "Lapras",
+    level: 44,
+    hp: 92,
+    maxHp: 92,
+    desc: "Prototype logistique du 11e etage, exfiltre avec les derniers survivants de maintenance.",
+    sprite: LAPRAS_SPRITE,
+  },
+  {
+    name: "SURCHARGE",
+    title: "Electrode",
+    level: 41,
+    hp: 60,
+    maxHp: 60,
+    desc: "Batterie vivante capturee au coeur d'une surcharge du 11e etage. Son humeur reste aussi stable que les circuits Rocket.",
+    sprite: ELECTRODE_SPRITE,
+  },
 ];
 
 export default function TeamSection() {
@@ -106,6 +146,11 @@ export default function TeamSection() {
   const [showPorygonEcho, setShowPorygonEcho] = useState(false);
   const [showGiovanni, setShowGiovanni] = useState(false);
   const [showCali, setShowCali] = useState(false);
+  const [showKabuto, setShowKabuto] = useState(false);
+  const [showFantominus, setShowFantominus] = useState(false);
+  const [showLapras, setShowLapras] = useState(false);
+  const [showElectrode, setShowElectrode] = useState(false);
+  const [maximeRescued, setMaximeRescued] = useState(false);
   const [hasArchivePortal, setHasArchivePortal] = useState(false);
   const [porygonSyncCount, setPorygonSyncCount] = useState(0);
   const [giovanniTapCount, setGiovanniTapCount] = useState(0);
@@ -121,6 +166,11 @@ export default function TeamSection() {
       );
       setShowGiovanni(localStorage.getItem("sylphe_giovanni_unlocked") === "true");
       setShowCali(localStorage.getItem("sylphe_cali_unlocked") === "true");
+      setShowKabuto(localStorage.getItem("sylphe_kabuto_captured") === "true");
+      setShowFantominus(localStorage.getItem("sylphe_fantominus_captured") === "true");
+      setShowLapras(localStorage.getItem("sylphe_lapras_captured") === "true");
+      setShowElectrode(localStorage.getItem("sylphe_electrode_captured") === "true");
+      setMaximeRescued(localStorage.getItem("sylphe_maxime_rescued") === "true");
       setHasArchivePortal(
         localStorage.getItem("sylphe_archive_debug") === "true" ||
           localStorage.getItem("sylphe_hall_of_fame") === "true",
@@ -138,6 +188,10 @@ export default function TeamSection() {
     if (m.title === "Mew") return showMew;
     if (m.title === "Mewtwo") return showMewtwo;
     if (m.title === "Porygon Echo") return showPorygonEcho;
+    if (m.title === "Kabuto") return showKabuto;
+    if (m.title === "Fantominus") return showFantominus;
+    if (m.title === "Lapras") return showLapras;
+    if (m.title === "Electrode") return showElectrode;
     return true;
   });
 
@@ -278,6 +332,14 @@ export default function TeamSection() {
               {hasArchivePortal
                 ? `SYNC ARCHIVE: ${porygonSyncCount}/4 impulsions. Continuez a cliquer pour ouvrir directement l'archive.`
                 : "Porygon Echo trouve encore une archive fermee quelque part dans le systeme."}
+            </div>
+          )}
+
+          {visibleTeam[selectedMember].name === "DEVELOPPEUR" && (
+            <div className="mb-4 bg-gba-bg p-3 pixel-border text-[7px] leading-[14px] text-gba-text">
+              {maximeRescued
+                ? "Signal stable: la signature principale du developpeur a ete recuperee au 11e etage."
+                : "Signal duplique: une copie de supervision se montre ici, mais la signature stable du developpeur reste prisonniere au 11e etage."}
             </div>
           )}
 

@@ -168,6 +168,30 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
       "Spectre primordial detecte par le Miroir Spectral. Capture via Masterball.",
   },
   {
+    key: "sylphe_lapras_captured",
+    name: "LAPRAS (CAPTURED)",
+    detail:
+      "Prototype docile retrouve au 11e etage. Exfiltre apres l'ouverture de la cellule de maintenance.",
+  },
+  {
+    key: "sylphe_electrode_captured",
+    name: "ELECTRODE (CAPTURED)",
+    detail:
+      "Batterie vivante de securite capturee lors d'une surcharge volontaire du 11e etage.",
+  },
+  {
+    key: "sylphe_maxime_rescued",
+    name: "DEVELOPPEUR EXFILTRE",
+    detail:
+      "Le 11e etage a enfin relache son dernier captif. Maxime a laisse un passage de maintenance durable.",
+  },
+  {
+    key: "sylphe_trick_house_item",
+    name: "PLAN PIEGE ROCKET",
+    detail:
+      "Schema interne des couloirs pieges. Il mentionne aussi trois coupe-circuits caches sur le 11e etage.",
+  },
+  {
     key: "sylphe_spectral_feather",
     name: "PLUME SPECTRALE",
     detail:
@@ -254,6 +278,11 @@ export const MAP_DEFINITIONS: MapDefinition[] = [
     href: "/pc-bill",
     name: "PC DE LEO",
     unlockKey: "sylphe_bill_email",
+  },
+  {
+    href: "/11th-floor",
+    name: "11E ETAGE",
+    unlockKey: "sylphe_11f_access",
   },
   {
     href: "/casino-game-corner",

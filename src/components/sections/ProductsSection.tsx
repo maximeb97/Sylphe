@@ -14,28 +14,58 @@ import { setGameFlag } from "@/lib/gameState";
 
 const products = [
   {
-    name: "MASTER BALL",
-    desc: "Notre produit phare. Technologie de capture ultime avec un taux de réussite de 100%.",
-    fullDesc: "La Master Ball est le fruit de décennies de recherche par la Sylphe SARL. Elle garantit la capture de n'importe quel Pokémon sauvage sans exception. Un véritable chef-d'œuvre technologique réservé à l'élite.",
+    name: "NexVid",
+    desc: "Upscale et appliquez des effets à vos vidéos en temps réel",
+    fullDesc:
+      "NexVid est une extension de navigateur qui permet d'upscale des vidéo en temps réel grâce à une technologie de super-résolution basée sur l'IA. Améliorez la qualité de vos vidéos préférées sans effort.",
+    sprite: MASTERBALL_SPRITE,
+    stat: "Chrome / Firefox",
+    price: "GRATUIT",
+  },
+  {
+    name: "ReClyp",
+    desc: "Enregistrer des clips de votre écran et montez les dans votre navigateur",
+    fullDesc:
+      "ReClyp est un outil de capture d'écran avancé qui vous permet d'enregistrer des clips vidéo de votre écran, de les éditer et de les monter directement dans votre navigateur. Parfait pour créer du contenu rapidement et facilement.",
+    sprite: MASTERBALL_SPRITE,
+    stat: "Chrome / Firefox",
+    price: "GRATUIT / 29 P₽ pour version Pro",
+  },
+  {
+    name: "FragBin",
+    desc: "Un pastebin, en plus moderne !",
+    fullDesc:
+      "FragBin est un service de partage de code moderne qui permet de stocker et partager des extraits de code facilement. Idéal pour les développeurs qui veulent collaborer rapidement et efficacement.",
     sprite: MASTERBALL_SPRITE,
     stat: "ATK ★★★★★",
-    price: "100,000 P₽"
+    price: "GRATUIT",
+  },
+  {
+    name: "MASTER BALL",
+    desc: "Notre produit phare. Technologie de capture ultime avec un taux de réussite de 100%.",
+    fullDesc:
+      "La Master Ball est le fruit de décennies de recherche par la Sylphe SARL. Elle garantit la capture de n'importe quel Pokémon sauvage sans exception. Un véritable chef-d'œuvre technologique réservé à l'élite.",
+    sprite: MASTERBALL_SPRITE,
+    stat: "ATK ★★★★★",
+    price: "100,000 P₽",
   },
   {
     name: "POKE BALL",
     desc: "La solution classique et fiable. Idéale pour les besoins quotidiens.",
-    fullDesc: "L'outil de capture standard utilisé par les dresseurs du monde entier. Bien qu'elle n'ait pas le taux de réussite d'une Master Ball, son rapport qualité-prix en fait le produit d'entrée de gamme parfait.",
+    fullDesc:
+      "L'outil de capture standard utilisé par les dresseurs du monde entier. Bien qu'elle n'ait pas le taux de réussite d'une Master Ball, son rapport qualité-prix en fait le produit d'entrée de gamme parfait.",
     sprite: POKEBALL_SPRITE,
     stat: "ATK ★★★☆☆",
-    price: "200 P₽"
+    price: "200 P₽",
   },
   {
     name: "SCOPE SYLPHE",
     desc: "Dispositif de détection avancé. Révèle ce qui est invisible à l'œil nu.",
-    fullDesc: "Le Scope Sylphe utilise des ondes à haute fréquence pour identifier les formes de vie invisibles, notamment les spectres. Indispensable pour l'exploration de la Tour Pokémon à Lavanville.",
+    fullDesc:
+      "Le Scope Sylphe utilise des ondes à haute fréquence pour identifier les formes de vie invisibles, notamment les spectres. Indispensable pour l'exploration de la Tour Pokémon à Lavanville.",
     sprite: BUILDING_SPRITE,
     stat: "DEF ★★★★☆",
-    price: "NON À VENDRE"
+    price: "PAS À VENDRE",
   },
 ];
 
@@ -55,7 +85,7 @@ export default function ProductsSection() {
     setSelectedItem(index);
     setIsModalOpen(true);
 
-    if (index !== 2) return;
+    if (index !== 5) return;
 
     const nextCount = scopeInspectCount + 1;
     setScopeInspectCount(nextCount);
@@ -166,12 +196,14 @@ export default function ProductsSection() {
               {products[selectedItem].price}
             </span>
           </div>
-          <div className="flex justify-between text-[8px] text-gba-text">
-            <span>PUISSANCE:</span>
-            <span className="text-gba-accent">
-              {products[selectedItem].stat.split(" ")[1]}
-            </span>
-          </div>
+          {products[selectedItem].stat.includes("★") && (
+            <div className="flex justify-between text-[8px] text-gba-text">
+              <span>PUISSANCE:</span>
+              <span className="text-gba-accent">
+                {products[selectedItem].stat.split(" ")[1]}
+              </span>
+            </div>
+          )}
         </div>
 
         {products[selectedItem].name === "SCOPE SYLPHE" &&

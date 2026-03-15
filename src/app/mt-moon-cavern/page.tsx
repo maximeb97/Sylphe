@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import BattleTransition from "@/components/BattleTransition";
 import DialogBox from "@/components/DialogBox";
+import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import TypewriterText from "@/components/TypewriterText";
 import GBAShell from "@/components/GBAShell";
 import { useRouter } from "next/navigation";
 import { setGameFlag } from "@/lib/gameState";
 import { playGlitchSound } from "@/lib/audio";
+import { KABUTO_SPRITE } from "@/components/PixelSprite";
 
 const CAVE_W = 20;
 const CAVE_H = 14;
@@ -55,7 +58,15 @@ export default function MtMoonCavern() {
     return initial;
   });
   const [fossilsFound, setFossilsFound] = useState(0);
+  const [collectedFossils, setCollectedFossils] = useState<Set<string>>(new Set());
   const [zubatsDisturbed, setZubatsDisturbed] = useState(0);
+  const [showBattleTransition, setShowBattleTransition] = useState(false);
+  const [captureTarget, setCaptureTarget] = useState<"kabuto" | null>(null);
+  const [hasKabuto, setHasKabuto] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_kabuto_captured") === "true",
+  );
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animRef = useRef<number>(0);
@@ -202,21 +213,36 @@ export default function MtMoonCavern() {
       setPlayerY(ny);
       revealOnMove(nx, ny);
       if (CAVE_LAYOUT[ny][nx] === 2) {
-        setFossilsFound(prev => {
-          const next = prev + 1;
-          if (next === 1) {
-            setDialog("Un fossile ancien scintille dans la roche. Les Nosferapti avaient creuse autour pour le proteger.");
-          } else {
-            setGameFlag("sylphe_cave_echo");
-            if (typeof window !== "undefined" && localStorage.getItem("sylphe_masterball_unlocked") === "true") {
-              setGameFlag("sylphe_kabuto_captured");
-              setDialog("Deuxième fossile: un Kabuto millénaire se reveille ! La Masterball le capture instantanement. Donnees geologiques archivees.");
+        const fossilKey = `${nx},${ny}`;
+        if (!collectedFossils.has(fossilKey)) {
+          setCollectedFossils(prev => {
+            const next = new Set(prev);
+            next.add(fossilKey);
+            return next;
+          });
+
+          setFossilsFound(prev => {
+            const next = prev + 1;
+            if (next === 1) {
+              setDialog("Un fossile ancien scintille dans la roche. Les Nosferapti avaient creuse autour pour le proteger.");
             } else {
-              setDialog("Deuxième fossile: l'empreinte d'un Kabuto millénaire. Les donnees geologiques s'enregistrent dans le terminal.");
+              setGameFlag("sylphe_cave_echo");
+              if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("sylphe_masterball_unlocked") === "true" &&
+                !hasKabuto
+              ) {
+                setCaptureTarget("kabuto");
+                setShowBattleTransition(true);
+              } else {
+                setDialog("Deuxieme fossile: l'empreinte d'un Kabuto millenaire. Les donnees geologiques s'enregistrent dans le terminal.");
+              }
             }
-          }
-          return next;
-        });
+            return next;
+          });
+        } else if (hasKabuto) {
+          setDialog("Le sillage du Kabuto subsiste encore dans la poussiere humide des fossiles ouverts.");
+        }
       }
 
       // Zubat nest
@@ -228,7 +254,14 @@ export default function MtMoonCavern() {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [playerX, playerY, dialog, router, revealOnMove, handleInteract]);
+  }, [playerX, playerY, dialog, router, revealOnMove, handleInteract, collectedFossils, hasKabuto]);
+
+  const handleCaptureComplete = useCallback(() => {
+    setCaptureTarget(null);
+    setHasKabuto(true);
+    setGameFlag("sylphe_kabuto_captured");
+    setDialog("Le fossile se deploie comme une coque marine. KABUTO est capture, et la grotte garde son eclair de reveil.");
+  }, []);
 
   // Render the cavern
   useEffect(() => {
@@ -372,6 +405,20 @@ export default function MtMoonCavern() {
             className="image-rendering-pixelated"
             style={{ imageRendering: "pixelated", width: CAVE_W * TILE * 2, height: CAVE_H * TILE * 2 }}
           />
+
+          {showBattleTransition && (
+            <BattleTransition onComplete={() => setShowBattleTransition(false)} />
+          )}
+
+          {captureTarget === "kabuto" && !showBattleTransition && (
+            <PokemonCaptureSequence
+              pokemonName="Kabuto"
+              pokemonSprite={KABUTO_SPRITE}
+              accentClassName="from-[#f6ecd3] via-[#caa26f] to-[#7b5835]"
+              introText="Le deuxieme fossile craque enfin. Un Kabuto millenaire cherche l'eau avant meme la lumiere."
+              onComplete={handleCaptureComplete}
+            />
+          )}
 
           {/* Zubat indicator */}
           {zubatsDisturbed > 0 && (

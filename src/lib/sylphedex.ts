@@ -17,6 +17,10 @@ export interface SylphedexEntry {
 export function getSylphedexEntries(): SylphedexEntry[] {
   const hasMew = readFlag("sylphe_mew_captured");
   const hasMewtwo = readFlag("sylphe_mewtwo_captured");
+  const hasKabuto = readFlag("sylphe_kabuto_captured");
+  const hasFantominus = readFlag("sylphe_fantominus_captured");
+  const hasLapras = readFlag("sylphe_lapras_captured");
+  const hasElectrode = readFlag("sylphe_electrode_captured");
   const hasPrototype = readFlag("sylphe_prototype_151");
   const hasMissingno = readFlag("sylphe_missingno_unlocked");
   const hasScope = readFlag("sylphe_silph_scope");
@@ -145,6 +149,78 @@ export function getSylphedexEntries(): SylphedexEntry[] {
               "[TRIANGULATION] Quand Mew, Mewtwo et Porygon cohabitent, la capsule entre en etat de biosphere triangulee.",
             ]
           : []),
+      ],
+      restricted: false,
+    });
+  }
+
+  if (hasKabuto) {
+    entries.push({
+      id: "#140",
+      name: "KABUTO",
+      type: "ROCHE/EAU",
+      classification: "FOSSILE REACTIVE / MONT SELENITE",
+      status:
+        "CAPTURE — Stabilise apres reveil dans les galeries profondes du Mont Selenite.",
+      notes: [
+        "Specimen reveille au voisinage d'un fossile vivant enfoui sous les nids de Nosferapti.",
+        "Le sujet reagit violemment aux percussions et a l'echolocalisation du site.",
+        hasPrototype
+          ? "[ARCHIVE 151] Les couches geologiques du Mont Selenite stockent des traces plus anciennes que les journaux du Projet M."
+          : "Les carapaces fossiles semblent avoir conserve une memoire acoustique de la grotte.",
+      ],
+      restricted: false,
+    });
+  }
+
+  if (hasFantominus) {
+    entries.push({
+      id: "#092",
+      name: "FANTOMINUS",
+      type: "SPECTRE/POISON",
+      classification: "RESIDU CAPTURE / MIROIR SPECTRAL",
+      status:
+        "CAPTURE — Le reflet du sujet a ete verrouille avant dissipation complete.",
+      notes: [
+        "Fantominus n'etait visible qu'a travers le filtre du Scope Sylphe et la camera du miroir.",
+        "Sa forme enregistrable n'apparait qu'apres documentation complete des autres spectres du lieu.",
+        hasScope
+          ? "[SCOPE] Le signal spectral reste lisible meme en dehors du miroir."
+          : "Le sujet refuse toute lecture en l'absence du Scope Sylphe.",
+      ],
+      restricted: false,
+    });
+  }
+
+  if (hasLapras) {
+    entries.push({
+      id: "#131",
+      name: "LAPRAS",
+      type: "EAU/GLACE",
+      classification: "SUJET LOGISTIQUE / 11F MAINTENANCE",
+      status:
+        "CAPTURE — Exfiltre du 11e etage apres liberation du developpeur retenu en maintenance.",
+      notes: [
+        "Lapras servait de porteur docile entre les laboratoires et les baies serveur du 11e etage.",
+        "Le sujet est reste volontairement pres de la cellule de maintenance jusqu'a l'ouverture des verrous.",
+        "Les techniciens Rocket notaient qu'il comprenait mieux les alarmes que leurs propres agents.",
+      ],
+      restricted: false,
+    });
+  }
+
+  if (hasElectrode) {
+    entries.push({
+      id: "#101",
+      name: "ELECTRODE",
+      type: "ELECTRIK",
+      classification: "BATTERIE DE SECURITE / 11F OVERLOAD",
+      status:
+        "CAPTURE — Isolé apres surcharge volontaire du reseau de maintenance du 11e etage.",
+      notes: [
+        "Utilise comme accumulateur vivant dans les baies critiques du 11e etage.",
+        "Le sujet n'apparait qu'apres liberation du developpeur, relance des circuits et coupure coordonnee des trois noeuds.",
+        "Les archives Rocket le decrivent comme une securite d'urgence. Maxime parlait plutot d'une pile avec de l'humeur.",
       ],
       restricted: false,
     });

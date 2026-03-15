@@ -36,7 +36,7 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - `motherlode`: injecte la fortune numerique de Sylphe.
 - `noclip`: autorise les collisions fantomes.
 - `lsd`: applique une distorsion visuelle temporaire.
-- `containment`: affiche un diagnostic clandestin des anomalies encore non contenues.
+- `containment`: affiche un diagnostic clandestin des anomalies encore non contenues. Inclut la condition 11F-OVERLOAD si tous les prerequis de surcharge sont reunis (Maxime rescapé, Pokéflûte jouée, écho caverne, labyrinthe piège fini + plan trouvé) et qu'Electrode n'a pas encore été capturé.
 - `checksum`: compare les archives publiques et l'aile corporate nulle apres recuperation du Badge NULL.
 - `requiem`: relit les noms effaces du Miroir de Lavanville apres recuperation du `Mirror Tag`.
 - `defrag`: lance le mini-jeu de defragmentation Porygon. Necessite Porygon Echo et Glitch City deverrouilles. Revele la commande `reconstruct`.
@@ -208,7 +208,7 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 
 ### Inventaire
 
-- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, Badge NULL, Mirror Tag, etc.
+- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, Badge NULL, Mirror Tag, Kabuto capture, Fantominus capture, Lokhlass capture, Electrode capture, etc.
 
 ### Maps visitees
 
@@ -217,6 +217,7 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 - `Beneath Stairs` et `White Room` rejoignent eux aussi la cartographie une fois trouves et ouverts.
 - `Musee Null` rejoint la cartographie une fois son aile debloquee puis visitee.
 - `Lavender Mirror` rejoint aussi la cartographie apres activation de la ligne poste 7.
+- `11e Etage` rejoint la cartographie une fois les acces `sylphe_intranet_complete` et `sylphe_bill_email` valides et la route visitee.
 
 ## 10.ter. Quete E: Ouvrir le Miroir de Lavanville
 
@@ -249,7 +250,11 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 1. Recuperer la Masterball via le terminal ou l'API.
 2. Capturer Mew sur la map principale.
 3. Capturer Mewtwo dans la Chambre 042.
-4. Observer leur coexistence dans `/pokeball`.
+4. Capturer Kabuto dans `/mt-moon-cavern` (deuxieme fossile).
+5. Capturer Fantominus dans `/spectre-mirror` (fin de session miroir).
+6. Capturer Lokhlass dans `/11th-floor` (apres sauvetage de Maxime, necessite la Masterball).
+7. (Rare) Capturer Electrode dans `/11th-floor` en variant surcharge (voir Quete N).
+8. Observer leur coexistence dans `/pokeball`.
 
 ### Quete C: Ouvrir les archives profondes
 
@@ -305,11 +310,15 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 
 ### Contenu
 
-- Le SYLPHEDEX liste les sujets enregistres selon la progression du joueur: Mew, Mewtwo, MissingNo, Archive 151, Porygon Echo, Gardien Osseux.
+- Le SYLPHEDEX liste les sujets enregistres selon la progression du joueur: Mew, Mewtwo, MissingNo, Archive 151, Porygon Echo, Gardien Osseux, Kabuto, Fantominus, Lokhlass, Electrode.
 - Chaque fiche est truquee avec des classifications internes Sylphe Corp.
 - Les notes de chaque fiche varient selon les flags actifs (capture, archive 151, concordance, badge null, scope...).
 - Les fiches marquees [RESTREINT] indiquent un niveau d'acces eleve.
 - `sylphedex <nom>` affiche le detail complet d'un sujet specifique.
+- Kabuto (#140): fossile reanime dans la grotte du Mont Selenite. Classe comme specimen paleologique reactif.
+- Fantominus (#92): entite spectrale photographiee par le Miroir Spectral. Classe comme contenu memoriel volatile.
+- Lokhlass (#131): archive vivante du serveur de refroidissement du 11e etage. Classe comme systeme de donnees biologique.
+- Electrode (#101): batterie de securite du 11e etage, sensible aux surcharges volontaires. Classe comme anomalie electrique confinee.
 
 ## 14. Easter egg audio (Pokeball rush)
 
@@ -369,6 +378,13 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 - La map contient des nids de Nosferapti (qui s'agitent au bruit), des fossiles a decouvrir, et une sortie.
 - Trouver les deux fossiles pose le flag `sylphe_cave_echo`.
 
+### Capture de Kabuto
+
+- Trouver le deuxieme fossile declenche une sequence de combat (BattleTransition) puis la capture de Kabuto.
+- Kabuto rejoint ensuite la Team et la Pokeball interieure.
+- Le flag `sylphe_kabuto_captured` est pose.
+- Le flag `sylphe_cave_echo` est egalement requis pour debloquer la variante de surcharge du 11e Etage.
+
 ## 19. Miroir Spectral (`/spectre-mirror`)
 
 ### Acces
@@ -378,9 +394,16 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 ### Mecanique
 
 - Active la webcam de l'utilisateur et applique un filtre Gameboy (pixels verts, faible resolution).
-- Des ombres de Pokémon spectres (Ectoplasma, Spectrum, Fantominus) apparaissent aleatoirement sur le flux video.
+- Des ombres de Pokemon spectres (Ectoplasma, Spectrum, Fantominus) apparaissent aleatoirement sur le flux video.
 - Cliquer sur un spectre tente une "capture" via le Scope Sylphe.
 - Chaque spectre capture apporte un fragment de lore sur le Miroir de Lavanville.
+
+### Capture de Fantominus
+
+- A la fin de la session miroir (apres `sylphe_spectre_mirror_complete`), un Fantominus se materialise dans le reflet.
+- La sequence de combat (BattleTransition) se declenche et Fantominus peut etre capture.
+- Fantominus rejoint ensuite la Team et la Pokeball interieure.
+- Le flag `sylphe_fantominus_captured` est pose.
 
 ## 20. Labyrinthe de la Maison Piege (`/trick-house-maze`)
 
@@ -393,8 +416,9 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 - Sur mobile: le gyroscope controle le deplacement d'une Pokeball dans le labyrinthe.
 - Sur desktop: les fleches du clavier servent de fallback.
 - Le labyrinthe contient des dalles piegees (Team Rocket) qui repoussent le joueur.
-- Un objet cache (plan de la Team Rocket) peut etre trouve.
+- Un objet cache (plan de la Team Rocket) peut etre trouve dans une case secret de la map; le recuperer pose le flag `sylphe_trick_house_item`.
 - Atteindre la sortie pose le flag `sylphe_trick_house_complete`.
+- Les deux flags `sylphe_trick_house_item` et `sylphe_trick_house_complete` sont des prerequis pour debloquer la variante de surcharge du 11e Etage.
 
 ## 21. Pods de Clonage (`/cloning-pod-a` et `/cloning-pod-b`)
 
@@ -651,3 +675,73 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 2. Sur `/museum-null`, glisser la plume spectrale.
 3. La deposer sur le terminal.
 4. La commande `analyze_sample` s'execute automatiquement.
+
+### Quete M: Penetrer le 11e Etage et sauver Maxime
+
+1. Terminer l'intranet Rocket (`/employee-login`) pour poser `sylphe_intranet_complete`.
+2. Visiter `/pc-bill` et consulter la Corbeille pour trouver le mot de passe `MYUUTSU` et poser `sylphe_bill_email`.
+3. Aller sur `/11th-floor` (acces refuse sans les deux flags ci-dessus).
+4. Entrer `MYUUTSU` sur le panneau d'ascenseur pour debloquer le niveau.
+5. Trouver et activer les trois noeuds d'activation sur la map pour liberer Maxime (`sylphe_maxime_rescued`).
+6. Interagir avec Maxime libere pour apprendre l'existence de Lokhlass dans le systeme de refroidissement.
+7. Capturer Lokhlass avec la Masterball. Pose `sylphe_lapras_captured`.
+8. Lokhlass rejoint la Team et la Pokeball interieure.
+
+### Quete N: Provoquer la surcharge et capturer Electrode (variante rare)
+
+1. Avoir complete la Quete M (Maxime rescapé, `sylphe_maxime_rescued`).
+2. Avoir joue la Pokéflûte sur la Radio Pokematos (`sylphe_pokeflute_played`).
+3. Avoir trouve l'echo de la grotte (`sylphe_cave_echo`) en explorant Mont Selenite.
+4. Avoir termine le labyrinthe (`sylphe_trick_house_complete`) ET trouve le plan cache (`sylphe_trick_house_item`) dans la Maison Piege.
+5. Retourner sur `/11th-floor`: si tous les prerequis sont reunis, l'interface bascule en mode SURCHARGE CRITIQUE (HUD rouge).
+6. Desactiver les 3 disjoncteurs sur la map en moins de 20 secondes pour provoquer la surcharge.
+7. Electrode surgit de la surtension. Le capturer pose `sylphe_electrode_captured`.
+8. Electrode rejoint la Team et la Pokeball interieure.
+9. Le diagnostic `containment` du terminal affiche la condition 11F-OVERLOAD comme indice si les prerequis sont reunis mais Electrode pas encore capture.
+
+## 38. 11e Etage (`/11th-floor`)
+
+### Acces
+
+- Les flags `sylphe_intranet_complete` (intranet Rocket) et `sylphe_bill_email` (visite de `/pc-bill`) sont tous deux requis pour entrer.
+- Sans ces acces, une page "Acces refuse" est affichee.
+
+### Phase 1 — Sauvetage de Maxime
+
+- L'ascenseur est bloque par un panneau de code. Entrer le mot de passe `MYUUTSU` (trouve dans la Corbeille de `/pc-bill`) le deverrouille.
+- La map contient trois noeuds d'activation (bureaux PC) a trouver et activer.
+- Une fois les 3 noeuds actives, Maxime est libere. Le flag `sylphe_maxime_rescued` est pose.
+- Maxime revele l'existence de Lokhlass, archive vivante du serveur de refroidissement du 11e etage.
+
+### Capture de Lokhlass
+
+- Interagir avec le terminal du reseau froid apres le sauvetage declenche la sequence de capture.
+- La Masterball est requise. Si elle est absente, Maxime conseille de la recuperer d'abord.
+- Sequence: BattleTransition (gradient bleu glace) puis PokemonCaptureSequence.
+- Le flag `sylphe_lapras_captured` est pose.
+- Lokhlass rejoint la Team et la Pokeball interieure.
+
+### Phase 2 — Variante rare: Surcharge du 11e Etage
+
+- Disponible uniquement si `sylphe_maxime_rescued` est actif ET les quatre flags suivants sont tous poses:
+  - `sylphe_pokeflute_played` (Pokéflute jouee sur la Radio Pokematos, 20.5 MHz)
+  - `sylphe_cave_echo` (deux fossiles trouves dans `/mt-moon-cavern`)
+  - `sylphe_trick_house_complete` (labyrinthe de la Maison Piege fini)
+  - `sylphe_trick_house_item` (plan de la Team Rocket trouve dans la Maison Piege)
+- En mode surcharge, l'interface bascule en SURCHARGE CRITIQUE: HUD rouge sang, gradient rouge-orange, panneaux de prerequis affiches.
+- Maxime donne un hint oral pour couper les disjoncteurs avant la fusion.
+- Fenetre d'action: 20 secondes pour desactiver les 3 disjoncteurs sur la map.
+- Si la fenetre expire, le compteur se remet a zero; nouvelle tentative possible.
+- Si les 3 disjoncteurs sont coupes dans le temps, Electrode surgit de la surtension.
+
+### Capture d'Electrode
+
+- Sequence: BattleTransition (gradient rouge electrique) puis PokemonCaptureSequence.
+- Aucune Masterball requise (la surcharge sert de piege naturel).
+- Le flag `sylphe_electrode_captured` est pose.
+- Electrode rejoint la Team et la Pokeball interieure.
+
+### Lien avec le terminal
+
+- La commande `containment` affiche la condition `11F-OVERLOAD` si tous les prerequis de surcharge sont reunis et qu'Electrode n'a pas encore ete capture.
+- Cet indice est l'unique hint in-game pour orienter le joueur vers la variante rare.

@@ -12,6 +12,10 @@ import {
   MEW_SPRITE,
   MEWTWO_SPRITE,
   PORYGON_SPRITE,
+  KABUTO_SPRITE,
+  FANTOMINUS_SPRITE,
+  LAPRAS_SPRITE,
+  ELECTRODE_SPRITE,
 } from "@/components/PixelSprite";
 import { POKEBALL_FLOOR, POKEBALL_WALL } from "@/components/tilemap/tiles";
 
@@ -102,7 +106,25 @@ export default function PokeballInterior() {
     (typeof window !== "undefined" &&
       localStorage.getItem("sylphe_porygon_echo") === "true") ||
     hasRecentCyberVisit();
-  const capturedCount = Number(hasMew) + Number(hasMewtwo);
+  const hasKabuto =
+    typeof window !== "undefined" &&
+    localStorage.getItem("sylphe_kabuto_captured") === "true";
+  const hasFantominus =
+    typeof window !== "undefined" &&
+    localStorage.getItem("sylphe_fantominus_captured") === "true";
+  const hasLapras =
+    typeof window !== "undefined" &&
+    localStorage.getItem("sylphe_lapras_captured") === "true";
+  const hasElectrode =
+    typeof window !== "undefined" &&
+    localStorage.getItem("sylphe_electrode_captured") === "true";
+  const capturedCount =
+    Number(hasMew) +
+    Number(hasMewtwo) +
+    Number(hasKabuto) +
+    Number(hasFantominus) +
+    Number(hasLapras) +
+    Number(hasElectrode);
   const hasTriangulatedBiosphere = hasMew && hasMewtwo && hasPorygonEcho;
   const ambientEvent = useMemo(
     () =>
@@ -157,6 +179,50 @@ export default function PokeballInterior() {
           },
         ]
       : []),
+    ...(hasKabuto
+      ? [
+          {
+            id: "kabuto",
+            x: 5,
+            y: 8,
+            sprite: KABUTO_SPRITE,
+            type: "wander" as const,
+          },
+        ]
+      : []),
+    ...(hasFantominus
+      ? [
+          {
+            id: "fantominus",
+            x: 14,
+            y: 3,
+            sprite: FANTOMINUS_SPRITE,
+            type: "wander" as const,
+          },
+        ]
+      : []),
+    ...(hasLapras
+      ? [
+          {
+            id: "lapras",
+            x: 4,
+            y: 4,
+            sprite: LAPRAS_SPRITE,
+            type: "wander" as const,
+          },
+        ]
+      : []),
+    ...(hasElectrode
+      ? [
+          {
+            id: "electrode",
+            x: 15,
+            y: 8,
+            sprite: ELECTRODE_SPRITE,
+            type: "wander" as const,
+          },
+        ]
+      : []),
   ];
 
   const handleInteract = (
@@ -195,6 +261,26 @@ export default function PokeballInterior() {
         hasTriangulatedBiosphere
           ? "Porygon triangule la capsule depuis le noeud 42. Les trois presences convertissent la Pokeball en biosphere auto-cartographiee."
           : "Porygon materialise une passerelle de donnees dans la Pokeball blanche. Les archives suggerent maintenant la commande terminale `archive-debug`.",
+      );
+    } else if (npcId === "kabuto") {
+      playPokemonCry(140);
+      setDialog(
+        "Kabuto dessine des demi-lunes fossiles dans la poussiere claire de la capsule. Il explore les bords comme une maree miniature.",
+      );
+    } else if (npcId === "fantominus") {
+      playPokemonCry(92);
+      setDialog(
+        "Fantominus se condense puis s'effiloche contre la coque interieure. Meme ici, il prefere les angles morts.",
+      );
+    } else if (npcId === "lapras") {
+      playPokemonCry(131);
+      setDialog(
+        "Lapras glisse en silence dans la Masterball blanche. La capsule ressemble maintenant a un quai de maintenance minuscule et vivant.",
+      );
+    } else if (npcId === "electrode") {
+      playPokemonCry(101);
+      setDialog(
+        "Electrode roule nerveusement le long de la coque interieure. Meme capture, il traite encore la Pokeball comme un tableau electrique a court-circuiter.",
       );
     } else if (tile === POKEBALL_WALL) {
       setDialog(

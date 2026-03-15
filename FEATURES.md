@@ -103,9 +103,25 @@ Voici une vingtaine de propositions audacieuses tirant parti des technologies we
 
 ## Suite
 
-- [ ] Corriger l'affichage de la page `/pc-bill` après le texte initial (rien n'est affiché)
-- [ ] Réussir les routes "mt-moon-cavern" et "spectre-mirror" doivent permettra d'ajouter les pokémons Kabuto et Phantominus à l'équipe (et dans la pokéball) si le joueur possède la masteball.
-- [ ] Liste dans un fichier à part tous les éléments qui éxistent dans le code mais qui ne sont pas exploités (par exemple `MYUUTSU`)
-- [ ] Quand il y en a l'occasion (quand un lieu est mentionné), tu peux mettre un lien vers le lieu s'il existe. (par exemple `Musee Null` -> `<a href='/museum-null' style='color: blue;'>Musee Null</a>`)
-- [ ] - Créé d'autres quêtes qui permettent de capturer des pokémons, à chaque fois créé leur Sprite pour qu'ils apparaissent dans la Team et dans la pokéball
-- [ ] Ajoute une quête complète qui nous permettra d'entrer dans le fameux 11e etage de la Sylphe Corp, où est enfermé le développeur (moi, Maxime)
+- [x] Corriger l'affichage de la page `/pc-bill` après le texte initial (rien n'est affiché)
+- [x] Réussir les routes "mt-moon-cavern" et "spectre-mirror" doivent permettra d'ajouter les pokémons Kabuto et Phantominus à l'équipe (et dans la pokéball) si le joueur possède la masteball.
+- [x] Liste dans un fichier à part tous les éléments qui éxistent dans le code mais qui ne sont pas exploités (par exemple `MYUUTSU`)
+- [x] Quand il y en a l'occasion (quand un lieu est mentionné), tu peux mettre un lien vers le lieu s'il existe. (par exemple `Musee Null` -> `<a href='/museum-null' style='color: blue;'>Musee Null</a>`)
+- [x] - Créé d'autres quêtes qui permettent de capturer des pokémons, à chaque fois créé leur Sprite pour qu'ils apparaissent dans la Team et dans la pokéball
+- [x] Ajoute une quête complète qui nous permettra d'entrer dans le fameux 11e etage de la Sylphe Corp, où est enfermé le développeur (moi, Maxime)
+- [x] Pour chaque capture de pokémon, affiche le système de combat avec BattleTransition et PokemonCaptureSequence, tel que c'est fait pour Mew dans HeroSection.
+
+## Nouvelles idees (Phase 9)
+
+- [ ] Route `/cold-storage`: une chambre froide ou les anciennes sauvegardes Pokemon gelent en boucle. En soufflant dans le micro ou en activant une frequence radio precise, on reveille Lokhlass Archive.
+- [ ] Mini-quete `/silph-subway`: un ancien tunnel logistique sous Safrania. Si le joueur possede le passe Train Magnetique, un wagon fantome apparait et transporte vers une aile archivee temporaire.
+- [x] Capturer un Electrode de securite dans le 11e etage si l'utilisateur coupe manuellement trois disjoncteurs en moins de 20 secondes.
+- [ ] Ajouter un mode `forensics` dans le terminal qui compare les journaux du Musee Null, du 11e etage et de la White Room pour reconstituer la vraie chronologie de Maxime et du Projet M.
+- [ ] Quete meta `/printer-room`: imprimer une page du navigateur ou generer un PDF du site revele un filigrane secret avec une route cachee et un mot de passe de labo.
+- [ ] Branche `Lavender Emergency Line`: si le joueur appelle poste 7 puis va immediatement au `Miroir Spectral`, un Spectrum corporate peut etre capture a la place de Fantominus sur une variante rare.
+
+## Suite immediate
+
+- [x] Recycler des hooks jusque-la peu exploites (`trick_house`, `pokeflute`, `cave_echo`) dans une vraie quete de surcharge au 11e etage.
+- [x] Ajouter une variante rare du 11e etage apres la liberation de Maxime.
+- [x] Ajouter une seconde capture au 11e etage (Electrode) avec BattleTransition et PokemonCaptureSequence.
