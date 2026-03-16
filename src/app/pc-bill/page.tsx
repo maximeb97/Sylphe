@@ -34,8 +34,8 @@ const ICONS: DesktopIcon[] = [
 
 const TRASH_EMAILS = [
   [
-    "De: leo@sylphe-corp.net",
-    "A: prof.chen@sylphe-corp.net",
+    "De: leo@sylphe.cc",
+    "A: prof.chen@sylphe.cc",
     "Objet: URGENT - Incident de teleportation",
     "",
     "Professeur,",
@@ -50,8 +50,8 @@ const TRASH_EMAILS = [
     "- Leo (Bill)",
   ],
   [
-    "De: leo@sylphe-corp.net",
-    "A: admin@sylphe-corp.net",
+    "De: leo@sylphe.cc",
+    "A: admin@sylphe.cc",
     "Objet: RE: RE: Anomalie Systeme de Stockage",
     "",
     "Le PC de stockage Pokemon montre des signes",
@@ -67,7 +67,7 @@ const TRASH_EMAILS = [
     "dans le terminal. Personne ne regarde la-bas.",
   ],
   [
-    "De: leo@sylphe-corp.net",
+    "De: leo@sylphe.cc",
     "A: [brouillon non envoye]",
     "Objet: Je dois partir",
     "",

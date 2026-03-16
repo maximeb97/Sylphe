@@ -2,7 +2,7 @@
 Développeur: [CENSURÉ]
 Titre: Ingénieur Logiciel Senior — Division R&D
 Localisation: Sylphe Corp., 11e étage, Safrania
-Contact: piégé_dans_le_serveur@sylphe-corp.net
+Contact: trapped-in-the-server@sylphe.cc
 
 /* MERCI */
 Porygon — Pour la maintenance autonome du réseau

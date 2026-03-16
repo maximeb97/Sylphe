@@ -60,7 +60,7 @@ export default function ContactSection() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gba-blue">⬤</span>
-                <span>contact@sylphe-corp.kanto</span>
+                <span>contact@sylphe.cc</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gba-gold">⬤</span>
