@@ -263,7 +263,7 @@ function VolumeWheel() {
   const musicActions = useContext(MusicActionsContext);
 
   // Gracefully handle missing provider (shouldn't happen but be safe)
-  const volume = musicState?.volume ?? 0.7;
+  const volume = musicState?.volume ?? 0.3;
   const muted = musicState?.muted ?? false;
 
   const handleChange = useCallback(

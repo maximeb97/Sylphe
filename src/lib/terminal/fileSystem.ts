@@ -78,6 +78,11 @@ export function createFileSystem(): FSNode {
                 "Activation reservee aux profils qui regardent vraiment le Scope Sylphe.\n" +
                 "Contact ancien: POKEGEAR 0800-SYLPHE poste 7",
             ),
+            "access_team_rocket.txt": file(
+              "COMMANDE TOP SECRETE: Réservé aux membres de la Team Rocket !!\n" +
+                "Si vous avez perdu votre badge d'accès réservé aux internes,\n" +
+                "faites la commande 'rocket'",
+            ),
             ".hidden_key": file("SYLPHE-KEY-2026-MEWTWO-APPROVED"),
           }),
         }),

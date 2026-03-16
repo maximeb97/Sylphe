@@ -14,11 +14,6 @@ export default function robots(): MetadataRoute.Robots {
             "/hall-of-fame",
             "/beneath-stairs",
             "/white-room",
-            "/museum-null",
-            "/lavender-mirror",
-            "/cold-storage",
-            "/silph-subway",
-            "/printer-room",
           ],
         },
         {
@@ -52,6 +47,5 @@ export default function robots(): MetadataRoute.Robots {
           disallow: "/*",
         },
       ],
-      sitemap: "https://votre-domaine.com/sitemap.xml", // Remplacez par le vrai domaine
     };
 }

@@ -44,7 +44,7 @@ export default function StatsSection() {
   }, [isVisible]);
 
   const stats = [
-    { label: "EMPLOYÉS", value: counters.emp, max: 3000, color: "bg-[#58a858]" },
+    { label: "EMPLOYÉS", value: 1, max: 1, color: "bg-[#58a858]" },
     { label: "PROJETS", value: counters.proj, max: 1000, color: "bg-gba-blue" },
     { label: "SATISFACTION", value: counters.rev, max: 100, color: "bg-gba-accent" },
   ];

@@ -781,7 +781,7 @@ input[type="button"] {
   100% { transform: translateX(-10%); }
 }
 
-/* Spectral Fog — Silph Scope ghost residue */
+/* Spectral Fog — Scope Sylphe ghost residue */
 .weather-spectral-fog {
   background: radial-gradient(
     ellipse at 50% 80%,

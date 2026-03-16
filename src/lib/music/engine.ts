@@ -9,15 +9,75 @@
 const VOLUME_KEY = "sylphe_audio_volume";
 const MUTED_KEY = "sylphe_audio_muted";
 
+type ConsoleMethodName = "debug" | "error" | "info" | "log" | "warn";
+
+const STRUDEL_CONSOLE_METHODS: readonly ConsoleMethodName[] = [
+  "debug",
+  "error",
+  "info",
+  "log",
+  "warn",
+];
+const STRUDEL_STACK_PATTERNS = [
+  /[\\/]node_modules[\\/](?:@strudel|superdough)[\\/]/i,
+  /@strudel[\\/]/i,
+  /superdough/i,
+  /supradough/i,
+  /clockworker/i,
+  /sampler/i,
+  /cyclist/i,
+  /eval/i,
+  /webaudio/i,
+  /uBOL/i,
+  /getTrigger/i,
+];
+
 // ─── Singleton state ──────────────────────────────────────────────────────────
 
 let audioCtx: AudioContext | null = null;
 let masterGain: GainNode | null = null;
 let strudelScopePromise: Promise<void> | null = null;
+let strudelConsoleFilterInstalled = false;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let replInstance: any = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let replPromise: Promise<any> | null = null;
+
+function isStrudelConsoleCall(): boolean {
+  const stack = new Error().stack;
+  return typeof stack === "string"
+    ? STRUDEL_STACK_PATTERNS.some(pattern => pattern.test(stack))
+    : false;
+}
+
+function containsStrudelLog(args: unknown[]): boolean {
+  return args.some(arg => {
+    if (typeof arg === "string") {
+      return STRUDEL_STACK_PATTERNS.some(pattern => pattern.test(arg));
+    }
+    if (arg instanceof Error && typeof arg.stack === "string") {
+      return STRUDEL_STACK_PATTERNS.some(pattern =>
+        pattern.test(arg.stack as string),
+      );
+    }
+    return false;
+  });
+}
+
+function installStrudelConsoleFilter(): void {
+  if (strudelConsoleFilterInstalled || typeof window === "undefined") return;
+  strudelConsoleFilterInstalled = true;
+
+  for (const method of STRUDEL_CONSOLE_METHODS) {
+    const original = console[method].bind(console);
+    console[method] = ((...args: unknown[]) => {
+      if (isStrudelConsoleCall() || containsStrudelLog(args)) return;
+      original(...args);
+    }) as Console[ConsoleMethodName];
+  }
+}
+
+installStrudelConsoleFilter();
 
 // ─── AudioContext + master gain ───────────────────────────────────────────────
 

@@ -82,16 +82,15 @@ export default function Footer() {
       >
         JOURNAL DE BORD — DR FUJI — Le sujet 150 montre des capacites psychiques
         depassant toute mesure. Giovanni insiste pour accelerer. Mot de passe
-        casino: les triple 7 cachent Porygon-Z. Verifiez /humans.txt pour le
+        casino: les triple 7 cachent Porygon-Z. Verifiez <a href="/humans.txt">/humans.txt</a> pour le
         dernier message du developpeur piege. Les cuves de clonage sont au poste
         42. Le miroir spectral detecte trois spectres. La maison piege requiert
         un badge securite. L&apos;intranet Rocket ne se montre qu&apos;a
         Giovanni. La commande forensics compare les journaux du Musee Null, du
-        11e Etage et de la White Room. Le tunnel logistique /silph-subway relie
-        le hall au Musee Null si vous possedez le Passe Train. La chambre froide
-        /cold-storage contient des sauvegardes gelees depuis 1997. Soufflez au
-        micro ou reglez 5.0 MHz. La salle d&apos;impression /printer-room cache
-        un filigrane revelable uniquement en imprimant la page.
+        11e Etage et de la White Room. Le <a href="/silph-subway">tunnel logistique</a> relie
+        le hall au Musee Null si vous possedez le Passe Train. <a href="/cold-storage">La chambre froide
+        </a> contient des sauvegardes gelees depuis 1997. La <a href="/printer-room">salle d&apos;impression</a> cache
+        un filigrane.
       </div>
     </footer>
   );
