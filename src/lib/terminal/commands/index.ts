@@ -45,6 +45,7 @@ import {
   nanoCommand,
   nanoEditCommand,
   analyzeSampleCommand,
+  forensicsCommand,
 } from "./special";
 
 export function registerAllCommands() {
@@ -105,6 +106,7 @@ export function registerAllCommands() {
   registerCommand(nanoCommand);
   registerCommand(nanoEditCommand);
   registerCommand(analyzeSampleCommand);
+  registerCommand(forensicsCommand);
 
   // Aliases
   registerAlias("ll", "ls");

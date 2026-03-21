@@ -1,10 +1,41 @@
 import {
-  GRASS, TREE, FLOWER, WATER, BUILDING, WINDOW, DOOR,
-  PATH, IN_WALL, IN_FLOOR, PC_DESK, SKY, CLOUD,
-  KEY, TILE_COLORS, TILE_SIZE,
-  ROCKET_FLOOR, ROCKET_CRATE, BOSS_DESK, CYBER_FLOOR, CYBER_WALL,
-  GLITCH_TILE, GLITCH_WALL, VAT_BG, POKEBALL_FLOOR, POKEBALL_WALL,
-  CERULEAN_FLOOR, CERULEAN_WALL, CERULEAN_WATER, CERULEAN_STAIRS
+  GRASS,
+  TREE,
+  FLOWER,
+  WATER,
+  BUILDING,
+  WINDOW,
+  DOOR,
+  PATH,
+  IN_WALL,
+  IN_FLOOR,
+  PC_DESK,
+  SKY,
+  CLOUD,
+  KEY,
+  TILE_COLORS,
+  TILE_SIZE,
+  ROCKET_FLOOR,
+  ROCKET_CRATE,
+  BOSS_DESK,
+  CYBER_FLOOR,
+  CYBER_WALL,
+  GLITCH_TILE,
+  GLITCH_WALL,
+  VAT_BG,
+  POKEBALL_FLOOR,
+  POKEBALL_WALL,
+  CERULEAN_FLOOR,
+  CERULEAN_WALL,
+  CERULEAN_WATER,
+  CERULEAN_STAIRS,
+  CRYO_FLOOR,
+  CRYO_WALL,
+  SUBWAY_PLATFORM,
+  SUBWAY_TRACK,
+  SUBWAY_WALL,
+  PRINTER_FLOOR,
+  PRINTER_WALL,
 } from "./tiles";
 
 const TILE = TILE_SIZE;
@@ -39,27 +70,52 @@ export function drawTile(
   switch (tile) {
     case GRASS:
       if ((x + y) % 3 === 0) {
-        ctx.fillStyle = season === "Winter" ? "#d0d8e0" : (season === "Autumn" ? "#a88040" : "#78a048");
+        ctx.fillStyle =
+          season === "Winter"
+            ? "#d0d8e0"
+            : season === "Autumn"
+              ? "#a88040"
+              : "#78a048";
         ctx.fillRect(x * TILE + 2, y * TILE + 4, 2, 2);
         ctx.fillRect(x * TILE + 7, y * TILE + 8, 2, 2);
       }
       break;
 
     case TREE:
-      ctx.fillStyle = season === "Winter" ? "#d0d8e0" : (season === "Autumn" ? "#884010" : "#385020");
+      ctx.fillStyle =
+        season === "Winter"
+          ? "#d0d8e0"
+          : season === "Autumn"
+            ? "#884010"
+            : "#385020";
       ctx.fillRect(x * TILE + 2, y * TILE + 2, 8, 6);
-      ctx.fillStyle = season === "Winter" ? "#ffffff" : (season === "Autumn" ? "#c86018" : "#68a040");
+      ctx.fillStyle =
+        season === "Winter"
+          ? "#ffffff"
+          : season === "Autumn"
+            ? "#c86018"
+            : "#68a040";
       ctx.fillRect(x * TILE + 3, y * TILE + 3, 6, 4);
       ctx.fillStyle = "#604020";
       ctx.fillRect(x * TILE + 5, y * TILE + 8, 2, 4);
       break;
 
     case FLOWER: {
-      const flowerColor = season === "Winter" ? "#a0d0f0" : ((x + y) % 2 === 0 ? "#f85858" : "#f8d830");
+      const flowerColor =
+        season === "Winter"
+          ? "#a0d0f0"
+          : (x + y) % 2 === 0
+            ? "#f85858"
+            : "#f8d830";
       ctx.fillStyle = flowerColor;
       const bobY = Math.sin(frame * 0.05 + x * 0.5) * 1;
       ctx.fillRect(x * TILE + 4, y * TILE + 3 + bobY, 4, 4);
-      ctx.fillStyle = season === "Winter" ? "#c0d0e0" : (season === "Autumn" ? "#a88040" : "#507030");
+      ctx.fillStyle =
+        season === "Winter"
+          ? "#c0d0e0"
+          : season === "Autumn"
+            ? "#a88040"
+            : "#507030";
       ctx.fillRect(x * TILE + 5, y * TILE + 7, 2, 3);
       break;
     }
@@ -81,7 +137,8 @@ export function drawTile(
     }
 
     case WATER: {
-      const shade = Math.sin(frame * 0.08 + x * 0.3 + y * 0.3) > 0 ? "#4888e8" : "#68a8f8";
+      const shade =
+        Math.sin(frame * 0.08 + x * 0.3 + y * 0.3) > 0 ? "#4888e8" : "#68a8f8";
       ctx.fillStyle = shade;
       ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
       ctx.fillStyle = "#88c8f8";
@@ -173,7 +230,10 @@ export function drawTile(
     case ROCKET_FLOOR:
       // Subtle pulse
       const rPulse = Math.sin(frame * 0.05) * 5;
-      ctx.fillStyle = (x + y) % 2 === 0 ? `rgb(${26+rPulse}, ${26}, ${26})` : `rgb(${34+rPulse}, ${34}, ${34})`;
+      ctx.fillStyle =
+        (x + y) % 2 === 0
+          ? `rgb(${26 + rPulse}, ${26}, ${26})`
+          : `rgb(${34 + rPulse}, ${34}, ${34})`;
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
       break;
     case ROCKET_CRATE:
@@ -186,7 +246,12 @@ export function drawTile(
       ctx.fillStyle = "#400000";
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
       ctx.fillStyle = "#ff3333";
-      ctx.fillRect(x * TILE + 1, y * TILE + Math.sin(frame * 0.1) * 2 + 5, 2, 2);
+      ctx.fillRect(
+        x * TILE + 1,
+        y * TILE + Math.sin(frame * 0.1) * 2 + 5,
+        2,
+        2,
+      );
       break;
     case CYBER_FLOOR: {
       // Dynamic color shifting blue/red as requested
@@ -195,13 +260,19 @@ export function drawTile(
       const b = Math.floor(128 - 127 * phase);
       ctx.fillStyle = `rgba(${r}, 0, ${b}, 0.2)`;
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
-      
-      ctx.strokeStyle = phase > 0 ? "rgba(255, 0, 85, 0.4)" : "rgba(0, 255, 255, 0.4)";
+
+      ctx.strokeStyle =
+        phase > 0 ? "rgba(255, 0, 85, 0.4)" : "rgba(0, 255, 255, 0.4)";
       ctx.strokeRect(x * TILE, y * TILE, TILE, TILE);
       break;
     }
     case CYBER_WALL:
-      ctx.fillStyle = Math.random() > 0.05 ? (Math.sin(frame * 0.05 + y) > 0 ? "#00ffff" : "#ff0055") : "#ffffff";
+      ctx.fillStyle =
+        Math.random() > 0.05
+          ? Math.sin(frame * 0.05 + y) > 0
+            ? "#00ffff"
+            : "#ff0055"
+          : "#ffffff";
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
       break;
     case GLITCH_TILE:
@@ -210,7 +281,12 @@ export function drawTile(
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
       if (Math.random() > 0.8) {
         ctx.fillStyle = Math.random() > 0.5 ? "magenta" : "cyan";
-        ctx.fillRect(x * TILE + Math.random() * TILE, y * TILE + Math.random() * TILE, 4, 4);
+        ctx.fillRect(
+          x * TILE + Math.random() * TILE,
+          y * TILE + Math.random() * TILE,
+          4,
+          4,
+        );
       }
       break;
     case VAT_BG:
@@ -224,26 +300,26 @@ export function drawTile(
       let color = "#ffffff";
       if (y < 5) color = "#cc0000";
       else if (y === 5 || y === 6) color = "#000000";
-      
+
       if (isWall) {
-          if (y < 5) color = "#880000";
-          else if (y === 5 || y === 6) color = "#222222";
-          else color = "#aaaaaa";
+        if (y < 5) color = "#880000";
+        else if (y === 5 || y === 6) color = "#222222";
+        else color = "#aaaaaa";
       }
-      
+
       ctx.fillStyle = color;
       ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
-      
+
       // Button animation
       if (y >= 4 && y <= 7 && x >= 8 && x <= 11) {
         const isCenter = (y === 5 || y === 6) && (x === 9 || x === 10);
         if (isCenter && Math.sin(frame * 0.1) > 0) {
-            ctx.fillStyle = "#ffaaaa"; // pulsing button
+          ctx.fillStyle = "#ffaaaa"; // pulsing button
         } else {
-            ctx.fillStyle = isCenter ? "#ffffff" : "#000000";
+          ctx.fillStyle = isCenter ? "#ffffff" : "#000000";
         }
         if (!((x === 8 || x === 11) && (y === 4 || y === 7))) {
-           ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+          ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
         }
       }
       break;
@@ -276,10 +352,76 @@ export function drawTile(
         ctx.fillRect(x * TILE + 1, y * TILE + 2 + i * 2, TILE - 2, 1);
       }
       break;
+
+    case CRYO_FLOOR:
+      ctx.fillStyle = (x + y) % 2 === 0 ? "#1b364b" : "#203d54";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = `rgba(176, 230, 255, ${0.08 + Math.max(0, Math.sin(frame * 0.05 + x * 0.4 + y * 0.3)) * 0.1})`;
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      break;
+
+    case CRYO_WALL:
+      ctx.fillStyle = "#081521";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#123047";
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      ctx.fillStyle = "rgba(180, 240, 255, 0.12)";
+      ctx.fillRect(x * TILE + 2, y * TILE + 2, TILE - 4, 1);
+      break;
+
+    case SUBWAY_PLATFORM:
+      ctx.fillStyle = (x + y) % 2 === 0 ? "#383847" : "#404050";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "rgba(130, 130, 170, 0.18)";
+      ctx.fillRect(x * TILE, y * TILE + TILE - 3, TILE, 2);
+      break;
+
+    case SUBWAY_TRACK:
+      ctx.fillStyle = "#23232d";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#56566b";
+      ctx.fillRect(x * TILE + 1, y * TILE + 3, TILE - 2, 1);
+      ctx.fillRect(x * TILE + 1, y * TILE + TILE - 4, TILE - 2, 1);
+      ctx.fillStyle = "#353542";
+      for (let i = 0; i < 3; i++) {
+        ctx.fillRect(x * TILE + 2 + i * 3, y * TILE + 4, 1, TILE - 8);
+      }
+      break;
+
+    case SUBWAY_WALL:
+      ctx.fillStyle = "#14141f";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#222232";
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      break;
+
+    case PRINTER_FLOOR:
+      ctx.fillStyle = (x + y) % 2 === 0 ? "#2d2930" : "#342f37";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      break;
+
+    case PRINTER_WALL:
+      ctx.fillStyle = "#17141a";
+      ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+      ctx.fillStyle = "#231f27";
+      ctx.fillRect(x * TILE + 1, y * TILE + 1, TILE - 2, TILE - 2);
+      break;
   }
 
   // Subtle grid lines (skip sky/cloud/wall/cyber)
-  if (tile !== SKY && tile !== CLOUD && tile !== IN_WALL && tile !== CYBER_FLOOR && tile !== POKEBALL_WALL && tile !== GLITCH_WALL) {
+  if (
+    tile !== SKY &&
+    tile !== CLOUD &&
+    tile !== IN_WALL &&
+    tile !== CYBER_FLOOR &&
+    tile !== POKEBALL_WALL &&
+    tile !== GLITCH_WALL &&
+    tile !== CRYO_WALL &&
+    tile !== SUBWAY_WALL &&
+    tile !== PRINTER_WALL
+  ) {
     ctx.strokeStyle = "rgba(0,0,0,0.05)";
     ctx.strokeRect(x * TILE, y * TILE, TILE, TILE);
   }

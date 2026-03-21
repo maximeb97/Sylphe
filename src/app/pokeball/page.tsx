@@ -2,27 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useMusic } from "@/hooks/useMusic";
+import { useGameProgression } from "@/hooks/useGameProgression";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, {
   CustomNPC,
 } from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
-import {
-  NEUTRAL_NPC_SPRITE,
-  MEW_SPRITE,
-  MEWTWO_SPRITE,
-  PORYGON_SPRITE,
-  KABUTO_SPRITE,
-  FANTOMINUS_SPRITE,
-  LAPRAS_SPRITE,
-  ELECTRODE_SPRITE,
-} from "@/components/PixelSprite";
+import { NEUTRAL_NPC_SPRITE } from "@/components/PixelSprite";
 import { POKEBALL_FLOOR, POKEBALL_WALL } from "@/components/tilemap/tiles";
 
 import { useRouter } from "next/navigation";
 import { playPokemonCry } from "@/lib/audio";
-import { hasRecentCyberVisit, setGameFlag } from "@/lib/gameState";
+import { setGameFlag } from "@/lib/gameState";
 import WeatherOverlay from "@/components/WeatherOverlay";
 
 const MAP_W = 20;
@@ -92,50 +84,37 @@ function rollAmbientEvent(options: {
 export default function PokeballInterior() {
   const router = useRouter();
   const { actions } = useMusic();
+  const progression = useGameProgression();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
-  const hasMew =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_mew_captured") === "true";
-  const hasMewtwo =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_mewtwo_captured") === "true";
-  const hasPrototype151 =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_prototype_151") === "true";
-  const hasPorygonEcho =
-    (typeof window !== "undefined" &&
-      localStorage.getItem("sylphe_porygon_echo") === "true") ||
-    hasRecentCyberVisit();
-  const hasKabuto =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_kabuto_captured") === "true";
-  const hasFantominus =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_fantominus_captured") === "true";
-  const hasLapras =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_lapras_captured") === "true";
-  const hasElectrode =
-    typeof window !== "undefined" &&
-    localStorage.getItem("sylphe_electrode_captured") === "true";
-  const capturedCount =
-    Number(hasMew) +
-    Number(hasMewtwo) +
-    Number(hasKabuto) +
-    Number(hasFantominus) +
-    Number(hasLapras) +
-    Number(hasElectrode);
-  const hasTriangulatedBiosphere = hasMew && hasMewtwo && hasPorygonEcho;
+  const npcs = useMemo<CustomNPC[]>(
+    () =>
+      progression.pokeballOccupants.map(occupant => ({
+        id: occupant.id,
+        x: occupant.x,
+        y: occupant.y,
+        sprite: occupant.sprite,
+        type: occupant.type,
+      })),
+    [progression.pokeballOccupants],
+  );
+  const occupantMap = useMemo(
+    () => new Map(progression.pokeballOccupants.map(occupant => [occupant.id, occupant])),
+    [progression.pokeballOccupants],
+  );
   const ambientEvent = useMemo(
     () =>
       rollAmbientEvent({
-        capturedCount,
-        hasPrototype151,
-        hasTriangulatedBiosphere,
+        capturedCount: progression.capturedCount,
+        hasPrototype151: progression.hasPrototype151,
+        hasTriangulatedBiosphere: progression.hasTriangulatedBiosphere,
       }),
-    [capturedCount, hasPrototype151, hasTriangulatedBiosphere],
+    [
+      progression.capturedCount,
+      progression.hasPrototype151,
+      progression.hasTriangulatedBiosphere,
+    ],
   );
 
   useEffect(() => {
@@ -145,89 +124,6 @@ export default function PokeballInterior() {
     }
   }, [ambientEvent, actions]);
 
-  const npcs: CustomNPC[] = [
-    ...(hasMew
-      ? [{ id: "mew", x: 7, y: 5, sprite: MEW_SPRITE, type: "wander" as const }]
-      : []),
-    ...(hasMewtwo
-      ? [
-          {
-            id: "mewtwo",
-            x: 13,
-            y: 5,
-            sprite: MEWTWO_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-    ...(hasPrototype151
-      ? [
-          {
-            id: "echo151",
-            x: 10,
-            y: 3,
-            sprite: MEW_SPRITE,
-            type: "static" as const,
-          },
-        ]
-      : []),
-    ...(hasPorygonEcho
-      ? [
-          {
-            id: "porygon",
-            x: 10,
-            y: 7,
-            sprite: PORYGON_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-    ...(hasKabuto
-      ? [
-          {
-            id: "kabuto",
-            x: 5,
-            y: 8,
-            sprite: KABUTO_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-    ...(hasFantominus
-      ? [
-          {
-            id: "fantominus",
-            x: 14,
-            y: 3,
-            sprite: FANTOMINUS_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-    ...(hasLapras
-      ? [
-          {
-            id: "lapras",
-            x: 4,
-            y: 4,
-            sprite: LAPRAS_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-    ...(hasElectrode
-      ? [
-          {
-            id: "electrode",
-            x: 15,
-            y: 8,
-            sprite: ELECTRODE_SPRITE,
-            type: "wander" as const,
-          },
-        ]
-      : []),
-  ];
-
   const handleInteract = (
     tile: number,
     x: number,
@@ -236,67 +132,33 @@ export default function PokeballInterior() {
   ) => {
     setIsTypewriterDone(false);
     setForceComplete(false);
-    if (npcId === "mew") {
-      playPokemonCry(151);
-      actions.playOneShot("sfx-dialog");
+    if (npcId) {
+      const occupant = occupantMap.get(npcId);
+      if (!occupant) return;
+
+      if (occupant.interaction.cryId) {
+        playPokemonCry(occupant.interaction.cryId);
+      }
+      if (occupant.interaction.oneShot) {
+        actions.playOneShot(occupant.interaction.oneShot);
+      }
+      if (occupant.interaction.temporarySequence) {
+        actions.activateTemporarySequence(occupant.interaction.temporarySequence);
+      }
+
+      setDialog(occupant.interaction.dialog(progression.pokeballDialogContext));
+      return;
+    }
+
+    if (tile === POKEBALL_WALL) {
       setDialog(
-        hasTriangulatedBiosphere
-          ? "Mew glisse d'un point d'ancrage a l'autre. La biosphere triangulee semble repondre a ses mouvements."
-          : "Mew voltige joyeusement dans cet espace infini...",
-      );
-    } else if (npcId === "mewtwo") {
-      playPokemonCry(150);
-      actions.activateTemporarySequence("bio-surge");
-      setDialog(
-        hasTriangulatedBiosphere
-          ? "Mewtwo ne force plus sa cage. Le clone #150 inspecte les lignes de force reliees a Mew et Porygon."
-          : hasPrototype151
-            ? "Mewtwo tourne autour de l'echo 151 sans jamais l'atteindre. Le clone semble reconnaitre son origine."
-            : "Mewtwo flotte en silence. La Masterball interieure est devenue sa salle de contention volontaire.",
-      );
-    } else if (npcId === "echo151") {
-      actions.activateTemporarySequence("bio-surge");
-      setDialog(
-        hasMew
-          ? "L'archive 151 se tait. Le sujet originel a finalement retrouve une forme stable."
-          : "Une silhouette blanche clignote dans la coque: 'Je n'etais pas le clone. J'etais le modele.'",
-      );
-    } else if (npcId === "porygon") {
-      playPokemonCry(137);
-      setDialog(
-        hasTriangulatedBiosphere
-          ? "Porygon triangule la capsule depuis le noeud 42. Les trois presences convertissent la Pokeball en biosphere auto-cartographiee."
-          : "Porygon materialise une passerelle de donnees dans la Pokeball blanche. Les archives suggerent maintenant la commande terminale `archive-debug`.",
-      );
-    } else if (npcId === "kabuto") {
-      playPokemonCry(140);
-      setDialog(
-        "Kabuto dessine des demi-lunes fossiles dans la poussiere claire de la capsule. Il explore les bords comme une maree miniature.",
-      );
-    } else if (npcId === "fantominus") {
-      playPokemonCry(92);
-      setDialog(
-        "Fantominus se condense puis s'effiloche contre la coque interieure. Meme ici, il prefere les angles morts.",
-      );
-    } else if (npcId === "lapras") {
-      playPokemonCry(131);
-      setDialog(
-        "Lapras glisse en silence dans la Masterball blanche. La capsule ressemble maintenant a un quai de maintenance minuscule et vivant.",
-      );
-    } else if (npcId === "electrode") {
-      playPokemonCry(101);
-      setDialog(
-        "Electrode roule nerveusement le long de la coque interieure. Meme capture, il traite encore la Pokeball comme un tableau electrique a court-circuiter.",
-      );
-    } else if (tile === POKEBALL_WALL) {
-      setDialog(
-        hasTriangulatedBiosphere
+        progression.hasTriangulatedBiosphere
           ? "Les parois ont change de geometrie. La Masterball n'est plus vide: c'est un habitat triangule, presque vivant."
-          : hasPrototype151
+          : progression.hasPrototype151
             ? "Les parois vibrent. Une inscription apparait puis disparait: pr0t0type_151."
-            : capturedCount > 1
+            : progression.capturedCount > 1
               ? "La Masterball blanche pulse comme un biotope artificiel. Les sujets captures s'y deplacent librement."
-              : hasMew
+              : progression.flags.sylphe_mew_captured
                 ? "La paroi de la Masterball. C'est confortable à l'intérieur."
                 : "La Masterball est vide... Un immense espace blanc vide.",
       );
@@ -323,15 +185,15 @@ export default function PokeballInterior() {
     <GBAShell>
       <section className="relative tile-bg pixel-grid bg-white overflow-hidden h-full">
         <WeatherOverlay />
-        {hasPrototype151 && (
+        {progression.hasPrototype151 && (
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(248,168,184,0.35),transparent_35%)] pointer-events-none z-10" />
         )}
-        {hasTriangulatedBiosphere && (
+        {progression.hasTriangulatedBiosphere && (
           <div className="absolute inset-0 pointer-events-none z-10 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(123,203,255,0.22),rgba(255,170,210,0.18),rgba(124,255,186,0.2),rgba(123,203,255,0.22))] mix-blend-multiply" />
         )}
-        {capturedCount > 0 && (
+        {progression.capturedCount > 0 && (
           <div className="absolute top-2 left-2 z-20 border-2 border-gba-window-border bg-white/80 px-3 py-2 text-[7px] leading-[14px] text-gba-text">
-            SANCTUAIRE CAPTURES: {capturedCount}
+            SANCTUAIRE CAPTURES: {progression.capturedCount}
           </div>
         )}
         {ambientEvent && (
@@ -350,7 +212,7 @@ export default function PokeballInterior() {
             npcs={npcs}
             onInteract={handleInteract}
             onPlayerMove={handlePlayerMove}
-            className={`w-full h-auto ${hasPrototype151 ? "saturate-125 hue-rotate-[12deg]" : ""} ${hasTriangulatedBiosphere ? "contrast-110 saturate-150" : ""}`}
+            className={`w-full h-auto ${progression.hasPrototype151 ? "saturate-125 hue-rotate-[12deg]" : ""} ${progression.hasTriangulatedBiosphere ? "contrast-110 saturate-150" : ""}`}
           />
 
           {dialog && (

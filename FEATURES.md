@@ -113,12 +113,25 @@ Voici une vingtaine de propositions audacieuses tirant parti des technologies we
 
 ## Nouvelles idees (Phase 9)
 
-- [ ] Route `/cold-storage`: une chambre froide ou les anciennes sauvegardes Pokemon gelent en boucle. En soufflant dans le micro ou en activant une frequence radio precise, on reveille Lokhlass Archive.
-- [ ] Mini-quete `/silph-subway`: un ancien tunnel logistique sous Safrania. Si le joueur possede le passe Train Magnetique, un wagon fantome apparait et transporte vers une aile archivee temporaire.
+- [x] Route `/cold-storage`: une chambre froide ou les anciennes sauvegardes Pokemon gelent en boucle. En soufflant dans le micro ou en activant une frequence radio precise, on reveille Lokhlass Archive.
+- [x] Mini-quete `/silph-subway`: un ancien tunnel logistique sous Safrania. Si le joueur possede le passe Train Magnetique, un wagon fantome apparait et transporte vers une aile archivee temporaire.
 - [x] Capturer un Electrode de securite dans le 11e etage si l'utilisateur coupe manuellement trois disjoncteurs en moins de 20 secondes.
-- [ ] Ajouter un mode `forensics` dans le terminal qui compare les journaux du Musee Null, du 11e etage et de la White Room pour reconstituer la vraie chronologie de Maxime et du Projet M.
-- [ ] Quete meta `/printer-room`: imprimer une page du navigateur ou generer un PDF du site revele un filigrane secret avec une route cachee et un mot de passe de labo.
-- [ ] Branche `Lavender Emergency Line`: si le joueur appelle poste 7 puis va immediatement au `Miroir Spectral`, un Spectrum corporate peut etre capture a la place de Fantominus sur une variante rare.
+- [x] Ajouter un mode `forensics` dans le terminal qui compare les journaux du Musee Null, du 11e etage et de la White Room pour reconstituer la vraie chronologie de Maxime et du Projet M.
+- [x] Quete meta `/printer-room`: imprimer une page du navigateur ou generer un PDF du site revele un filigrane secret avec une route cachee et un mot de passe de labo.
+- [x] Branche `Lavender Emergency Line`: si le joueur appelle poste 7 puis va immediatement au `Miroir Spectral`, un Spectrum corporate peut etre capture a la place de Fantominus sur une variante rare.
+
+## Nouvelles idees (Phase 10)
+
+- [ ] Route `/power-plant`: une ancienne centrale electrique abandonnee sous Safrania. Electrode sauvages et generatrices instables. Capturer un Magneton en stabilisant 4 bobines en sequence rapide.
+- [ ] Commande terminal `wiretap`: ecouter les communications internes Rocket en direct. Revele des dialogues entre Giovanni et le Dr Fuji que le joueur peut intercepter.
+- [ ] Route `/dream-lab`: un laboratoire de reves artificiel ou le joueur peut revivre les souvenirs de Mewtwo en navigant dans un monde onirique. Capturer un Soporifik en le battant dans son propre reve.
+- [ ] Quete `Porygon Upgrade`: Si le joueur possede Porygon Echo + Casino Porygon-Z, un menu special dans `/cyberspace` permet de fusionner les deux en Porygon2. Le joueur doit resoudre un puzzle binaire.
+- [ ] Route `/radio-tower`: une tour radio emettant sur toutes les frequences. Le joueur peut composer des frequences inedites pour reveler des messages caches de l'equipe de developpement. Capturer un Magneti flottant dans les ondes.
+- [ ] Quete `DNA Splice`: Si le joueur possede Mew + Mewtwo + Archive 151, un evenement special dans la Chambre 042 permet de fusionner temporairement les trois entites en un specimen unique qui revele la vraie nature du Projet M.
+- [ ] Easter egg `View Source`: cacher des commentaires HTML sur certaines pages qui servent d'indices pour une quete supplementaire. Le joueur doit collecter 5 fragments caches dans le code source de 5 pages differentes.
+- [ ] Mini-jeu `/training-grounds`: un terrain d'entrainement virtual ou le joueur peut faire combattre ses Pokemon captures entre eux dans un systeme tour par tour simplifie.
+- [ ] Quete `Time Capsule`: un easter egg lie a la date du systeme. Si le joueur visite le site le jour de son anniversaire (10 mars), un Celebi apparait dans la White Room avec un message temporel special.
+- [ ] Route `/server-room`: la salle serveur principale de Sylphe Corp. Des racks de serveurs clignotent. Le joueur peut physiquement debrancher/rebrancher des cables (drag & drop) pour reveler des donnees corrompues et eventuellement capturer un Porygon-Z sauvage.
 
 ## Suite immediate
 

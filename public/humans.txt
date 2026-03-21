@@ -28,6 +28,12 @@ La nuit, j'entends le cri du Sujet 151 dans les murs.
 Si quelqu'un voit ce message: ne faites PAS confiance à la Team Rocket.
 Le Casino de Céladopole est une couverture. L'Intranet contient des preuves.
 
+/* ADDENDUM */
+Le sous-sol LVL -1 abrite une imprimante qui cache des filigranes dans le papier.
+Le sous-sol LVL -3 contient une chambre froide avec des sauvegardes gelées.
+Un ancien tunnel logistique relie le hall au Musée Null. Passe Train requis.
+La commande `forensics` reconstitue ce que trois lieux tentent d'oublier.
+
 P.S. — Mon mot de passe terminal est toujours `pr0t0type_151`.
       N'en parlez à personne.
 

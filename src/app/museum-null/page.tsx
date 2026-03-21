@@ -112,7 +112,7 @@ export default function MuseumNullPage() {
       actions.activateTemporarySequence("null-resonance", 3);
       setDialog(
         hasNullBadge
-          ? "Conservateur: Vous avez deja vu la vraie collection. Le badge NULL suffit a contredire toutes nos brochures."
+          ? "Conservateur: Vous avez deja vu la vraie collection. Le badge NULL suffit a contredire toutes nos brochures. Au fait... le tunnel logistique sous nos pieds (/silph-subway) est cense ne plus exister."
           : "Conservateur: Bienvenue dans le musee que la direction nie en public. Ici, les trophées couvrent surtout ce qu'on a efface.",
       );
       return;

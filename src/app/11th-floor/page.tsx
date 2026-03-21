@@ -215,7 +215,7 @@ export default function EleventhFloor() {
         setMaximeRescued(true);
         setGameFlag("sylphe_maxime_rescued");
         setDialog(
-          "MAXIME: Merci. J'ai laisse un canal maintenance stable vers le 11e. Lokhlass transportait mes sauvegardes et refusait de quitter l'etage tant que j'y restais.",
+          "MAXIME: Merci. J'ai laisse un canal maintenance stable vers le 11e. Lokhlass transportait mes sauvegardes et refusait de quitter l'etage tant que j'y restais. Et en dessous... au -3, il y a une chambre froide (/cold-storage) avec des sauvegardes gelees depuis 1997.",
         );
         return;
       }

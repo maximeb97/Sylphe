@@ -180,6 +180,36 @@ export const INVENTORY_ITEMS: InventoryItemDefinition[] = [
       "Batterie vivante de securite capturee lors d'une surcharge volontaire du 11e etage.",
   },
   {
+    key: "sylphe_lapras_archive_captured",
+    name: "LOKHLASS ARCHIVE (CAPTURED)",
+    detail:
+      "Archive vivante reveillée dans la chambre froide cryogenique. Porte la memoire de milliers de sauvegardes oubliees.",
+  },
+  {
+    key: "sylphe_spectrum_captured",
+    name: "SPECTRUM CORPORATE (CAPTURED)",
+    detail:
+      "Variante rare capturee via la Ligne d'Urgence de Lavanville. Porte les souvenirs des employes effaces.",
+  },
+  {
+    key: "sylphe_forensics_complete",
+    name: "RAPPORT FORENSICS",
+    detail:
+      "Reconstitution croisee des journaux du Musee Null, du 11e Etage et de la White Room. La triple operation de suppression est documentee.",
+  },
+  {
+    key: "sylphe_watermark_revealed",
+    name: "FILIGRANE REVELE",
+    detail:
+      "Le mot de passe CRYO-FUJI-151 est apparu lors de l'impression d'un document classifie.",
+  },
+  {
+    key: "sylphe_subway_archive_found",
+    name: "ARCHIVES LOGISTIQUES",
+    detail:
+      "Documents recuperes dans le tunnel logistique abandonné via le wagon fantome.",
+  },
+  {
     key: "sylphe_maxime_rescued",
     name: "DEVELOPPEUR EXFILTRE",
     detail:
@@ -296,6 +326,19 @@ export const MAP_DEFINITIONS: MapDefinition[] = [
     href: "/cloning-pod-b",
     name: "POD CLONAGE B",
   },
+  {
+    href: "/cold-storage",
+    name: "CHAMBRE FROIDE",
+  },
+  {
+    href: "/silph-subway",
+    name: "SYLPHE SUBWAY",
+    unlockKey: "sylphe_magnet_train_pass",
+  },
+  {
+    href: "/printer-room",
+    name: "SALLE D'IMPRESSION",
+  },
 ];
 
 function readVisitedMaps(): string[] {
@@ -312,6 +355,15 @@ function readVisitedMaps(): string[] {
   } catch {
     return [];
   }
+}
+
+export function readGameFlag(key: string): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(key) === "true";
+}
+
+export function readGameFlags(keys: string[]): Record<string, boolean> {
+  return Object.fromEntries(keys.map(key => [key, readGameFlag(key)]));
 }
 
 export function emitGameStateChange() {
@@ -360,9 +412,7 @@ export function hasRecentCyberVisit(maxAgeMs: number = 120000): boolean {
 
 export function getUnlockedInventoryItems(): InventoryItemDefinition[] {
   if (typeof window === "undefined") return [];
-  return INVENTORY_ITEMS.filter(
-    item => localStorage.getItem(item.key) === "true",
-  );
+  return INVENTORY_ITEMS.filter(item => readGameFlag(item.key));
 }
 
 export function getVisitedMaps(): MapDefinition[] {
@@ -372,7 +422,7 @@ export function getVisitedMaps(): MapDefinition[] {
   return MAP_DEFINITIONS.filter(map => {
     if (!visited.has(map.href)) return false;
     if (!map.unlockKey) return true;
-    return localStorage.getItem(map.unlockKey) === "true";
+    return readGameFlag(map.unlockKey);
   });
 }
 

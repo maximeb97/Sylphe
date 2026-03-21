@@ -14,7 +14,13 @@ const routeMap: [string, RouteMusicConfig][] = [
   // Labs / Cloning
   ["/cloning-pod-a", { trackId: "cloning-chamber" }],
   ["/cloning-pod-b", { trackId: "cloning-chamber" }],
-  ["/mew-cloning-chamber-042", { trackId: "cloning-chamber", defaultSequences: ["clone-drone", "machinery", "tension"] }],
+  [
+    "/mew-cloning-chamber-042",
+    {
+      trackId: "cloning-chamber",
+      defaultSequences: ["clone-drone", "machinery", "tension"],
+    },
+  ],
 
   // Pokeball interior
   ["/pokeball", { trackId: "pokeball" }],
@@ -24,7 +30,13 @@ const routeMap: [string, RouteMusicConfig][] = [
 
   // Ghost / Spectral — unique track
   ["/lavender-mirror", { trackId: "lavender-mirror" }],
-  ["/spectre-mirror", { trackId: "lavender-mirror", defaultSequences: ["whisper", "ghost-steps"] }],
+  [
+    "/spectre-mirror",
+    {
+      trackId: "lavender-mirror",
+      defaultSequences: ["whisper", "ghost-steps"],
+    },
+  ],
 
   // Each lab/corporate route gets its own track
   ["/rocket-hq", { trackId: "rocket-hq" }],
@@ -45,7 +57,15 @@ const routeMap: [string, RouteMusicConfig][] = [
   ["/museum-null", { trackId: "museum-null" }],
   ["/hall-of-fame", { trackId: "hall-of-fame" }],
   ["/pc-bill", { trackId: "pc-bill" }],
-  ["/test-capture", { trackId: "overworld", defaultSequences: ["bass", "drums"] }],
+  [
+    "/test-capture",
+    { trackId: "overworld", defaultSequences: ["bass", "drums"] },
+  ],
+
+  // Phase 9
+  ["/cold-storage", { trackId: "cold-storage" }],
+  ["/silph-subway", { trackId: "silph-subway" }],
+  ["/printer-room", { trackId: "printer-room" }],
 ];
 
 export function getRouteMusicConfig(

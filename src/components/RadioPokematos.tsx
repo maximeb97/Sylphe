@@ -45,7 +45,9 @@ export default function RadioPokematos() {
     // Special frequencies
     if (Math.abs(freq - 20.5) < 0.6) {
       // Pokeflute frequency
-      setMessage("🎵 La melodie de la Pokeflute resonne... Un Ronflex se reveille quelque part !");
+      setMessage(
+        "🎵 La melodie de la Pokeflute resonne... Un Ronflex se reveille quelque part !",
+      );
       if (typeof window !== "undefined") {
         localStorage.setItem("sylphe_pokeflute_played", "true");
         window.dispatchEvent(new Event("storage"));
@@ -61,7 +63,9 @@ export default function RadioPokematos() {
       }
     } else if (Math.abs(freq - 10.5) < 0.3) {
       // Lavender frequency
-      setMessage("👻 ...des murmures... 'Sujet 151... nous t'attendons...' ...le signal s'affaiblit...");
+      setMessage(
+        "👻 ...des murmures... 'Sujet 151... nous t'attendons...' ...le signal s'affaiblit...",
+      );
       if (typeof window !== "undefined") {
         localStorage.setItem("sylphe_lavender_whisper", "true");
         window.dispatchEvent(new Event("storage"));
@@ -71,9 +75,23 @@ export default function RadioPokematos() {
         gainRef.current.gain.value = 0.02;
       }
     } else if (Math.abs(freq - 42.0) < 0.3) {
-      setMessage("📡 Signal inconnu... 'La reponse est 42. Mais quelle etait la question ?'");
+      setMessage(
+        "📡 Signal inconnu... 'La reponse est 42. Mais quelle etait la question ?'",
+      );
     } else if (Math.abs(freq - 151.0) < 0.3) {
-      setMessage("⚡ Frequence interdite ! Signal du Sujet 151 detecte sur cette bande !");
+      setMessage(
+        "⚡ Frequence interdite ! Signal du Sujet 151 detecte sur cette bande !",
+      );
+    } else if (Math.abs(freq - 5.0) < 0.4) {
+      // Cryo-thaw frequency for cold storage
+      setMessage(
+        "❄️ Signal thermique emis... Les cuves cryogeniques du sous-sol reagissent. Route: <a href='/cold-storage'>Chambre froide</a>",
+      );
+      if (typeof window !== "undefined") {
+        localStorage.setItem("sylphe_cryo_thaw", "true");
+        window.dispatchEvent(new Event("storage"));
+        window.dispatchEvent(new Event("sylphe_state_change"));
+      }
     } else {
       setMessage(null);
     }
@@ -127,12 +145,13 @@ export default function RadioPokematos() {
         <span>200 MHz</span>
       </div>
       {message && (
-        <p className="text-[6px] text-gba-accent mt-1 leading-[9px] animate-pulse">
-          {message}
-        </p>
+        <p
+          className="text-[6px] text-gba-accent mt-1 leading-[9px] animate-pulse"
+          dangerouslySetInnerHTML={{ __html: message }}
+        ></p>
       )}
-      <p className="text-[5px] text-[#333] mt-1 text-center">
-        Frequences speciales: 10.5 / 20.5 / 42.0 / 151.0
+      <p className="hidden text-[5px] text-[#333] mt-1 text-center">
+        Frequences speciales: 5.0 / 10.5 / 20.5 / 42.0 / 151.0
       </p>
     </div>
   );

@@ -16,6 +16,9 @@ export default function robots(): MetadataRoute.Robots {
             "/white-room",
             "/museum-null",
             "/lavender-mirror",
+            "/cold-storage",
+            "/silph-subway",
+            "/printer-room",
           ],
         },
         {

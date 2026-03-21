@@ -7,6 +7,8 @@ const GHOST_ROUTES = [
   { href: "/mt-moon-cavern", label: "GROTTE SELENITE", icon: "🦇" },
   { href: "/spectre-mirror", label: "MIROIR SPECTRAL", icon: "👻" },
   { href: "/lavender-mirror", label: "LAVANVILLE", icon: "💀" },
+  { href: "/cold-storage", label: "CHAMBRE FROIDE", icon: "❄️" },
+  { href: "/silph-subway", label: "TUNNEL SYLPHE", icon: "🚇" },
 ];
 
 export default function MidnightGhosts() {

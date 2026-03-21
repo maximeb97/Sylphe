@@ -16,6 +16,8 @@ import PixelSprite, {
   FANTOMINUS_SPRITE,
   LAPRAS_SPRITE,
   ELECTRODE_SPRITE,
+  LAPRAS_ARCHIVE_SPRITE,
+  SPECTRUM_SPRITE,
 } from "@/components/PixelSprite";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
@@ -134,6 +136,24 @@ const team = [
     desc: "Batterie vivante capturee au coeur d'une surcharge du 11e etage. Son humeur reste aussi stable que les circuits Rocket.",
     sprite: ELECTRODE_SPRITE,
   },
+  {
+    name: "CRYO-ARCHIVE",
+    title: "Lokhlass Archive",
+    level: 47,
+    hp: 98,
+    maxHp: 98,
+    desc: "Archive vivante extraite de la chambre froide cryogenique. Porte la memoire de milliers de sauvegardes oubliees depuis 1997.",
+    sprite: LAPRAS_ARCHIVE_SPRITE,
+  },
+  {
+    name: "CORPORATE",
+    title: "Spectrum Corporate",
+    level: 33,
+    hp: 42,
+    maxHp: 42,
+    desc: "Variante rare capturee via la Ligne d'Urgence de Lavanville. Empreinte psychique collective des employes effaces de Sylphe Corp.",
+    sprite: SPECTRUM_SPRITE,
+  },
 ];
 
 export default function TeamSection() {
@@ -150,6 +170,8 @@ export default function TeamSection() {
   const [showFantominus, setShowFantominus] = useState(false);
   const [showLapras, setShowLapras] = useState(false);
   const [showElectrode, setShowElectrode] = useState(false);
+  const [showLaprasArchive, setShowLaprasArchive] = useState(false);
+  const [showSpectrum, setShowSpectrum] = useState(false);
   const [maximeRescued, setMaximeRescued] = useState(false);
   const [hasArchivePortal, setHasArchivePortal] = useState(false);
   const [porygonSyncCount, setPorygonSyncCount] = useState(0);
@@ -170,6 +192,12 @@ export default function TeamSection() {
       setShowFantominus(localStorage.getItem("sylphe_fantominus_captured") === "true");
       setShowLapras(localStorage.getItem("sylphe_lapras_captured") === "true");
       setShowElectrode(localStorage.getItem("sylphe_electrode_captured") === "true");
+      setShowLaprasArchive(
+        localStorage.getItem("sylphe_lapras_archive_captured") === "true",
+      );
+      setShowSpectrum(
+        localStorage.getItem("sylphe_spectrum_captured") === "true",
+      );
       setMaximeRescued(localStorage.getItem("sylphe_maxime_rescued") === "true");
       setHasArchivePortal(
         localStorage.getItem("sylphe_archive_debug") === "true" ||
@@ -192,6 +220,8 @@ export default function TeamSection() {
     if (m.title === "Fantominus") return showFantominus;
     if (m.title === "Lapras") return showLapras;
     if (m.title === "Electrode") return showElectrode;
+    if (m.title === "Lokhlass Archive") return showLaprasArchive;
+    if (m.title === "Spectrum Corporate") return showSpectrum;
     return true;
   });
 

@@ -42,6 +42,7 @@ Le terminal Sylphe est le coeur de nombreuses quetes. Il se trouve via l'ordinat
 - `defrag`: lance le mini-jeu de defragmentation Porygon. Necessite Porygon Echo et Glitch City deverrouilles. Revele la commande `reconstruct`.
 - `reconstruct`: reconstitue les archives defragmentees par Porygon. Accessible uniquement apres `defrag`.
 - `sylphedex`: consulte le Pokedex interne Sylphe Corp. avec fiches truquees et variantes selon la progression du joueur.
+- `forensics`: compare les journaux du Musee Null, du 11e Etage et de la White Room pour reconstituer la chronologie croisee du Projet M. Necessite au moins un des trois journaux.
 
 Ces commandes ne sont plus listees directement dans `help` ni dans l'autocompletion standard du terminal.
 
@@ -208,7 +209,7 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 
 ### Inventaire
 
-- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, Badge NULL, Mirror Tag, Kabuto capture, Fantominus capture, Lokhlass capture, Electrode capture, etc.
+- L'inventaire liste les objets lore reels: carte d'acces, Masterball, Scope Sylphe, Prototype 151, Porygon Echo, PASS SYSTEME, indice White Room, Concordance 151, Badge NULL, Mirror Tag, Kabuto capture, Fantominus capture, Lokhlass capture, Electrode capture, Lokhlass Archive capture, Spectrum Corporate capture, Rapport Forensics, Filigrane Revele, Archives Logistiques, etc.
 
 ### Maps visitees
 
@@ -745,3 +746,168 @@ Ces commandes ne sont plus listees directement dans `help` ni dans l'autocomplet
 
 - La commande `containment` affiche la condition `11F-OVERLOAD` si tous les prerequis de surcharge sont reunis et qu'Electrode n'a pas encore ete capture.
 - Cet indice est l'unique hint in-game pour orienter le joueur vers la variante rare.
+
+## 39. Chambre Froide (`/cold-storage`)
+
+### Acces
+
+- Route directe `/cold-storage`. Apparait dans les routes fantomes a minuit.
+- Indice donne par Maxime apres son sauvetage au 11e etage (il mentionne le -3 et les sauvegardes gelees).
+- Le filigrane imprime depuis `/printer-room` revele aussi le mot de passe CRYO-FUJI-151 et la route.
+- La Radio Pokematos sur la frequence 5.0 MHz pose le flag `sylphe_cryo_thaw` et mentionne /cold-storage.
+- Indice CSS cache dans le Footer (texte transparent).
+- Mentionne dans `humans.txt`.
+
+### Mecanique
+
+- La chambre froide contient 8 cuves cryogeniques avec des sauvegardes Pokemon gelees en boucle infinie.
+- La map est plongee dans un climat glacial (-42°C). Le joueur peut se deplacer et interagir avec les cuves.
+- Pour reveiller LOKHLASS ARCHIVE (cuve 06), le joueur doit atteindre un niveau de degel de 80%:
+  - **Methode 1**: Activer le micro et souffler. Le bruit basse-frequence (souffle) augmente le niveau de degel progressivement.
+  - **Methode 2**: Regler la Radio Pokematos sur 5.0 MHz, ce qui pose le flag `sylphe_cryo_thaw` et ajoute +50% de degel d'un coup.
+- Une fois Lokhlass Archive reveille, le terminal central permet de lancer la capture si la Masterball est disponible.
+
+### Capture de Lokhlass Archive
+
+- Sequence: BattleTransition (gradient bleu glace) puis PokemonCaptureSequence.
+- Le flag `sylphe_lapras_archive_captured` est pose.
+- Lokhlass Archive rejoint la Team et la Pokeball interieure.
+- Son sprite est une variante cristalline du Lokhlass classique, aux teintes plus froides.
+
+## 40. Tunnel Logistique Sylphe (`/silph-subway`)
+
+### Acces
+
+- Route directe `/silph-subway`. Apparait dans les routes fantomes a minuit.
+- Le conservateur du Musee Null mentionne le tunnel logistique sous ses pieds si le Badge NULL est obtenu.
+- Indice CSS cache dans le Footer (texte transparent).
+- Mentionne dans `humans.txt`.
+
+### Mecanique
+
+- Un ancien tunnel logistique sous Safrania, avec une voie de train abandonnee.
+- Si le joueur possede le Passe Train Magnetique (`sylphe_magnet_train_pass`), un wagon fantome apparait apres 8 secondes.
+- Le wagon traverse le tunnel et s'arrete devant la Porte des Archives (violette).
+- Le joueur peut interagir avec les signaux d'aiguillage pour les activer.
+
+### Archives Logistiques
+
+- La Porte des Archives s'ouvre uniquement quand le wagon fantome est arrive ET le Passe Train est possede.
+- 4 documents d'archives sont lisibles, revelant:
+  - Des transferts de materiel biologique marques '151-ALPHA'.
+  - L'existence de wagons fantomes non programmes sur la voie B.
+  - Un Lokhlass signale dans le tunnel de refroidissement.
+  - La connexion entre le hall et le Musee Null, supprimee des plans officiels.
+- Le flag `sylphe_subway_archive_found` est pose.
+
+## 41. Salle d'Impression (`/printer-room`)
+
+### Acces
+
+- Route directe `/printer-room`.
+- Leo/Bill mentionne l'imprimante du sous-sol (-1) et la route `/printer-room` dans ses notes personnelles (`/pc-bill`).
+- Indice CSS cache dans le Footer (texte transparent).
+- Mentionne dans `humans.txt`.
+
+### Mecanique
+
+- Une salle au sous-sol -1 avec 4 imprimantes, des piles de papier, une dechiqueteuse et des classeurs.
+- Les imprimantes delivrent 4 documents successifs, dont 3 portent un filigrane presque invisible.
+- Le filigrane contient le mot de passe CRYO-FUJI-151 et la route `/cold-storage`.
+
+### Filigrane Imprimable
+
+- Le filigrane est volontairement invisible a l'ecran (opacity tres basse).
+- Si le joueur imprime reellement la page (Ctrl+P), une zone `print:flex` apparait avec le filigrane en clair.
+- L'evenement `beforeprint` / `afterprint` detecte l'impression et pose les flags `sylphe_watermark_revealed` et `sylphe_printer_room_complete`.
+
+### Dechiqueteuse
+
+- Interagir 4 fois avec la dechiqueteuse revele des fragments: '...CRYO...', '...FUJI...', '...151...'.
+- Apres 4 interactions, le mot de passe CRYO-FUJI-151 est reconstitue et le flag `sylphe_shredder_clue` est pose.
+- C'est un chemin alternatif pour obtenir le mot de passe sans imprimer.
+
+## 42. Commande terminal `forensics`
+
+### Acces
+
+- Commande cachee (non listee dans help).
+- Indice dans les textes CSS caches du Footer.
+- Indice dans `humans.txt`.
+
+### Prerequis
+
+- Au moins un des trois journaux doit etre disponible:
+  - Badge NULL (`sylphe_null_badge`) → journal du Musee Null.
+  - Maxime rescapé (`sylphe_maxime_rescued`) → journal du 11e Etage.
+  - Concordance 151 (`sylphe_archive_151_reconciled`) → journal de la White Room.
+
+### Contenu
+
+- Chaque source fournit une chronologie contextuelle (1996-2026).
+- Avec 2+ sources, une analyse croisee revele les 3 phases paralleles du Projet M:
+  1. Musee NULL — effacement du patrimoine.
+  2. 11e Etage — confinement des temoins humains.
+  3. White Room — isolation de la memoire originelle.
+- Avec les 3 sources, la conclusion complete est affichee et le flag `sylphe_forensics_complete` est pose.
+
+## 43. Ligne d'Urgence de Lavanville (Lavender Emergency Line)
+
+### Condition
+
+- Le joueur doit avoir deverrouille le Miroir de Lavanville (`sylphe_lavender_mirror_unlocked`).
+- La derniere route visitee doit etre `/lavender-mirror` et le delai depuis la derniere visite doit etre inferieur a 2 minutes.
+- Le joueur doit posseder la Masterball.
+- Le Spectrum Corporate ne doit pas encore avoir ete capture.
+
+### Effet
+
+- Au lieu de capturer Fantominus a la fin du Miroir Spectral, un SPECTRUM CORPORATE se materialise.
+- Le Spectrum Corporate est une variante rare portant les souvenirs des employes effaces de Sylphe Corp.
+- Sequence: BattleTransition puis PokemonCaptureSequence avec sprite violet distinct.
+- Le flag `sylphe_spectrum_captured` est pose.
+- Spectrum Corporate rejoint la Team et la Pokeball interieure.
+
+### Note
+
+- Cette capture remplace Fantominus dans cette session. Si le joueur veut Fantominus, il doit revenir sans activer la Ligne d'Urgence (attendre plus de 2 minutes ou ne pas passer par Lavender Mirror avant).
+
+## 44. Quetes Phase 9+
+
+### Quete O: Degeler les archives cryogeniques
+
+1. Trouver l'indice de la Chambre Froide (Maxime au 11e etage, ou Salle d'Impression, ou Radio 5.0 MHz).
+2. Aller sur `/cold-storage`.
+3. Souffler dans le micro ou regler la radio sur 5.0 MHz pour degeler les cuves.
+4. Interagir avec le terminal central pour capturer Lokhlass Archive.
+
+### Quete P: Explorer le Tunnel Logistique
+
+1. Obtenir le Passe Train Magnetique (spoof GPS vers Tokyo).
+2. Trouver l'indice du tunnel (conservateur du Musee Null ou textes caches).
+3. Aller sur `/silph-subway`.
+4. Attendre le wagon fantome.
+5. Interagir avec la Porte des Archives pour lire les 4 documents logistiques.
+
+### Quete Q: Reveler le filigrane
+
+1. Trouver l'indice de la Salle d'Impression (Notes de Leo dans `/pc-bill`).
+2. Aller sur `/printer-room`.
+3. Interagir avec les imprimantes pour recuperer les documents.
+4. Imprimer la page (Ctrl+P) pour reveler le filigrane secret.
+5. Ou fouiller la dechiqueteuse 4 fois pour reconstituer le mot de passe.
+6. Utiliser le mot de passe CRYO-FUJI-151 pour acceder a la Chambre Froide.
+
+### Quete R: Reconstitution forensique
+
+1. Obtenir au moins 2 des 3 journaux: Badge NULL, Maxime rescapé, Concordance 151.
+2. Taper `forensics` dans le terminal.
+3. Si les 3 sources sont reunies, la reconstitution complete est deverrouillee.
+
+### Quete S: Capturer le Spectrum Corporate (variante rare)
+
+1. Deverrouiller le Miroir de Lavanville (`/lavender-mirror`).
+2. Visiter `/lavender-mirror`.
+3. Quitter immediatement et aller sur `/spectre-mirror` en moins de 2 minutes.
+4. Capturer les 3 spectres normaux.
+5. Le Spectrum Corporate apparait a la place de Fantominus.

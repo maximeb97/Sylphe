@@ -43,6 +43,13 @@ export const MIRROR_FLOOR = 42;
 export const CLONE_POD = 43;
 export const LOGIN_FLOOR = 44;
 export const LOGIN_DESK = 45;
+export const CRYO_FLOOR = 46;
+export const CRYO_WALL = 47;
+export const SUBWAY_PLATFORM = 48;
+export const SUBWAY_TRACK = 49;
+export const SUBWAY_WALL = 50;
+export const PRINTER_FLOOR = 51;
+export const PRINTER_WALL = 52;
 
 /* ===== Tile-to-color mapping ===== */
 export const TILE_COLORS: Record<number, string> = {
@@ -75,6 +82,13 @@ export const TILE_COLORS: Record<number, string> = {
   [CLONE_POD]: "#00ff88",
   [LOGIN_FLOOR]: "#e8e8e8",
   [LOGIN_DESK]: "#6a6a8a",
+  [CRYO_FLOOR]: "#193044",
+  [CRYO_WALL]: "#0a1622",
+  [SUBWAY_PLATFORM]: "#3a3a4a",
+  [SUBWAY_TRACK]: "#24242d",
+  [SUBWAY_WALL]: "#171724",
+  [PRINTER_FLOOR]: "#2d2a2f",
+  [PRINTER_WALL]: "#18161b",
 };
 
 /* ===== Tile rendering size ===== */
@@ -102,7 +116,11 @@ export function isWalkableInside(tile: number): boolean {
     tile === RETRO_FLOOR ||
     tile === TRICK_FLOOR ||
     tile === MIRROR_FLOOR ||
-    tile === LOGIN_FLOOR
+    tile === LOGIN_FLOOR ||
+    tile === CRYO_FLOOR ||
+    tile === SUBWAY_PLATFORM ||
+    tile === SUBWAY_TRACK ||
+    tile === PRINTER_FLOOR
   );
 }
 

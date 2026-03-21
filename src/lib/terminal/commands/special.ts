@@ -1419,3 +1419,180 @@ export const analyzeSampleCommand: Command = {
     setGameFlag("sylphe_sample_analyzed");
   },
 };
+
+export const forensicsCommand: Command = {
+  name: "forensics",
+  description: "Reconstituer la chronologie croisee du Projet M",
+  usage: "forensics",
+  hidden: true,
+  execute(_args: string[], ctx: CommandContext) {
+    if (typeof window === "undefined") return;
+
+    const hasNull = readFlag("sylphe_null_badge");
+    const has11F = readFlag("sylphe_maxime_rescued");
+    const hasWhite = readFlag("sylphe_archive_151_reconciled");
+
+    if (!hasNull && !has11F && !hasWhite) {
+      ctx.addLine({
+        type: "error",
+        content: "FORENSICS: Aucun journal disponible pour la comparaison.",
+      });
+      ctx.addLine({
+        type: "system",
+        content:
+          "Indice: Les archives du <a href='/museum-null' style='color: blue;'>Musee Null</a>, du <a href='/11th-floor' style='color: blue;'>11e Etage</a> et de la <a href='/white-room' style='color: blue;'>White Room</a> contiennent des journaux complementaires.",
+      });
+      return;
+    }
+
+    ctx.addLine({
+      type: "system",
+      content: "--- MODE FORENSICS — COMPARAISON CROISEE DES JOURNAUX ---",
+    });
+    ctx.addLine({ type: "output", content: "" });
+
+    const sources: string[] = [];
+    if (hasNull) sources.push("MUSEE_NULL");
+    if (has11F) sources.push("11E_ETAGE");
+    if (hasWhite) sources.push("WHITE_ROOM");
+
+    ctx.addLine({
+      type: "system",
+      content: `Sources chargees: [${sources.join(", ")}] (${sources.length}/3)`,
+    });
+    ctx.addLine({ type: "output", content: "" });
+
+    if (hasNull) {
+      ctx.addLine({
+        type: "system",
+        content: "[MUSEE_NULL // REGISTRE PATRIMOINE]",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.03 — Inauguration de l'aile NULL. Les brochures omettent le sous-sol.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.09 — Le conservateur decouvre un artefact non catalogue: une plume spectrale.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1997.01 — L'aile est retiree des plans publics. Le Badge NULL devient le seul acces.",
+      });
+      ctx.addLine({ type: "output", content: "" });
+    }
+
+    if (has11F) {
+      ctx.addLine({
+        type: "system",
+        content: "[11E_ETAGE // JOURNAL DE CONFINEMENT]",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.08 — Maxime est affecte au developpement des systemes de surveillance du 11e etage.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.12 — Les serveurs cryogeniques tombent en panne. Lokhlass Archive est detecte dans le systeme de refroidissement.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1997.03 — Maxime tente d'alerter la direction sur les anomalies du Projet M. Il est confine au 11e etage par mesure de securite.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "2026.03 — Maxime est libere. Il confirme que le 11e etage servait de prison pour quiconque questionnait le Projet M.",
+      });
+      ctx.addLine({ type: "output", content: "" });
+    }
+
+    if (hasWhite) {
+      ctx.addLine({
+        type: "system",
+        content: "[WHITE_ROOM // MEMOIRE ORIGINELLE]",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.04 — Le Sujet 151 est place hors-catalogue. Sa memoire est isolee dans la White Room.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1996.10 — Le Dr Fuji note que 151 resiste a l'effacement. Contrairement au clone 150, l'original refuse l'oubli.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "1997.06 — La White Room est scellee. Seul un acte de concordance peut la rouvrir.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "2026.03 — La concordance est atteinte. L'archive 151 cesse de se fragmenter.",
+      });
+      ctx.addLine({ type: "output", content: "" });
+    }
+
+    // Cross-reference analysis
+    ctx.addLine({ type: "system", content: "[ANALYSE CROISEE]" });
+
+    if (sources.length >= 2) {
+      ctx.addLine({
+        type: "output",
+        content:
+          "CONVERGENCE: Les trois lieux confirment que le Projet M a opere en trois phases paralleles:",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "  1. MUSEE NULL — effacement du patrimoine pour masquer les origines.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "  2. 11E ETAGE — confinement des temoins humains qui posaient des questions.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "  3. WHITE ROOM — isolation de la memoire originelle du Sujet 151.",
+      });
+    }
+
+    if (sources.length === 3) {
+      ctx.addLine({ type: "output", content: "" });
+      ctx.addLine({
+        type: "system",
+        content: "[CONCLUSION FORENSICS]",
+      });
+      ctx.addLine({
+        type: "output",
+        content: "Le Projet M n'etait pas seulement un programme de clonage.",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "C'etait une triple operation de suppression: effacer l'histoire (NULL), enfermer les voix (11F), et nier l'original (151).",
+      });
+      ctx.addLine({
+        type: "output",
+        content:
+          "Maxime, le conservateur et l'archive 151 sont les trois temoins que le systeme n'a pas reussi a supprimer.",
+      });
+      setGameFlag("sylphe_forensics_complete");
+    } else {
+      ctx.addLine({
+        type: "output",
+        content: `Analyse incomplete. ${3 - sources.length} source(s) manquante(s) pour la reconstitution totale.`,
+      });
+    }
+  },
+};

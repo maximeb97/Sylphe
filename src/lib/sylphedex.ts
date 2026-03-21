@@ -244,5 +244,47 @@ export function getSylphedexEntries(): SylphedexEntry[] {
     });
   }
 
+  // LOKHLASS ARCHIVE — Cold Storage
+  if (readFlag("sylphe_lapras_archive_captured")) {
+    entries.push({
+      id: "#131-A",
+      name: "LOKHLASS ARCHIVE",
+      type: "EAU / GLACE [ARCHIVE]",
+      classification: "SPECIMEN CRYOGENIQUE / SERVEUR DE SAUVEGARDE",
+      status:
+        "CAPTURE — Extrait de la chambre froide cryogenique apres degel force.",
+      notes: [
+        "Variante archivistique de Lokhlass, fusionne avec les serveurs de sauvegarde depuis 1997.",
+        "Porte la memoire de milliers de parties interrompues, gelees en boucle infinie.",
+        "Le degel peut etre provoque par souffle au micro ou par la frequence 5.0 MHz de la Radio Pokematos.",
+        hasScope
+          ? "Le Scope detecte des fragments de donnees de sauvegarde dans son aura glaciale."
+          : "Son corps semble contenir des cristaux de donnees numeriques.",
+      ],
+      restricted: true,
+    });
+  }
+
+  // SPECTRUM CORPORATE — Lavender Emergency Line
+  if (readFlag("sylphe_spectrum_captured")) {
+    entries.push({
+      id: "#93-C",
+      name: "SPECTRUM CORPORATE",
+      type: "POISON / SPECTRE [CORPORATE]",
+      classification: "VARIANTE RARE / LIGNE D'URGENCE LAVANVILLE",
+      status:
+        "CAPTURE — Materialise via la Ligne d'Urgence de Lavanville dans le Miroir Spectral.",
+      notes: [
+        "Ce Spectrum n'est pas un pokemon sauvage. Il s'agit d'une empreinte psychique collective des employes effaces de Sylphe Corp.",
+        "Il ne se manifeste que si le joueur appelle le poste 7 (Lavender Mirror) puis rejoint immediatement le Miroir Spectral.",
+        "Sa capture remplace celle de Fantominus lors de cette variante rare.",
+        hasNullBadge
+          ? "Le Badge NULL confirme que ces employes existaient dans l'aile effacee du Musee."
+          : "L'identite exacte des employes qu'il represente reste inconnue.",
+      ],
+      restricted: true,
+    });
+  }
+
   return entries;
 }

@@ -9,7 +9,7 @@ import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
 import TypewriterText from "@/components/TypewriterText";
-import { FANTOMINUS_SPRITE } from "@/components/PixelSprite";
+import { FANTOMINUS_SPRITE, SPECTRUM_SPRITE } from "@/components/PixelSprite";
 
 const GHOSTS = [
   { name: "ECTOPLASMA", x: 0.3, y: 0.4, size: 40 },
@@ -28,16 +28,41 @@ export default function SpectreMirror() {
   const [ghostsSpotted, setGhostsSpotted] = useState<Set<string>>(new Set());
   const [showGhost, setShowGhost] = useState(false);
   const [showBattleTransition, setShowBattleTransition] = useState(false);
-  const [captureTarget, setCaptureTarget] = useState<"fantominus" | null>(null);
+  const [captureTarget, setCaptureTarget] = useState<
+    "fantominus" | "spectrum" | null
+  >(null);
   const [hasFantominus, setHasFantominus] = useState(
     () =>
       typeof window !== "undefined" &&
       localStorage.getItem("sylphe_fantominus_captured") === "true",
   );
+  const [hasSpectrum, setHasSpectrum] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      localStorage.getItem("sylphe_spectrum_captured") === "true",
+  );
+  // Lavender Emergency Line: if player called poste 7 and came here quickly
+  const [isEmergencyLine, setIsEmergencyLine] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
   const streamRef = useRef<MediaStream | null>(null);
+
+  // Check Lavender Emergency Line condition
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const lavenderUnlocked =
+      localStorage.getItem("sylphe_lavender_mirror_unlocked") === "true";
+    const lastRoute = localStorage.getItem("sylphe_last_route");
+    const lastRouteAt = Number(
+      localStorage.getItem("sylphe_last_route_at") || "0",
+    );
+    const isRecentLavender =
+      lastRoute === "/lavender-mirror" && Date.now() - lastRouteAt < 120000;
+    if (lavenderUnlocked && isRecentLavender && !hasSpectrum) {
+      setIsEmergencyLine(true);
+    }
+  }, [hasSpectrum]);
 
   const startCamera = useCallback(async () => {
     try {
@@ -190,18 +215,26 @@ export default function SpectreMirror() {
 
       if (nextSpotted.size >= GHOSTS.length) {
         setGameFlag("sylphe_spectre_mirror_complete");
-        if (
+        const hasMasterball =
           typeof window !== "undefined" &&
-          localStorage.getItem("sylphe_masterball_unlocked") === "true" &&
-          !hasFantominus
-        ) {
+          localStorage.getItem("sylphe_masterball_unlocked") === "true";
+
+        // Lavender Emergency Line: capture Spectrum corporate instead
+        if (isEmergencyLine && hasMasterball && !hasSpectrum) {
+          setTimeout(() => {
+            setCaptureTarget("spectrum");
+            setShowBattleTransition(true);
+          }, 1200);
+        } else if (hasMasterball && !hasFantominus) {
           setTimeout(() => {
             setCaptureTarget("fantominus");
             setShowBattleTransition(true);
           }, 1200);
         } else {
           setTimeout(() => {
-            setDialog("Tous les spectres ont ete documentes. Le miroir revele un reflet different: le votre porte maintenant la marque du Scope.");
+            setDialog(
+              "Tous les spectres ont ete documentes. Le miroir revele un reflet different: le votre porte maintenant la marque du Scope.",
+            );
           }, 3000);
         }
       }
@@ -213,8 +246,20 @@ export default function SpectreMirror() {
     setHasFantominus(true);
     setGameFlag("sylphe_fantominus_captured");
     actions.playOneShot("sfx-capture");
-    setDialog("Le reflet se condense en une seule respiration violette. FANTOMINUS est capture, et le miroir garde votre contour en archive.");
-  }, []);
+    setDialog(
+      "Le reflet se condense en une seule respiration violette. FANTOMINUS est capture, et le miroir garde votre contour en archive.",
+    );
+  }, [actions]);
+
+  const handleSpectrumCaptureComplete = useCallback(() => {
+    setCaptureTarget(null);
+    setHasSpectrum(true);
+    setGameFlag("sylphe_spectrum_captured");
+    actions.playOneShot("sfx-capture");
+    setDialog(
+      "Le SPECTRUM CORPORATE se solidifie. Cette variante rare porte les memoires des employes de Sylphe Corp. effaces des registres. La ligne d'urgence de Lavanville l'a attire hors du miroir.",
+    );
+  }, [actions]);
 
   // Cleanup camera stream
   useEffect(() => {
@@ -235,15 +280,26 @@ export default function SpectreMirror() {
       <section className="relative bg-[#0a0a12] h-full overflow-hidden">
         <div className="bg-[#12121a] border-b border-[#2a2a3a] text-[#6a6a9a] text-[8px] px-4 py-2 flex justify-between items-center z-10 relative select-none">
           <span>📍 MIROIR SPECTRAL // SCOPE ACTIF</span>
-          <span className="opacity-60">SPECTRES: {ghostsSpotted.size}/{GHOSTS.length}</span>
+          <span className="opacity-60">
+            SPECTRES: {ghostsSpotted.size}/{GHOSTS.length}
+          </span>
         </div>
 
         {!cameraActive && permission !== "denied" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0a0a12]/95">
             <div className="text-[#6a6a9a] text-[8px] text-center leading-[16px] mb-6 max-w-[220px]">
-              <p className="mb-4">Le Scope Sylphe vibre. Il detecte des anomalies spectrales dans cette zone.</p>
-              <p className="mb-4">Pour les voir, le Scope doit analyser votre environnement reel via la camera.</p>
-              <p className="text-[#4a4a7a]">Un filtre Gameboy sera applique. Cliquez sur les spectres quand ils apparaissent derriere vous.</p>
+              <p className="mb-4">
+                Le Scope Sylphe vibre. Il detecte des anomalies spectrales dans
+                cette zone.
+              </p>
+              <p className="mb-4">
+                Pour les voir, le Scope doit analyser votre environnement reel
+                via la camera.
+              </p>
+              <p className="text-[#4a4a7a]">
+                Un filtre Gameboy sera applique. Cliquez sur les spectres quand
+                ils apparaissent derriere vous.
+              </p>
             </div>
             <button
               onClick={startCamera}
@@ -256,12 +312,22 @@ export default function SpectreMirror() {
 
         {permission === "denied" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0a0a12]/95">
-            <p className="text-[#4a4a7a] text-[8px]">Camera requise pour le miroir spectral.</p>
-<Link href="/" className="mt-4 text-[#6a6a9a] text-[7px] hover:text-[#8a8aba]">RETOUR AU HALL</Link>
+            <p className="text-[#4a4a7a] text-[8px]">
+              Camera requise pour le miroir spectral.
+            </p>
+            <Link
+              href="/"
+              className="mt-4 text-[#6a6a9a] text-[7px] hover:text-[#8a8aba]"
+            >
+              RETOUR AU HALL
+            </Link>
           </div>
         )}
 
-        <div className="relative isolate h-full flex items-center justify-center" onClick={handleCapture}>
+        <div
+          className="relative isolate h-full flex items-center justify-center"
+          onClick={handleCapture}
+        >
           <video ref={videoRef} className="hidden" playsInline muted />
           <canvas
             ref={canvasRef}
@@ -270,7 +336,9 @@ export default function SpectreMirror() {
           />
 
           {showBattleTransition && (
-            <BattleTransition onComplete={() => setShowBattleTransition(false)} />
+            <BattleTransition
+              onComplete={() => setShowBattleTransition(false)}
+            />
           )}
 
           {captureTarget === "fantominus" && !showBattleTransition && (
@@ -280,6 +348,16 @@ export default function SpectreMirror() {
               accentClassName="from-[#eee8ff] via-[#b38cff] to-[#3a255f]"
               introText="Tous les residus spectraux fusionnent enfin. Une forme stable ose se montrer derriere vous."
               onComplete={handleFantominusCaptureComplete}
+            />
+          )}
+
+          {captureTarget === "spectrum" && !showBattleTransition && (
+            <PokemonCaptureSequence
+              pokemonName="Spectrum Corporate"
+              pokemonSprite={SPECTRUM_SPRITE}
+              accentClassName="from-[#d8c8f8] via-[#9868c8] to-[#2a1a4a]"
+              introText="La ligne d'urgence de Lavanville resonne encore. Un SPECTRUM CORPORATE se materialise — variante rare, portant les souvenirs des employes effaces de Sylphe Corp."
+              onComplete={handleSpectrumCaptureComplete}
             />
           )}
 
@@ -295,9 +373,15 @@ export default function SpectreMirror() {
 
         {dialog && (
           <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
-            <DialogBox isClickable={isTypewriterDone} onClick={handleDialogClick}>
+            <DialogBox
+              isClickable={isTypewriterDone}
+              onClick={handleDialogClick}
+            >
               <TypewriterText
-                key={dialog} text={dialog} speed={40} forceComplete={forceComplete}
+                key={dialog}
+                text={dialog}
+                speed={40}
+                forceComplete={forceComplete}
                 className="text-[8px] md:text-[9px] leading-[18px] text-gba-text block"
                 onComplete={() => setIsTypewriterDone(true)}
               />

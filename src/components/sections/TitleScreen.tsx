@@ -54,7 +54,7 @@ export default function TitleScreen({ onStart }: { onStart: () => void }) {
           className="relative z-10 mt-10 text-[9px] text-gba-white tracking-wider"
           style={{ animation: "pixel-pulse 1.5s ease-in-out infinite" }}
         >
-          ▶ PRESS START ◀
+          ▶ ENTRER ◀
         </button>
       )}
 

@@ -25,6 +25,9 @@ import { sfxCaptureTrack } from "./sfxCapture";
 import { sfxPuzzleTrack } from "./sfxPuzzle";
 import { sfxGhostTrack } from "./sfxGhost";
 import { sfxSlotTrack } from "./sfxSlot";
+import { coldStorageTrack } from "./coldStorage";
+import { silphSubwayTrack } from "./silphSubway";
+import { printerRoomTrack } from "./printerRoom";
 
 const trackMap = new Map<string, MusicTrack>();
 
@@ -55,6 +58,9 @@ const allTracks: MusicTrack[] = [
   sfxPuzzleTrack,
   sfxGhostTrack,
   sfxSlotTrack,
+  coldStorageTrack,
+  silphSubwayTrack,
+  printerRoomTrack,
 ];
 
 for (const track of allTracks) {

@@ -114,6 +114,11 @@ const NOTES = [
   "Le premier est dans /cyberspace,",
   "le second dans /glitch-city.",
   "",
+  "NOTE: L'imprimante du sous-sol (-1)",
+  "imprime des documents avec un filigrane",
+  "que je n'arrive pas a lire a l'ecran.",
+  "Route: /printer-room",
+  "",
   "Si tu lis ceci et que tu n'es pas moi,",
   "tape 'reconstruct' dans le terminal.",
 ];
