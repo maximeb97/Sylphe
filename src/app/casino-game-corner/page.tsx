@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -15,6 +16,7 @@ function readFlag(key: string) {
 }
 
 export default function CasinoGameCorner() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>("Bienvenue au Casino clandestin de Celadopole. Les machines a sous sont alimentees par Porygon.");
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -39,6 +41,7 @@ export default function CasinoGameCorner() {
 
     if (allSame && finalReels[0] === 4) {
       setCoins(prev => prev + 777);
+      actions.activateTemporarySequence("jackpot-frenzy");
       if (!porygonZUnlocked) {
         setPorygonZUnlocked(true);
         setGameFlag("sylphe_casino_porygon_z");
@@ -66,6 +69,7 @@ export default function CasinoGameCorner() {
     if (spinning || coins < 10 || ransomware) return;
     setCoins(prev => prev - 10);
     setSpinning(true);
+    actions.playOneShot("sfx-slot");
     const newPlays = plays + 1;
     setPlays(newPlays);
 

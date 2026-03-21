@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
@@ -37,6 +38,7 @@ const archivePhases = [
 
 export default function WhiteRoomPage() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -97,6 +99,7 @@ export default function WhiteRoomPage() {
 
       setRitualOpen(true);
       setArchiveStep(0);
+      actions.activateTemporarySequence("reconciliation");
       return;
     }
 
@@ -138,6 +141,8 @@ export default function WhiteRoomPage() {
       setGameFlag("sylphe_archive_151_reconciled");
       setRitualOpen(false);
       setArchiveStep(0);
+      actions.toggleSequence("reconciliation");
+      actions.playOneShot("sfx-puzzle");
       setDialog(
         "La White Room s'apaise. L'archive 151 n'est plus une erreur a contenir, mais une presence reconnue du systeme Sylphe.",
       );

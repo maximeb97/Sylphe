@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import BattleTransition from "@/components/BattleTransition";
@@ -38,6 +39,7 @@ const MEW_MAP: number[][] = Array(MAP_H).fill(0).map((_, y) =>
 
 export default function MewChamber() {
     const router = useRouter();
+    const { actions } = useMusic();
     const [dialog, setDialog] = useState<string | null>(null);
     const [isTypewriterDone, setIsTypewriterDone] = useState(false);
     const [forceComplete, setForceComplete] = useState(false);
@@ -64,6 +66,7 @@ export default function MewChamber() {
             setHasAccess(true);
             setIsPasswordPrompt(false);
             setDialog(null);
+            actions.playOneShot("sfx-puzzle");
         } else {
             setDialog("MOT DE PASSE INCORRECT. ALARME ACTIVÉE.");
         }
@@ -88,6 +91,7 @@ export default function MewChamber() {
             } else if (hasMasterball) {
                 setCaptureTarget("mewtwo");
                 setShowBattleTransition(true);
+                actions.activateTemporarySequence("alarm");
             } else {
                 setDialog("Le monstre endormi dans la cuve émet une onde psychique terrifiante, mais reste figé.");
             }
@@ -103,6 +107,8 @@ export default function MewChamber() {
     const handleCaptureComplete = () => {
         setCaptureTarget(null);
         setGameFlag("sylphe_mewtwo_captured");
+        actions.clearTemporarySequence();
+        actions.playOneShot("sfx-capture");
         setDialog(hasPrototype151 ? "La MASTERBALL absorbe le clone #150. Les capteurs indiquent une resonance immediate avec l'archive 151." : "Le clone instable #150 se déchaîne... Vous lancez la MASTERBALL ! Mewtwo a été capturé avec succès !");
     };
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
+import { useMusic } from "@/hooks/useMusic";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
 import {
@@ -41,6 +42,7 @@ const BENEATH_STAIRS_MAP: number[][] = Array(MAP_H)
 
 export default function BeneathStairsPage() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -166,6 +168,7 @@ export default function BeneathStairsPage() {
         return;
       }
 
+      actions.activateTemporarySequence("void-call");
       router.push("/white-room");
     }
   };

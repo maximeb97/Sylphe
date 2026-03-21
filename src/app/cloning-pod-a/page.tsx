@@ -5,6 +5,7 @@ import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import { setGameFlag } from "@/lib/gameState";
+import { useMusic } from "@/hooks/useMusic";
 
 const POD_LABEL = "A";
 const PARTNER_LABEL = "B";
@@ -17,6 +18,7 @@ type PodMessage = {
 };
 
 export default function CloningPodA() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -53,6 +55,8 @@ export default function CloningPodA() {
             channel.postMessage({ pod: POD_LABEL, action: "synced", timestamp: Date.now() });
             setSynced(true);
             setGameFlag("sylphe_pod_synced");
+            actions.clearTemporarySequence();
+            actions.playOneShot("sfx-puzzle");
             setDialog("SYNCHRONISATION ADN REUSSIE ! Les deux cuves se stabilisent parfaitement. Le clone est viable !");
           } else {
             setDialog("Pod B a lance la stabilisation ! Appuyez MAINTENANT sur STABILISER dans les 3 secondes !");
@@ -66,6 +70,8 @@ export default function CloningPodA() {
         } else if (msg.action === "synced") {
           setSynced(true);
           setGameFlag("sylphe_pod_synced");
+          actions.clearTemporarySequence();
+          actions.playOneShot("sfx-puzzle");
           setDialog("SYNCHRONISATION CONFIRMEE ! Le clone est stable. La sequence de clonage est archivee.");
         }
       }
@@ -87,6 +93,7 @@ export default function CloningPodA() {
   const handleStabilize = () => {
     if (synced || !partnerConnected) return;
     setStabilizing(true);
+    actions.activateTemporarySequence("alarm");
     channelRef.current?.postMessage({ pod: POD_LABEL, action: "stabilize", timestamp: Date.now() });
     setDialog("Stabilisation lancee depuis le Pod A ! Le Pod B doit faire de meme dans les 3 prochaines secondes...");
     

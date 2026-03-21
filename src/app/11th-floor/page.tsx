@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import BattleTransition from "@/components/BattleTransition";
@@ -47,6 +48,7 @@ const buildFloorMap = (cellOpen: boolean): number[][] =>
 
 export default function EleventhFloor() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(
     "11F // canal maintenance ouvert. Quelqu'un a garde ce couloir alimente uniquement pour retenir une seule personne.",
   );
@@ -142,6 +144,10 @@ export default function EleventhFloor() {
       const next = new Set(prev);
       next.add(nodeId);
       const nextCount = next.size;
+      actions.playOneShot("sfx-puzzle");
+      if (nextCount >= 3) {
+        actions.activateTemporarySequence("breach-alarm");
+      }
       setDialog(
         nextCount >= 3
             ? "Trois noeuds stabilises. La cellule de maintenance cede enfin, et un Lokhlass quitte son angle mort pour surveiller le couloir."
@@ -175,6 +181,7 @@ export default function EleventhFloor() {
     if (next.size >= 3) {
       setDisabledBreakers(new Set());
       setOverloadStartedAt(null);
+      actions.clearTemporarySequence();
       if (hasMasterball) {
         setCaptureTarget("electrode");
         setShowBattleTransition(true);
@@ -289,6 +296,7 @@ export default function EleventhFloor() {
   };
 
   const handleCaptureComplete = () => {
+    actions.playOneShot("sfx-capture");
     if (captureTarget === "lapras") {
       setCaptureTarget(null);
       setLaprasCaptured(true);

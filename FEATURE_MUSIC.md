@@ -1,0 +1,8 @@
+- [ ] Créé une musique pour chaque route
+- [ ] Active / désactive des séquences pour chaque route en fonction d'évennements qui s'y passe. Voici quelques exemples (non exhaustif):
+  - je rentre dans le terminal sur l'accueil, la musique doit être plus calme
+  - Un évennement se déclenche, une séquence doit s'activer pour dynamiser la musique
+  - Une action spécifique est effectuée, on peut déclencher une séquence temporaire
+  - Trouve des idées originales pour dynamiser l'ensemble de la musique avec les actions du joueur
+- [ ] Créé des petites séquences de son qui se déclencheront en tant sfx par dessus la musique, par exemple quand on a un dialogue avec un autre PNJ
+- [ ] Utilise aussi le piano pour créé certaines musiques

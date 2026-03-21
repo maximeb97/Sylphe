@@ -1,27 +1,27 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { getAudioCtx, getMasterGain } from "@/lib/music/engine";
 
 export default function RadioPokematos() {
   const [isOpen, setIsOpen] = useState(false);
   const [frequency, setFrequency] = useState(88.0);
   const [message, setMessage] = useState<string | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
 
   const startAudio = useCallback(() => {
-    if (audioCtxRef.current) return;
-    const ctx = new AudioContext();
+    if (oscillatorRef.current) return;
+    const ctx = getAudioCtx();
+    const master = getMasterGain();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
     osc.frequency.value = 200;
     gain.gain.value = 0.05;
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(master);
     osc.start();
-    audioCtxRef.current = ctx;
     oscillatorRef.current = osc;
     gainRef.current = gain;
   }, []);
@@ -29,7 +29,6 @@ export default function RadioPokematos() {
   useEffect(() => {
     return () => {
       oscillatorRef.current?.stop();
-      audioCtxRef.current?.close();
     };
   }, []);
 
@@ -37,7 +36,7 @@ export default function RadioPokematos() {
     const freq = parseFloat(e.target.value);
     setFrequency(freq);
 
-    if (!audioCtxRef.current) startAudio();
+    if (!oscillatorRef.current) startAudio();
 
     if (oscillatorRef.current) {
       oscillatorRef.current.frequency.value = 100 + (freq - 80) * 20;
@@ -54,7 +53,7 @@ export default function RadioPokematos() {
       if (oscillatorRef.current) {
         // Play Pokeflute melody
         const osc = oscillatorRef.current;
-        const now = audioCtxRef.current!.currentTime;
+        const now = getAudioCtx().currentTime;
         osc.frequency.setValueAtTime(523, now);
         osc.frequency.setValueAtTime(659, now + 0.2);
         osc.frequency.setValueAtTime(784, now + 0.4);
@@ -93,12 +92,22 @@ export default function RadioPokematos() {
   }
 
   return (
-    <div className="absolute top-[26px] right-2 z-50 bg-[#1a1a2e] border border-[#2a2a4a] p-2 rounded shadow-lg"
-      style={{ width: 400 }}>
+    <div
+      className="absolute top-[26px] right-2 z-50 bg-[#1a1a2e] border border-[#2a2a4a] p-2 rounded shadow-lg"
+      style={{ width: 400 }}
+    >
       <div className="flex justify-between items-center mb-1">
         <span className="text-[7px] text-gba-gold">📻 RADIO POKEMATOS</span>
-        <button onClick={() => { setIsOpen(false); oscillatorRef.current?.stop(); audioCtxRef.current?.close(); audioCtxRef.current = null; oscillatorRef.current = null; }}
-          className="text-[8px] text-[#666] hover:text-white">✕</button>
+        <button
+          onClick={() => {
+            setIsOpen(false);
+            oscillatorRef.current?.stop();
+            oscillatorRef.current = null;
+          }}
+          className="text-[8px] text-[#666] hover:text-white"
+        >
+          ✕
+        </button>
       </div>
       <div className="text-[10px] text-center text-gba-accent font-mono mb-1">
         {frequency.toFixed(1)} MHz

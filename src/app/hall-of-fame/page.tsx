@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import PixelSprite, { MEW_SPRITE, MEWTWO_SPRITE, MISSINGNO_SPRITE, PORYGON_SPRITE, BOSS_SPRITE } from "@/components/PixelSprite";
@@ -23,6 +24,7 @@ const archiveRougePhases = [
 ];
 
 export default function HallOfFamePage() {
+  const { actions } = useMusic();
   const [hasAccess, setHasAccess] = useState(false);
   const [hasArchiveDebug, setHasArchiveDebug] = useState(false);
   const [hasWhiteRoomHint, setHasWhiteRoomHint] = useState(false);
@@ -79,7 +81,13 @@ export default function HallOfFamePage() {
       setHasWhiteRoomHint(true);
       setShowArchiveRouge(false);
       setArchiveRougeStep(0);
+      actions.clearTemporarySequence();
+      actions.playOneShot("sfx-puzzle");
       return;
+    }
+
+    if (nextStep === 1) {
+      actions.activateTemporarySequence("corruption-glitch");
     }
 
     setArchiveRougeStep(nextStep);

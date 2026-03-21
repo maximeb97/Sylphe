@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -33,6 +34,7 @@ const BOSS_MAP: number[][] = Array(MAP_H)
 
 export default function GiovanniOffice() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
@@ -72,10 +74,12 @@ export default function GiovanniOffice() {
   ) => {
     setIsTypewriterDone(false);
     setForceComplete(false);
-    if (npcId === "boss")
+    if (npcId === "boss") {
+      actions.activateTemporarySequence("confrontation");
       setDialog(
         "Giovanni : Le Projet M approche de sa phase finale. Je vois que tu as trouvé mon repaire... Déguerpis !",
       );
+    }
     else if (tile === BOSS_DESK)
       setDialog(
         "Terminal : [TENTATIVE DE CRACKING...] Code '7382-4B9F' accepté. 'Le clone 150 est trop instable... Ne l'approchez pas sans la Masterball.'",

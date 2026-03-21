@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import StartMenu from "@/components/StartMenu";
 import { markMapVisited } from "@/lib/gameState";
+import { MusicStateContext, MusicActionsContext } from "@/app/providers";
 import {
   shouldTriggerBlackout,
   getBlackoutInfo,
@@ -231,8 +232,11 @@ export default function GBAShell({
             </div>
           </div>
 
-          {/* Speaker grills */}
-          <div className="flex justify-end mt-3 pr-2">
+          {/* Speaker grills + Volume wheel */}
+          <div className="flex justify-between items-end mt-3 px-2">
+            {/* Volume wheel */}
+            <VolumeWheel />
+
             <div className="flex flex-col gap-[3px]">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div
@@ -248,6 +252,79 @@ export default function GBAShell({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── Volume Wheel ─────────────────────────────────────────────────────────────
+
+function VolumeWheel() {
+  const musicState = useContext(MusicStateContext);
+  const musicActions = useContext(MusicActionsContext);
+
+  // Gracefully handle missing provider (shouldn't happen but be safe)
+  const volume = musicState?.volume ?? 0.7;
+  const muted = musicState?.muted ?? false;
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      musicActions?.setVolume(parseFloat(e.target.value));
+    },
+    [musicActions],
+  );
+
+  const handleMuteClick = useCallback(() => {
+    musicActions?.toggleMute();
+  }, [musicActions]);
+
+  // Visual indicator: number of lit bars (0-5 based on volume)
+  const litBars = muted ? 0 : Math.round(volume * 5);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative">
+        {/* Volume slider (styled as a small wheel) */}
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          value={volume}
+          onChange={handleChange}
+          aria-label="Volume"
+          className="w-[40px] h-[6px] appearance-none bg-[#2a2a3a] rounded-full cursor-pointer"
+          style={{ accentColor: muted ? "#444" : "#88f058" }}
+        />
+
+        {/* Mute toggle */}
+        <button
+          type="button"
+          aria-label={muted ? "Unmute audio" : "Mute audio"}
+          onClick={handleMuteClick}
+          className="absolute -right-11 text-[27px] leading-none transition-colors select-none"
+          style={{ color: muted ? "#ff4444" : "#6a6a8a" }}
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
+      </div>
+
+      {/* Mini LED bar */}
+      <div className="flex gap-[2px]">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div
+            key={i}
+            className="w-[4px] h-[3px] rounded-[1px] transition-colors duration-200"
+            style={{
+              backgroundColor: i < litBars ? "#88f058" : "#2a2a3a",
+              boxShadow: i < litBars ? "0 0 3px #88f058" : "none",
+            }}
+          />
+        ))}
+      </div>
+
+      <span className="text-[5px] text-[#6a6a8a] uppercase tracking-wider">
+        Vol
+      </span>
     </div>
   );
 }

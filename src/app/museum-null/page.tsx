@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
+import { useMusic } from "@/hooks/useMusic";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
 import {
@@ -37,6 +38,7 @@ const MUSEUM_NULL_MAP: number[][] = Array(MAP_H)
 
 export default function MuseumNullPage() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -165,6 +167,7 @@ export default function MuseumNullPage() {
       if (x === 10 && y === 3) {
         if (!hasNullBadge) {
           setGameFlag("sylphe_null_badge");
+          actions.playOneShot("sfx-puzzle");
           setDialog(
             "SOCLE CENTRAL: badge visiteur NULL recupere. Les archives du terminal pourront maintenant calculer un vrai checksum corporate.",
           );
@@ -237,6 +240,7 @@ export default function MuseumNullPage() {
                 e.dataTransfer.setData("text/plain", "spectral_feather");
                 e.dataTransfer.effectAllowed = "move";
                 setFeatherPickedUp(true);
+                actions.activateTemporarySequence("feather-chime");
                 if (typeof window !== "undefined") {
                   localStorage.setItem("sylphe_spectral_feather", "true");
                   window.dispatchEvent(new Event("storage"));

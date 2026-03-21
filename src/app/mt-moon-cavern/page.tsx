@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import BattleTransition from "@/components/BattleTransition";
 import DialogBox from "@/components/DialogBox";
 import PokemonCaptureSequence from "@/components/PokemonCaptureSequence";
@@ -36,6 +37,7 @@ type FlashCircle = { x: number; y: number; radius: number; opacity: number; time
 
 export default function MtMoonCavern() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -144,6 +146,7 @@ export default function MtMoonCavern() {
             const ty = playerY + dy;
             if (tx >= 0 && tx < CAVE_W && ty >= 0 && ty < CAVE_H && CAVE_LAYOUT[ty][tx] === 3) {
               setZubatsDisturbed(prev => prev + 1);
+              actions.activateTemporarySequence("zubat-swarm");
             }
           }
         }
@@ -225,8 +228,10 @@ export default function MtMoonCavern() {
             const next = prev + 1;
             if (next === 1) {
               setDialog("Un fossile ancien scintille dans la roche. Les Nosferapti avaient creuse autour pour le proteger.");
+              actions.playOneShot("sfx-puzzle");
             } else {
               setGameFlag("sylphe_cave_echo");
+              actions.playOneShot("sfx-puzzle");
               if (
                 typeof window !== "undefined" &&
                 localStorage.getItem("sylphe_masterball_unlocked") === "true" &&
@@ -260,6 +265,7 @@ export default function MtMoonCavern() {
     setCaptureTarget(null);
     setHasKabuto(true);
     setGameFlag("sylphe_kabuto_captured");
+    actions.playOneShot("sfx-capture");
     setDialog("Le fossile se deploie comme une coque marine. KABUTO est capture, et la grotte garde son eclair de reveil.");
   }, []);
 

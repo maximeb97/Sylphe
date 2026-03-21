@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -43,6 +44,7 @@ const CAV_MAP: number[][] = CAVE_TEMPLATE.map((row) => row.split("").map((tile) 
 
 export default function CeruleanCave() {
     const router = useRouter();
+    const { actions } = useMusic();
     const [dialog, setDialog] = useState<string | null>(null);
     const [isTypewriterDone, setIsTypewriterDone] = useState(false);
     const [forceComplete, setForceComplete] = useState(false);
@@ -78,6 +80,7 @@ export default function CeruleanCave() {
                     // Trigger battle animation or skip to win logic for now
                     setTimeout(() => {
                         setIsBattleStarted(true);
+                        actions.activateTemporarySequence("red-battle");
                     }, 2000);
                 }, 2000);
             }
@@ -133,6 +136,8 @@ export default function CeruleanCave() {
         setRedDefeated(true);
         setGameFlag("sylphe_red_defeated");
         setIsBattleStarted(false);
+        actions.clearTemporarySequence();
+        actions.playOneShot("sfx-capture");
         setDialog(hasPrototype151 ? "RED : ... ! (Il vous remet un PASS SYSTEME et confirme que le vrai boss n'etait pas 150, mais la memoire du sujet 151.)" : "RED : ... ! (Il vous remet un mystérieux PASS... L'accès au coeur du système est désormais possible.)");
         setGameFlag("sylphe_system_pass");
         if (hasPrototype151) {

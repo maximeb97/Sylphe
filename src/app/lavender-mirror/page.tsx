@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
@@ -43,6 +44,7 @@ const requiemLines = [
 
 export default function LavenderMirrorPage() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -150,7 +152,12 @@ export default function LavenderMirrorPage() {
 
     if (tile === PC_DESK) {
       if (x === 10 && y === 3) {
-        setMirrorActive((current) => !current);
+        setMirrorActive((current) => {
+          const next = !current;
+          if (next) actions.activateTemporarySequence("requiem");
+          else actions.clearTemporarySequence();
+          return next;
+        });
         setDialog(
           mirrorActive
             ? "MIROIR OFF: la salle redevient une galerie corporate impeccable."
@@ -227,6 +234,7 @@ export default function LavenderMirrorPage() {
       setGameFlag("sylphe_mirror_tag");
       setRitualOpen(false);
       setRitualStep(0);
+      actions.playOneShot("sfx-puzzle");
       setDialog(
         "Vous recevez le MIRROR TAG. Les noms du miroir peuvent maintenant etre relus depuis le terminal avec `requiem`.",
       );

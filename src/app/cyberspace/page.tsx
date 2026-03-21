@@ -3,6 +3,7 @@
 import { useState } from "react";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
+import { useMusic } from "@/hooks/useMusic";
 import CustomMapCanvas, { CustomNPC } from "@/components/tilemap/CustomMapCanvas";
 import GBAShell from "@/components/GBAShell";
 import { NEUTRAL_NPC_SPRITE, PORYGON_SPRITE } from "@/components/PixelSprite";
@@ -26,6 +27,7 @@ const CYBER_MAP: number[][] = Array(MAP_H).fill(0).map((_, y) =>
 
 export default function CyberSpace() {
     const router = useRouter();
+    const { actions } = useMusic();
     const [dialog, setDialog] = useState<string | null>(null);
     const [isTypewriterDone, setIsTypewriterDone] = useState(false);
     const [forceComplete, setForceComplete] = useState(false);
@@ -40,6 +42,7 @@ export default function CyberSpace() {
         if (npcId === "pory") {
             playPokemonCry(137);
             setGameFlag("sylphe_porygon_echo");
+            actions.activateTemporarySequence("virus-burst");
             setDialog("Porygon: bzzz... FRAGMENT CODE: 7382... TRANSFERT VERS PROJET M...");
         }
         else if (tile === CYBER_WALL) setDialog("Alerte: Pare-feu Sylphe.net actif.");

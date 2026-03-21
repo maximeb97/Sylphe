@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -31,6 +32,7 @@ const GLITCH_MAP: number[][] = Array(MAP_H)
 
 export default function GlitchCity() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -51,6 +53,7 @@ export default function GlitchCity() {
     setForceComplete(false);
     if (npcId) {
       playGlitchSound();
+      actions.activateTemporarySequence("haunted");
       setDialog(
         "§%* ERROR : µ@& DATA CORRUPTED 0x9F4C... Item quantity x128. SILPH SCOPE UNLOCKED. CODE (PART 2): 4B9F...",
       );

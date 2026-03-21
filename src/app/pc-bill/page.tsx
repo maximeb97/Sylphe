@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -139,6 +140,7 @@ const TRANSFER_INFO = [
 ];
 
 export default function PCBill() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>("Systeme PC de LEO / BILL demarre...");
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -190,7 +192,10 @@ export default function PCBill() {
         i++;
       } else {
         clearInterval(interval);
-        setTimeout(() => setBooted(true), 500);
+        setTimeout(() => {
+          setBooted(true);
+          actions.playOneShot("sfx-puzzle");
+        }, 500);
       }
     }, 400);
     return () => clearInterval(interval);
@@ -244,6 +249,7 @@ export default function PCBill() {
       if (next === TRASH_EMAILS.length - 1 && !emailFound) {
         setEmailFound(true);
         setGameFlag("sylphe_bill_email");
+        actions.activateTemporarySequence("error-beep");
         setTimeout(() => {
           setDialog(
             "Email confidentiel de Leo recupere. Le mot de passe MYUUTSU semble encore repondre sur le canal maintenance du 11e etage.",

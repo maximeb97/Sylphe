@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -32,6 +33,7 @@ const ROCKET_MAP: number[][] = Array(MAP_H)
 
 export default function RocketHQ() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
@@ -72,14 +74,18 @@ export default function RocketHQ() {
   ) => {
     setIsTypewriterDone(false);
     setForceComplete(false);
-    if (npcId === "grunt1")
+    if (npcId === "grunt1") {
+      actions.activateTemporarySequence("alarm-siren");
       setDialog(
         "Sbire : Pff, j'ai paumé ma partie du code pour le labo... C'était 4B9F ou l'inverse ?",
       );
-    else if (npcId === "grunt2")
+    }
+    else if (npcId === "grunt2") {
+      actions.activateTemporarySequence("alarm-siren");
       setDialog(
         "Sbire : Le projet M de Giovanni au S-S 42 avance... J'espère que cette chose est bien enfermée.",
       );
+    }
     else if (tile === ROCKET_CRATE)
       setDialog(
         "Caisse : Rien d'utile, seulement des vieux uniformes de la Team Rocket.",

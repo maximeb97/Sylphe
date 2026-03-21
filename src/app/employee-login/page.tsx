@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -53,6 +54,7 @@ const EMPLOYEES = [
 type Phase = "login" | "select-agent" | "password" | "inbox" | "email";
 
 export default function EmployeeLogin() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>("Portail ROCKET-NET v4.2 — Intranet securise. Identifiez-vous.");
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -89,6 +91,7 @@ export default function EmployeeLogin() {
     if (password.toLowerCase().trim() === agent.pokemon) {
       setPhase("inbox");
       setDialog(`Acces autorise. Boite de reception de ${agent.name}.`);
+      actions.playOneShot("sfx-puzzle");
     } else {
       setPasswordError(true);
       setDialog("Mot de passe incorrect. Indice: c'est le nom d'un Pokemon...");
@@ -109,6 +112,7 @@ export default function EmployeeLogin() {
 
     if (agentEmailsRead === totalEmails) {
       setGameFlag("sylphe_intranet_complete");
+      actions.activateTemporarySequence("access-denied");
       const billEmailUnlocked =
         typeof window !== "undefined" &&
         localStorage.getItem("sylphe_bill_email") === "true";

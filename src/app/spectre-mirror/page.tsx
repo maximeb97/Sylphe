@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import Link from "next/link";
 import BattleTransition from "@/components/BattleTransition";
 import { setGameFlag } from "@/lib/gameState";
@@ -17,6 +18,7 @@ const GHOSTS = [
 ];
 
 export default function SpectreMirror() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -183,6 +185,7 @@ export default function SpectreMirror() {
       nextSpotted.add(ghost.name);
       setGhostsSpotted(nextSpotted);
       setShowGhost(false);
+      actions.playOneShot("sfx-ghost");
       setDialog(`Spectre detecte: ${ghost.name} ! Le Scope Sylphe enregistre l'empreinte residuelle dans les archives.`);
 
       if (nextSpotted.size >= GHOSTS.length) {
@@ -209,6 +212,7 @@ export default function SpectreMirror() {
     setCaptureTarget(null);
     setHasFantominus(true);
     setGameFlag("sylphe_fantominus_captured");
+    actions.playOneShot("sfx-capture");
     setDialog("Le reflet se condense en une seule respiration violette. FANTOMINUS est capture, et le miroir garde votre contour en archive.");
   }, []);
 

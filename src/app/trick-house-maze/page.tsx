@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
@@ -27,6 +28,7 @@ const MAZE: number[][] = [
 const TILE = 20;
 
 export default function TrickHouseMaze() {
+  const { actions } = useMusic();
   const [ballX, setBallX] = useState(1);
   const [ballY, setBallY] = useState(1);
   const [trapsHit, setTrapsHit] = useState(0);
@@ -84,6 +86,7 @@ export default function TrickHouseMaze() {
 
     if (MAZE[ny][nx] === 2) {
       setTrapsHit(prev => prev + 1);
+      actions.activateTemporarySequence("danger-trap");
       setDialog("PIEGE ROCKET ! Courant electrique detecte. La Pokeball est repoussee !");
       // Push back to previous position
       setTimeout(() => {
@@ -93,10 +96,12 @@ export default function TrickHouseMaze() {
     } else if (MAZE[ny][nx] === 4 && !itemFound) {
       setItemFound(true);
       setGameFlag("sylphe_trick_house_item");
+      actions.playOneShot("sfx-puzzle");
       setDialog("Un plan de la Maison Piege ! Document interne de la Team Rocket. Les coordonnees d'une base secrete y figurent.");
     } else if (MAZE[ny][nx] === 3) {
       setCompleted(true);
       setGameFlag("sylphe_trick_house_complete");
+      actions.playOneShot("sfx-puzzle");
       setDialog("Sortie trouvee ! Vous avez traverse la Maison Piege de la Team Rocket. Les donnees du labyrinthe sont archivees.");
     }
   }, [itemFound]);

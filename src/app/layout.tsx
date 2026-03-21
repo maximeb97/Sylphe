@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { MusicProvider } from "@/app/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        {children}
+        <MusicProvider>{children}</MusicProvider>
         <Script id="developer-easter-egg" strategy="afterInteractive">
           {`
             console.log("%c📡 SYLPHE CORP. NETWORK INITIALIZED", "color: #ff3333; font-weight: bold; font-family: monospace; font-size: 14px; background: #222; padding: 4px; border-left: 4px solid #ff3333;");

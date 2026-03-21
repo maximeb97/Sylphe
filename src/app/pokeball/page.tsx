@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import CustomMapCanvas, {
@@ -90,6 +91,7 @@ function rollAmbientEvent(options: {
 
 export default function PokeballInterior() {
   const router = useRouter();
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -139,8 +141,9 @@ export default function PokeballInterior() {
   useEffect(() => {
     if (ambientEvent?.rarity === "MYTHIC") {
       setGameFlag("sylphe_triangulated_biosphere");
+      actions.toggleSequence("alert");
     }
-  }, [ambientEvent]);
+  }, [ambientEvent, actions]);
 
   const npcs: CustomNPC[] = [
     ...(hasMew
@@ -235,6 +238,7 @@ export default function PokeballInterior() {
     setForceComplete(false);
     if (npcId === "mew") {
       playPokemonCry(151);
+      actions.playOneShot("sfx-dialog");
       setDialog(
         hasTriangulatedBiosphere
           ? "Mew glisse d'un point d'ancrage a l'autre. La biosphere triangulee semble repondre a ses mouvements."

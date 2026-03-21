@@ -5,6 +5,7 @@ import GBAShell from "@/components/GBAShell";
 import DialogBox from "@/components/DialogBox";
 import TypewriterText from "@/components/TypewriterText";
 import { setGameFlag } from "@/lib/gameState";
+import { useMusic } from "@/hooks/useMusic";
 
 const POD_LABEL = "B";
 const PARTNER_LABEL = "A";
@@ -17,6 +18,7 @@ type PodMessage = {
 };
 
 export default function CloningPodB() {
+  const { actions } = useMusic();
   const [dialog, setDialog] = useState<string | null>(null);
   const [isTypewriterDone, setIsTypewriterDone] = useState(false);
   const [forceComplete, setForceComplete] = useState(false);
@@ -48,6 +50,8 @@ export default function CloningPodB() {
             channel.postMessage({ pod: POD_LABEL, action: "synced", timestamp: Date.now() });
             setSynced(true);
             setGameFlag("sylphe_pod_synced");
+            actions.clearTemporarySequence();
+            actions.playOneShot("sfx-puzzle");
             setDialog("SYNCHRONISATION ADN REUSSIE ! Les sequences genomiques sont stables !");
           } else {
             setDialog("Pod A a lance la stabilisation ! Appuyez dans les 3 secondes !");
@@ -60,6 +64,8 @@ export default function CloningPodB() {
         } else if (msg.action === "synced") {
           setSynced(true);
           setGameFlag("sylphe_pod_synced");
+          actions.clearTemporarySequence();
+          actions.playOneShot("sfx-puzzle");
           setDialog("SYNCHRONISATION CONFIRMEE depuis le Pod A !");
         }
       }
@@ -79,6 +85,7 @@ export default function CloningPodB() {
   const handleStabilize = () => {
     if (synced || !partnerConnected) return;
     setStabilizing(true);
+    actions.activateTemporarySequence("alarm");
     channelRef.current?.postMessage({ pod: POD_LABEL, action: "stabilize", timestamp: Date.now() });
     setDialog("Stabilisation lancee depuis le Pod B !");
     setCountdown(3);

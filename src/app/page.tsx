@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useMusic } from "@/hooks/useMusic";
 import GBAShell from "@/components/GBAShell";
 import Terminal from "@/components/terminal/Terminal";
 import RadioPokematos from "@/components/RadioPokematos";
@@ -23,6 +24,7 @@ export default function Home() {
   const [showTransition, setShowTransition] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const { actions } = useMusic();
 
   const handleStart = useCallback(() => {
     setShowTransition(true);
@@ -35,11 +37,15 @@ export default function Home() {
 
   const handleOpenTerminal = useCallback(() => {
     setTerminalOpen(true);
-  }, []);
+    // Calmer music when terminal is open: drop drums
+    actions.toggleSequence("drums");
+  }, [actions]);
 
   const handleCloseTerminal = useCallback(() => {
     setTerminalOpen(false);
-  }, []);
+    // Restore drums when terminal closes
+    actions.toggleSequence("drums");
+  }, [actions]);
 
   return (
     <GBAShell
