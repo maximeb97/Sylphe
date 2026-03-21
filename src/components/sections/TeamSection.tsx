@@ -25,7 +25,21 @@ import ProgressBar from "@/components/ui/ProgressBar";
 import useInView from "@/hooks/useInView";
 import { getAgeByDate } from "@/lib/terminal/utils/date";
 
-const team = [
+type TeamMember = {
+  name: string;
+  title: string;
+  level: number | string;
+  hp: number;
+  maxHp: number;
+  desc: string;
+  sprite: string[][];
+  actionLabel?: string;
+  actionHref?: string;
+  onClick?: () => void;
+  openInNewTab?: boolean;
+};
+
+const team: TeamMember[] = [
   {
     name: "BOSS",
     title: "Giovanni",
@@ -52,6 +66,9 @@ const team = [
     maxHp: 120,
     desc: "Le créateur du Sylphe OS. Il supervise le code et passe son temps à tuer les bugs à l'aide de sa fidèle mascotte.",
     sprite: PLAYER_SPRITE,
+    actionLabel: "PROFIL",
+    actionHref: process.env.NEXT_PUBLIC_MAXIME_PROFILE_URL,
+    openInNewTab: true,
   },
   // TODO: Future idée
   // { name: "FANTÔME", title: "L'esprit de Cali", level: 99, hp: 0, maxHp: 1, desc: "Une plume trouvée par terre... L'esprit d'une mascotte qui veillera sur vous pour toujours.", sprite: GHOST_SPRITE },
@@ -225,6 +242,32 @@ export default function TeamSection() {
     return true;
   });
 
+  const selectedTeamMember =
+    selectedMember !== null ? visibleTeam[selectedMember] : null;
+
+  const handleMemberAction = (member: TeamMember) => {
+    if (member.onClick) {
+      member.onClick();
+      return;
+    }
+
+    if (!member.actionHref) {
+      return;
+    }
+
+    if (member.actionHref.startsWith("/")) {
+      router.push(member.actionHref);
+      return;
+    }
+
+    if (member.openInNewTab ?? true) {
+      window.open(member.actionHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    window.location.assign(member.actionHref);
+  };
+
   const handleMemberClick = (memberIndex: number) => {
     const member = visibleTeam[memberIndex];
     if (!member) return;
@@ -320,35 +363,35 @@ export default function TeamSection() {
           isOpen={true}
           onClose={() => setSelectedMember(null)}
           title={
-            visibleTeam[selectedMember].name === "???"
+            selectedTeamMember?.name === "???"
               ? "$!#& M?S S INGN0 ¤"
-              : `PROFILE : ${visibleTeam[selectedMember].title}`
+              : `PROFILE : ${selectedTeamMember?.title}`
           }
-          description={visibleTeam[selectedMember].desc}
+          description={selectedTeamMember?.desc}
         >
           <div
-            className={`flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border ${visibleTeam[selectedMember].name === "???" ? "animate-pulse blur-[1px] rotate-1 hue-rotate-180" : ""}`}
+            className={`flex items-center gap-4 mb-4 bg-gba-bg p-3 pixel-border ${selectedTeamMember?.name === "???" ? "animate-pulse blur-[1px] rotate-1 hue-rotate-180" : ""}`}
           >
             <PixelSprite
-              sprite={visibleTeam[selectedMember].sprite || SCIENTIST_SPRITE}
+              sprite={selectedTeamMember?.sprite || SCIENTIST_SPRITE}
               size={64}
               animate
             />
             <div className="flex-1 space-y-3">
               <ProgressBar
-                value={visibleTeam[selectedMember].hp}
-                max={visibleTeam[selectedMember].maxHp || 1}
+                value={selectedTeamMember?.hp ?? 0}
+                max={selectedTeamMember?.maxHp || 1}
                 label={
-                  visibleTeam[selectedMember].name === "???"
+                  selectedTeamMember?.name === "???"
                     ? "E R R OR"
                     : "SANTÉ"
                 }
               />
               <ProgressBar
-                value={parseInt(`${visibleTeam[selectedMember].level}`) || 0}
+                value={parseInt(`${selectedTeamMember?.level ?? 0}`) || 0}
                 max={100}
                 label={
-                  visibleTeam[selectedMember].name === "???"
+                  selectedTeamMember?.name === "???"
                     ? "L V L"
                     : "EXPÉRIENCE"
                 }
@@ -357,7 +400,7 @@ export default function TeamSection() {
             </div>
           </div>
 
-          {visibleTeam[selectedMember].title === "Porygon Echo" && (
+          {selectedTeamMember?.title === "Porygon Echo" && (
             <div className="mb-4 bg-gba-bg p-3 pixel-border text-[7px] leading-[14px] text-gba-text">
               {hasArchivePortal
                 ? `SYNC ARCHIVE: ${porygonSyncCount}/4 impulsions. Continuez a cliquer pour ouvrir directement l'archive.`
@@ -365,7 +408,7 @@ export default function TeamSection() {
             </div>
           )}
 
-          {visibleTeam[selectedMember].name === "DEVELOPPEUR" && (
+          {selectedTeamMember?.name === "DEVELOPPEUR" && (
             <div className="mb-4 bg-gba-bg p-3 pixel-border text-[7px] leading-[14px] text-gba-text">
               {maximeRescued
                 ? "Signal stable: la signature principale du developpeur a ete recuperee au 11e etage."
@@ -377,9 +420,15 @@ export default function TeamSection() {
             <Button variant="secondary" onClick={() => setSelectedMember(null)}>
               RETOUR
             </Button>
-            <Button blinkingArrow onClick={() => setSelectedMember(null)}>
-              RECRUTER
-            </Button>
+            {selectedTeamMember &&
+              (selectedTeamMember.onClick || selectedTeamMember.actionHref) && (
+                <Button
+                  blinkingArrow
+                  onClick={() => handleMemberAction(selectedTeamMember)}
+                >
+                  {selectedTeamMember.actionLabel ?? "RECRUTER"}
+                </Button>
+              )}
           </div>
         </Modal>
       )}

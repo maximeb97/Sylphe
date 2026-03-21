@@ -12,7 +12,65 @@ import Button from "@/components/ui/Button";
 import useInView from "@/hooks/useInView";
 import { setGameFlag } from "@/lib/gameState";
 
-const products = [
+type Product = {
+  name: string;
+  desc: string;
+  fullDesc: string;
+  sprite?: string[][];
+  imageSrc?: string;
+  imageAlt?: string;
+  stat: string;
+  price: string;
+  buyLabel?: string;
+  actionHref?: string;
+  onClick?: () => void;
+  openInNewTab?: boolean;
+};
+
+function ProductArtwork({
+  sprite,
+  imageSrc,
+  imageAlt,
+  size,
+  animate,
+}: {
+  sprite?: string[][];
+  imageSrc?: string;
+  imageAlt: string;
+  size: number;
+  animate?: boolean;
+}) {
+  if (imageSrc) {
+    return (
+      <div
+        className="relative self-center shrink-0 overflow-hidden pixel-border bg-gba-bg"
+        style={{
+          width: size,
+          height: size,
+          animation: animate ? "float 3s ease-in-out infinite" : undefined,
+        }}
+      >
+        {/* The artwork source can be a local path or arbitrary external URL. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          className="h-full w-full object-contain"
+          style={{
+            imageRendering: "pixelated",
+            filter: "contrast(1.08) saturate(0.92)",
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (!sprite) return null;
+
+  return <PixelSprite sprite={sprite} size={size} animate={animate} />;
+}
+
+const products: Product[] = [
   {
     name: "NexVid",
     desc: "Upscale et appliquez des effets à vos vidéos en temps réel",
@@ -21,6 +79,11 @@ const products = [
     sprite: MASTERBALL_SPRITE,
     stat: "Chrome / Firefox",
     price: "GRATUIT",
+    buyLabel: "VISITER",
+    actionHref: process.env.NEXT_PUBLIC_NEXVID_URL,
+    openInNewTab: true,
+    imageSrc: "/img/nexvid.png",
+    imageAlt: "NexVid",
   },
   {
     name: "ReClyp",
@@ -30,6 +93,11 @@ const products = [
     sprite: MASTERBALL_SPRITE,
     stat: "Chrome / Firefox",
     price: "GRATUIT / 29 P₽ pour version Pro",
+    buyLabel: "VISITER",
+    actionHref: process.env.NEXT_PUBLIC_RECLYP_URL,
+    openInNewTab: true,
+    imageSrc: "/img/reclyp.png",
+    imageAlt: "ReClyp",
   },
   {
     name: "FragBin",
@@ -37,8 +105,13 @@ const products = [
     fullDesc:
       "FragBin est un service de partage de code moderne qui permet de stocker et partager des extraits de code facilement. Idéal pour les développeurs qui veulent collaborer rapidement et efficacement.",
     sprite: MASTERBALL_SPRITE,
-    stat: "ATK ★★★★★",
+    stat: "★★★★★",
     price: "GRATUIT",
+    buyLabel: "VISITER",
+    actionHref: process.env.NEXT_PUBLIC_FRAGBIN_URL,
+    openInNewTab: true,
+    imageSrc: "/img/fragbin.png",
+    imageAlt: "FragBin",
   },
   {
     name: "MASTER BALL",
@@ -80,6 +153,37 @@ export default function ProductsSection() {
       typeof window !== "undefined" &&
       localStorage.getItem("sylphe_lavender_hint") === "true",
   );
+
+  const selectedProduct = products[selectedItem];
+
+  const handleAction = (product: Product) => {
+    if (product.onClick) {
+      product.onClick();
+      return;
+    }
+
+    if (!product.actionHref) {
+      setIsModalOpen(false);
+      return;
+    }
+
+    if (product.actionHref.startsWith("/")) {
+      router.push(product.actionHref);
+      return;
+    }
+
+    if (product.openInNewTab ?? true) {
+      window.open(product.actionHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    window.location.assign(product.actionHref);
+  };
+
+  const getActionLabel = (product: Product) =>
+    product.onClick || product.actionHref
+      ? (product.buyLabel ?? "ACHETER")
+      : "ACHETER";
 
   const handleProductOpen = (index: number) => {
     setSelectedItem(index);
@@ -131,7 +235,13 @@ export default function ProductsSection() {
               }}
             >
               <div className="flex items-start gap-3">
-                <PixelSprite sprite={product.sprite} size={48} animate={true} />
+                <ProductArtwork
+                  sprite={product.sprite}
+                  imageSrc={product.imageSrc}
+                  imageAlt={product.name}
+                  size={48}
+                  animate
+                />
                 <div className="flex-1 min-w-0">
                   <div className="text-[8px] text-gba-text font-bold mb-1">
                     {selectedItem === i && (
@@ -178,12 +288,14 @@ export default function ProductsSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={products[selectedItem].name}
-        description={products[selectedItem].fullDesc}
+        title={selectedProduct.name}
+        description={selectedProduct.fullDesc}
       >
         <div className="flex justify-center mb-4">
-          <PixelSprite
-            sprite={products[selectedItem].sprite}
+          <ProductArtwork
+            sprite={selectedProduct.sprite}
+            imageSrc={selectedProduct.imageSrc}
+            imageAlt={selectedProduct.name}
             size={64}
             animate
           />
@@ -192,35 +304,32 @@ export default function ProductsSection() {
         <div className="bg-gba-bg p-2 mb-4 pixel-border">
           <div className="flex justify-between text-[8px] text-gba-text mb-2">
             <span>PRIX:</span>
-            <span className="text-gba-blue">
-              {products[selectedItem].price}
-            </span>
+            <span className="text-gba-blue">{selectedProduct.price}</span>
           </div>
-          {products[selectedItem].stat.includes("★") && (
+          {selectedProduct.stat.includes("★") && (
             <div className="flex justify-between text-[8px] text-gba-text">
               <span>PUISSANCE:</span>
               <span className="text-gba-accent">
-                {products[selectedItem].stat.split(" ")[1]}
+                {selectedProduct.stat.split(" ")[1]}
               </span>
             </div>
           )}
         </div>
 
-        {products[selectedItem].name === "SCOPE SYLPHE" &&
-          lavenderHintUnlocked && (
-            <div className="bg-gba-bg p-2 mb-4 pixel-border text-[7px] leading-[14px] text-gba-text">
-              Frequence spectrale supplementaire detectee: POKEGEAR 0800-SYLPHE,
-              poste 7. Le miroir de Lavanville interne n&apos;est pas liste au
-              catalogue.
-            </div>
-          )}
+        {selectedProduct.name === "SCOPE SYLPHE" && lavenderHintUnlocked && (
+          <div className="bg-gba-bg p-2 mb-4 pixel-border text-[7px] leading-[14px] text-gba-text">
+            Frequence spectrale supplementaire detectee: POKEGEAR 0800-SYLPHE,
+            poste 7. Le miroir de Lavanville interne n&apos;est pas liste au
+            catalogue.
+          </div>
+        )}
 
         <div className="flex gap-2 justify-end">
           <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
             ANNULER
           </Button>
-          <Button blinkingArrow onClick={() => setIsModalOpen(false)}>
-            ACHETER
+          <Button blinkingArrow onClick={() => handleAction(selectedProduct)}>
+            {getActionLabel(selectedProduct)}
           </Button>
         </div>
       </Modal>
