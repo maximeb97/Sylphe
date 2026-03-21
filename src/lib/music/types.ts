@@ -28,8 +28,8 @@ export interface MusicState {
   currentTrack: MusicTrack | null;
   /** IDs of sequences currently active (persistent) */
   activeSequenceIds: Set<string>;
-  /** ID of a temporarily activated sequence (will be removed on clear) */
-  temporarySequenceId: string | null;
+  /** IDs of temporarily activated sequences (auto-expire after N cycles) */
+  temporarySequenceIds: Set<string>;
   /** Whether a one-shot is currently playing */
   oneShotPlaying: boolean;
   /** Volume level 0–1 */
@@ -50,9 +50,9 @@ export interface MusicActions {
   stopMusic: () => void;
   /** Toggle a sequence on/off persistently */
   toggleSequence: (sequenceId: string) => void;
-  /** Activate a sequence temporarily (auto-restores on clear) */
-  activateTemporarySequence: (sequenceId: string) => void;
-  /** Clear the temporary sequence */
+  /** Activate a sequence temporarily; auto-expires after `loops` cycles (default 2) */
+  activateTemporarySequence: (sequenceId: string, loops?: number) => void;
+  /** Clear all temporary sequences immediately */
   clearTemporarySequence: () => void;
   /** Play a track as a one-shot (plays once, then restores previous) */
   playOneShot: (trackId: string) => void;

@@ -246,6 +246,7 @@ export default function PokeballInterior() {
       );
     } else if (npcId === "mewtwo") {
       playPokemonCry(150);
+      actions.activateTemporarySequence("bio-surge");
       setDialog(
         hasTriangulatedBiosphere
           ? "Mewtwo ne force plus sa cage. Le clone #150 inspecte les lignes de force reliees a Mew et Porygon."
@@ -254,6 +255,7 @@ export default function PokeballInterior() {
             : "Mewtwo flotte en silence. La Masterball interieure est devenue sa salle de contention volontaire.",
       );
     } else if (npcId === "echo151") {
+      actions.activateTemporarySequence("bio-surge");
       setDialog(
         hasMew
           ? "L'archive 151 se tait. Le sujet originel a finalement retrouve une forme stable."

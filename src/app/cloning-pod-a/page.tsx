@@ -93,7 +93,8 @@ export default function CloningPodA() {
   const handleStabilize = () => {
     if (synced || !partnerConnected) return;
     setStabilizing(true);
-    actions.activateTemporarySequence("alarm");
+    actions.activateTemporarySequence("alarm", 4);
+    actions.activateTemporarySequence("clone-pulse", 4);
     channelRef.current?.postMessage({ pod: POD_LABEL, action: "stabilize", timestamp: Date.now() });
     setDialog("Stabilisation lancee depuis le Pod A ! Le Pod B doit faire de meme dans les 3 prochaines secondes...");
     

@@ -146,7 +146,7 @@ export default function MtMoonCavern() {
             const ty = playerY + dy;
             if (tx >= 0 && tx < CAVE_W && ty >= 0 && ty < CAVE_H && CAVE_LAYOUT[ty][tx] === 3) {
               setZubatsDisturbed(prev => prev + 1);
-              actions.activateTemporarySequence("zubat-swarm");
+              actions.activateTemporarySequence("zubat-swarm", 1);
             }
           }
         }
@@ -229,6 +229,7 @@ export default function MtMoonCavern() {
             if (next === 1) {
               setDialog("Un fossile ancien scintille dans la roche. Les Nosferapti avaient creuse autour pour le proteger.");
               actions.playOneShot("sfx-puzzle");
+              actions.activateTemporarySequence("fossil-disturb", 1);
             } else {
               setGameFlag("sylphe_cave_echo");
               actions.playOneShot("sfx-puzzle");

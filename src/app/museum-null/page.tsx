@@ -109,6 +109,7 @@ export default function MuseumNullPage() {
     setForceComplete(false);
 
     if (npcId === "curator") {
+      actions.activateTemporarySequence("null-resonance", 3);
       setDialog(
         hasNullBadge
           ? "Conservateur: Vous avez deja vu la vraie collection. Le badge NULL suffit a contredire toutes nos brochures."
@@ -118,6 +119,7 @@ export default function MuseumNullPage() {
     }
 
     if (npcId === "ghost-curator") {
+      actions.activateTemporarySequence("feather-chime", 3);
       setDialog(
         "Le Scope revele un ancien guide: 'nos visiteurs regardaient les trophées. Personne ne lisait les noms rayes sous le vernis'.",
       );
@@ -168,6 +170,7 @@ export default function MuseumNullPage() {
         if (!hasNullBadge) {
           setGameFlag("sylphe_null_badge");
           actions.playOneShot("sfx-puzzle");
+          actions.activateTemporarySequence("null-resonance", 3);
           setDialog(
             "SOCLE CENTRAL: badge visiteur NULL recupere. Les archives du terminal pourront maintenant calculer un vrai checksum corporate.",
           );
@@ -240,7 +243,7 @@ export default function MuseumNullPage() {
                 e.dataTransfer.setData("text/plain", "spectral_feather");
                 e.dataTransfer.effectAllowed = "move";
                 setFeatherPickedUp(true);
-                actions.activateTemporarySequence("feather-chime");
+                actions.activateTemporarySequence("feather-chime", 3);
                 if (typeof window !== "undefined") {
                   localStorage.setItem("sylphe_spectral_feather", "true");
                   window.dispatchEvent(new Event("storage"));

@@ -75,15 +75,16 @@ export default function GiovanniOffice() {
     setIsTypewriterDone(false);
     setForceComplete(false);
     if (npcId === "boss") {
-      actions.activateTemporarySequence("confrontation");
+      actions.activateTemporarySequence("confrontation", 3);
       setDialog(
         "Giovanni : Le Projet M approche de sa phase finale. Je vois que tu as trouvé mon repaire... Déguerpis !",
       );
-    }
-    else if (tile === BOSS_DESK)
+    } else if (tile === BOSS_DESK) {
+      actions.activateTemporarySequence("power-surge");
       setDialog(
         "Terminal : [TENTATIVE DE CRACKING...] Code '7382-4B9F' accepté. 'Le clone 150 est trop instable... Ne l'approchez pas sans la Masterball.'",
       );
+    }
   };
 
   const handlePlayerMove = (x: number, y: number) => {

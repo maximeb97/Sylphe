@@ -40,12 +40,17 @@ export default function CyberSpace() {
         setIsTypewriterDone(false);
         setForceComplete(false);
         if (npcId === "pory") {
-            playPokemonCry(137);
-            setGameFlag("sylphe_porygon_echo");
-            actions.activateTemporarySequence("virus-burst");
-            setDialog("Porygon: bzzz... FRAGMENT CODE: 7382... TRANSFERT VERS PROJET M...");
+          playPokemonCry(137);
+          setGameFlag("sylphe_porygon_echo");
+          actions.activateTemporarySequence("virus-burst", 2);
+          actions.activateTemporarySequence("net-storm", 2);
+          setDialog(
+            "Porygon: bzzz... FRAGMENT CODE: 7382... TRANSFERT VERS PROJET M...",
+          );
+        } else if (tile === CYBER_WALL) {
+          actions.activateTemporarySequence("glitch-arp", 1);
+          setDialog("Alerte: Pare-feu Sylphe.net actif.");
         }
-        else if (tile === CYBER_WALL) setDialog("Alerte: Pare-feu Sylphe.net actif.");
     };
 
     const handlePlayerMove = (x: number, y: number) => {

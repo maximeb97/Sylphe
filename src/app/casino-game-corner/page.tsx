@@ -41,7 +41,7 @@ export default function CasinoGameCorner() {
 
     if (allSame && finalReels[0] === 4) {
       setCoins(prev => prev + 777);
-      actions.activateTemporarySequence("jackpot-frenzy");
+      actions.activateTemporarySequence("jackpot-frenzy", 4);
       if (!porygonZUnlocked) {
         setPorygonZUnlocked(true);
         setGameFlag("sylphe_casino_porygon_z");

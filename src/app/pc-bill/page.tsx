@@ -249,7 +249,8 @@ export default function PCBill() {
       if (next === TRASH_EMAILS.length - 1 && !emailFound) {
         setEmailFound(true);
         setGameFlag("sylphe_bill_email");
-        actions.activateTemporarySequence("error-beep");
+        actions.activateTemporarySequence("error-beep", 2);
+        actions.activateTemporarySequence("file-corrupt", 1);
         setTimeout(() => {
           setDialog(
             "Email confidentiel de Leo recupere. Le mot de passe MYUUTSU semble encore repondre sur le canal maintenance du 11e etage.",

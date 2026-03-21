@@ -53,7 +53,7 @@ export default function GlitchCity() {
     setForceComplete(false);
     if (npcId) {
       playGlitchSound();
-      actions.activateTemporarySequence("haunted");
+      actions.activateTemporarySequence("haunted", 4);
       setDialog(
         "§%* ERROR : µ@& DATA CORRUPTED 0x9F4C... Item quantity x128. SILPH SCOPE UNLOCKED. CODE (PART 2): 4B9F...",
       );

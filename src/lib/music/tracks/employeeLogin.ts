@@ -18,10 +18,21 @@ $: s("sine")
   .note("g1")
   .sustain(4).attack(2).release(2).gain(.08).room(.2).slow(2)
 
+// @id:jazz-riff
+$: s("piano")
+  .note("<[g3,b3,d4] ~ [c4,e4,g4] ~>/2")
+  .sustain(.4).gain(.1).room(.25).delay(.08)
+
 // @id:access-denied
 _$: s("square")
   .note("[g3 ~ g3 ~]*2")
   .sustain(.08).gain(.4).crush(6).hpf(800).distort(.3)
+
+// @id:file-corrupt
+_$: s("square")
+  .note("g5*8? g5*4?")
+  .sustain(.03).gain(.1).crush(4).hpf(2500)
+  .lpf(sine.range(1500, 6000).fast(6))
 `;
 
 const parsed = parseStrudelScript(script);

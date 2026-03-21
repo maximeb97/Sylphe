@@ -82,6 +82,30 @@ export function parseStrudelScript(
 }
 
 /**
+ * Parse the CPM value from a preamble string.
+ * Supports `setcpm(120/4)`, `setcpm(30)`, etc.
+ * Returns null if no setcpm call is found.
+ */
+export function parseCpmFromPreamble(preamble: string): number | null {
+  const match = preamble.match(/setcpm\(\s*([\d.]+)\s*(?:\/\s*([\d.]+))?\s*\)/);
+  if (!match) return null;
+  const a = parseFloat(match[1]);
+  const b = match[2] ? parseFloat(match[2]) : 1;
+  if (!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return null;
+  return a / b;
+}
+
+/**
+ * Compute the duration of one Strudel cycle in milliseconds from CPM.
+ * Falls back to 2000ms (120BPM / 4 beats) if CPM can't be determined.
+ */
+export function msPerCycle(cpm: number | null): number {
+  if (!cpm || cpm <= 0) return 2000;
+  return 60000 / cpm;
+}
+
+
+/**
  * Build an evaluable Strudel script from a track's preamble and a set of
  * active sequence IDs.
  */

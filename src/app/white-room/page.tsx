@@ -99,7 +99,8 @@ export default function WhiteRoomPage() {
 
       setRitualOpen(true);
       setArchiveStep(0);
-      actions.activateTemporarySequence("reconciliation");
+      actions.activateTemporarySequence("reconciliation", 6);
+      actions.activateTemporarySequence("archive-voice", 6);
       return;
     }
 

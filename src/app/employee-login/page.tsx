@@ -102,6 +102,7 @@ export default function EmployeeLogin() {
     if (selectedAgent === null) return;
     setSelectedEmail(emailIdx);
     setPhase("email");
+    actions.activateTemporarySequence("file-corrupt", 1);
     const emailKey = `${selectedAgent}-${emailIdx}`;
     setReadEmails(prev => new Set(prev).add(emailKey));
 

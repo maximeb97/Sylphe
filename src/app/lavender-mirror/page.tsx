@@ -138,6 +138,7 @@ export default function LavenderMirrorPage() {
 
       setRitualOpen(true);
       setRitualStep(0);
+      actions.activateTemporarySequence("spirit-call", 4);
       return;
     }
 
@@ -154,7 +155,7 @@ export default function LavenderMirrorPage() {
       if (x === 10 && y === 3) {
         setMirrorActive((current) => {
           const next = !current;
-          if (next) actions.activateTemporarySequence("requiem");
+          if (next) actions.activateTemporarySequence("requiem", 8);
           else actions.clearTemporarySequence();
           return next;
         });

@@ -101,6 +101,7 @@ export default function BeneathStairsPage() {
     setForceComplete(false);
 
     if (npcId === "echo") {
+      actions.activateTemporarySequence("void-call");
       setDialog(
         hasWhiteRoomUnlocked
           ? "L'echo residuel ne fuit plus. Il designe silencieusement la membrane blanche ouverte au sommet du couloir."
@@ -110,6 +111,7 @@ export default function BeneathStairsPage() {
     }
 
     if (npcId === "tech") {
+      actions.activateTemporarySequence("membrane-pulse");
       setDialog(
         "Journal residuel: 'Nous avions prevu une salle sterile sous la grotte. Giovanni voulait 150. Le systeme, lui, gardait 151 en reserve.'",
       );
@@ -126,6 +128,7 @@ export default function BeneathStairsPage() {
 
       if (!hasWhiteRoomUnlocked) {
         setGameFlag("sylphe_white_room_unlocked");
+        actions.activateTemporarySequence("membrane-pulse");
         setDialog(
           "CONSOLE RESIDUELLE: ARCHIVE 151 RECONNUE. La membrane blanche s'ouvre au nord du couloir.",
         );
@@ -168,7 +171,7 @@ export default function BeneathStairsPage() {
         return;
       }
 
-      actions.activateTemporarySequence("void-call");
+      actions.activateTemporarySequence("void-call", 4);
       router.push("/white-room");
     }
   };

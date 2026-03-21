@@ -79,17 +79,17 @@ export default function RocketHQ() {
       setDialog(
         "Sbire : Pff, j'ai paumé ma partie du code pour le labo... C'était 4B9F ou l'inverse ?",
       );
-    }
-    else if (npcId === "grunt2") {
+    } else if (npcId === "grunt2") {
       actions.activateTemporarySequence("alarm-siren");
       setDialog(
         "Sbire : Le projet M de Giovanni au S-S 42 avance... J'espère que cette chose est bien enfermée.",
       );
-    }
-    else if (tile === ROCKET_CRATE)
+    } else if (tile === ROCKET_CRATE) {
+      actions.activateTemporarySequence("team-march");
       setDialog(
         "Caisse : Rien d'utile, seulement des vieux uniformes de la Team Rocket.",
       );
+    }
   };
 
   const handlePlayerMove = (x: number, y: number) => {

@@ -32,7 +32,7 @@ export default function Footer() {
           Propulsé par la technologie de KANTO
         </div>
         <div className="mt-2 text-[6px] text-gba-shadow">
-          ▲ Appuyez sur START pour sauvegarder ▲
+          ▲ Appuyez sur START ▲
         </div>
         <button
           type="button"

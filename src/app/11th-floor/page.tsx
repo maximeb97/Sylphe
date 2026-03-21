@@ -146,7 +146,7 @@ export default function EleventhFloor() {
       const nextCount = next.size;
       actions.playOneShot("sfx-puzzle");
       if (nextCount >= 3) {
-        actions.activateTemporarySequence("breach-alarm");
+        actions.activateTemporarySequence("breach-alarm", 8);
       }
       setDialog(
         nextCount >= 3

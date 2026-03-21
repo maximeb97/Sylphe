@@ -80,11 +80,12 @@ export default function CeruleanCave() {
                     // Trigger battle animation or skip to win logic for now
                     setTimeout(() => {
                         setIsBattleStarted(true);
-                        actions.activateTemporarySequence("red-battle");
+                        actions.activateTemporarySequence("red-battle", 6);
                     }, 2000);
                 }, 2000);
             }
         } else if (tile === CERULEAN_WATER) {
+            actions.activateTemporarySequence("crystal-drop", 1);
             setDialog(hasPrototype151 ? "L'eau glaciale reflete des fragments du sujet 151 et des tentatives de clonage abandonnees." : "L'eau est glaciale et profonde.");
         } else if (tile === CERULEAN_STAIRS) {
             setDialog(

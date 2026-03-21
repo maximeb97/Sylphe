@@ -86,7 +86,7 @@ export default function TrickHouseMaze() {
 
     if (MAZE[ny][nx] === 2) {
       setTrapsHit(prev => prev + 1);
-      actions.activateTemporarySequence("danger-trap");
+      actions.activateTemporarySequence("danger-trap", 1);
       setDialog("PIEGE ROCKET ! Courant electrique detecte. La Pokeball est repoussee !");
       // Push back to previous position
       setTimeout(() => {

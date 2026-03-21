@@ -92,6 +92,7 @@ export default function MewChamber() {
                 setCaptureTarget("mewtwo");
                 setShowBattleTransition(true);
                 actions.activateTemporarySequence("alarm");
+                actions.activateTemporarySequence("emergency-protocol", 8);
             } else {
                 setDialog("Le monstre endormi dans la cuve émet une onde psychique terrifiante, mais reste figé.");
             }

@@ -26,7 +26,9 @@ export default function MusicTestPage() {
 
         {/* Current State */}
         <div className="border-2 border-gba-window-border bg-gba-white/60 px-3 py-2 mb-4">
-          <p className="text-[8px] text-gba-text font-bold mb-2">ETAT COURANT</p>
+          <p className="text-[8px] text-gba-text font-bold mb-2">
+            ETAT COURANT
+          </p>
           <div className="space-y-1 text-[7px] text-gba-bg-darker font-mono">
             <p>
               Piste:{" "}
@@ -43,9 +45,11 @@ export default function MusicTestPage() {
               </span>
             </p>
             <p>
-              Sequence temporaire:{" "}
+              Sequences temporaires:{" "}
               <span className="text-gba-text">
-                {state.temporarySequenceId ?? "—"}
+                {state.temporarySequenceIds.size > 0
+                  ? [...state.temporarySequenceIds].join(", ")
+                  : "—"}
               </span>
             </p>
             <p>
@@ -57,8 +61,7 @@ export default function MusicTestPage() {
             <p>
               Volume:{" "}
               <span className="text-gba-text">
-                {Math.round(state.volume * 100)}%
-                {state.muted ? " (MUTE)" : ""}
+                {Math.round(state.volume * 100)}%{state.muted ? " (MUTE)" : ""}
               </span>
             </p>
             <p>
@@ -82,18 +85,16 @@ export default function MusicTestPage() {
 
         {/* Track list */}
         <div className="space-y-3">
-          {allTracks.map((track) => (
+          {allTracks.map(track => (
             <TrackCard
               key={track.id}
               track={track}
               isActive={state.currentTrack?.id === track.id}
               activeSequenceIds={state.activeSequenceIds}
-              temporarySequenceId={state.temporarySequenceId}
+              temporarySequenceIds={state.temporarySequenceIds}
               expanded={expandedTrack === track.id}
               onToggleExpand={() =>
-                setExpandedTrack(
-                  expandedTrack === track.id ? null : track.id,
-                )
+                setExpandedTrack(expandedTrack === track.id ? null : track.id)
               }
               onPlay={() => actions.changeTrack(track.id)}
               onPlayOneShot={() => actions.playOneShot(track.id)}
@@ -112,7 +113,7 @@ function TrackCard({
   track,
   isActive,
   activeSequenceIds,
-  temporarySequenceId,
+  temporarySequenceIds,
   expanded,
   onToggleExpand,
   onPlay,
@@ -124,7 +125,7 @@ function TrackCard({
   track: MusicTrack;
   isActive: boolean;
   activeSequenceIds: Set<string>;
-  temporarySequenceId: string | null;
+  temporarySequenceIds: Set<string>;
   expanded: boolean;
   onToggleExpand: () => void;
   onPlay: () => void;
@@ -182,9 +183,9 @@ function TrackCard({
         <div className="mt-3 border-t border-gba-window-border pt-2">
           <p className="text-[7px] text-gba-bg-darker mb-2">SEQUENCES:</p>
           <div className="space-y-1">
-            {track.sequences.map((seq) => {
+            {track.sequences.map(seq => {
               const isSeqActive = activeSequenceIds.has(seq.id);
-              const isTemp = temporarySequenceId === seq.id;
+              const isTemp = temporarySequenceIds.has(seq.id);
 
               return (
                 <div
@@ -243,7 +244,7 @@ function TrackCard({
             </summary>
             <pre className="mt-1 text-[6px] text-gba-bg-darker bg-gba-text/10 p-2 overflow-x-auto whitespace-pre-wrap max-h-[200px] overflow-y-auto">
               {track.preamble && `${track.preamble}\n\n`}
-              {track.sequences.map((s) => s.code).join("\n\n")}
+              {track.sequences.map(s => s.code).join("\n\n")}
             </pre>
           </details>
         </div>

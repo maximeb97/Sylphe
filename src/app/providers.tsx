@@ -25,6 +25,7 @@ import {
 import { buildActiveScript } from "@/lib/music/parser";
 import { getTrackById, getAllTracks } from "@/lib/music/tracks";
 import { getRouteMusicConfig } from "@/lib/music/routeMusic";
+import { parseCpmFromPreamble, msPerCycle } from "@/lib/music/parser";
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 
@@ -47,24 +48,28 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   const [activeSequenceIds, setActiveSequenceIds] = useState<Set<string>>(
     new Set(),
   );
-  const [temporarySequenceId, setTemporarySequenceId] = useState<string | null>(
-    null,
+  const [temporarySequenceIds, setTemporarySequenceIds] = useState<Set<string>>(
+    new Set(),
   );
   const [oneShotPlaying, setOneShotPlaying] = useState(false);
 
   // Refs for avoiding stale closures
   const currentTrackRef = useRef(currentTrack);
   const activeSeqRef = useRef(activeSequenceIds);
-  const tempSeqRef = useRef(temporarySequenceId);
+  const tempSeqRef = useRef(temporarySequenceIds);
   const pageOverrideRef = useRef(false);
   const previousTrackRef = useRef<{
     track: MusicTrack;
     sequences: Set<string>;
   } | null>(null);
+  // Per-sequence expiry timers
+  const tempTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
 
   currentTrackRef.current = currentTrack;
   activeSeqRef.current = activeSequenceIds;
-  tempSeqRef.current = temporarySequenceId;
+  tempSeqRef.current = temporarySequenceIds;
 
   // ─── Volume ───────────────────────────────────────────────────────────────
 
@@ -77,9 +82,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   // ─── Evaluate active script whenever track/sequences change ───────────────
 
   const evaluate = useCallback(
-    async (track: MusicTrack, seqIds: Set<string>, tempId: string | null) => {
+    async (track: MusicTrack, seqIds: Set<string>, tempIds: Set<string>) => {
       const allActive = new Set(seqIds);
-      if (tempId) allActive.add(tempId);
+      for (const id of tempIds) allActive.add(id);
 
       const script = buildActiveScript(track, allActive);
       if (!script.trim()) {
@@ -135,9 +140,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   // Re-evaluate on sequence changes
   useEffect(() => {
     if (!currentTrack) return;
-    evaluate(currentTrack, activeSequenceIds, temporarySequenceId);
+    evaluate(currentTrack, activeSequenceIds, temporarySequenceIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, activeSequenceIds, temporarySequenceId]);
+  }, [currentTrack, activeSequenceIds, temporarySequenceIds]);
 
   // ─── Route-based music mapping ────────────────────────────────────────────
 
@@ -151,7 +156,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         stopPlayback();
         setCurrentTrack(null);
         setActiveSequenceIds(new Set());
-        setTemporarySequenceId(null);
+        setTemporarySequenceIds(new Set());
+        for (const t of tempTimersRef.current.values()) clearTimeout(t);
+        tempTimersRef.current.clear();
       }
       return;
     }
@@ -168,7 +175,10 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
     setCurrentTrack(track);
     setActiveSequenceIds(defaultSeqs);
-    setTemporarySequenceId(null);
+    setTemporarySequenceIds(new Set());
+    // Cancel all pending expiry timers
+    for (const t of tempTimersRef.current.values()) clearTimeout(t);
+    tempTimersRef.current.clear();
     setOneShotPlaying(false);
   }, [pathname]);
 
@@ -183,7 +193,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     );
     setCurrentTrack(track);
     setActiveSequenceIds(defaultSeqs);
-    setTemporarySequenceId(null);
+    setTemporarySequenceIds(new Set());
+    for (const t of tempTimersRef.current.values()) clearTimeout(t);
+    tempTimersRef.current.clear();
     setOneShotPlaying(false);
   }, []);
 
@@ -191,7 +203,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     stopPlayback();
     setCurrentTrack(null);
     setActiveSequenceIds(new Set());
-    setTemporarySequenceId(null);
+    setTemporarySequenceIds(new Set());
+    for (const t of tempTimersRef.current.values()) clearTimeout(t);
+    tempTimersRef.current.clear();
     setOneShotPlaying(false);
     pageOverrideRef.current = false;
   }, []);
@@ -208,12 +222,43 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const activateTemporarySequence = useCallback((sequenceId: string) => {
-    setTemporarySequenceId(sequenceId);
-  }, []);
+  const activateTemporarySequence = useCallback(
+    (sequenceId: string, loops = 2) => {
+      // Cancel any existing timer for this sequence
+      const existing = tempTimersRef.current.get(sequenceId);
+      if (existing !== undefined) clearTimeout(existing);
+
+      // Add the sequence to the active set
+      setTemporarySequenceIds(prev => {
+        const next = new Set(prev);
+        next.add(sequenceId);
+        return next;
+      });
+
+      // Compute expiry duration from the current track's CPM
+      const track = currentTrackRef.current;
+      const cpm = track ? parseCpmFromPreamble(track.preamble) : null;
+      const duration = msPerCycle(cpm) * loops;
+
+      // Schedule auto-removal
+      const timer = setTimeout(() => {
+        tempTimersRef.current.delete(sequenceId);
+        setTemporarySequenceIds(prev => {
+          const next = new Set(prev);
+          next.delete(sequenceId);
+          return next;
+        });
+      }, duration);
+
+      tempTimersRef.current.set(sequenceId, timer);
+    },
+    [],
+  );
 
   const clearTemporarySequence = useCallback(() => {
-    setTemporarySequenceId(null);
+    for (const t of tempTimersRef.current.values()) clearTimeout(t);
+    tempTimersRef.current.clear();
+    setTemporarySequenceIds(new Set());
   }, []);
 
   const playOneShot = useCallback((trackId: string) => {
@@ -233,7 +278,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     );
     setCurrentTrack(track);
     setActiveSequenceIds(seqs);
-    setTemporarySequenceId(null);
+    setTemporarySequenceIds(new Set());
+    for (const t of tempTimersRef.current.values()) clearTimeout(t);
+    tempTimersRef.current.clear();
     setOneShotPlaying(true);
 
     // For one-shot, evaluate once then restore after a generous delay.
@@ -245,6 +292,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         // Wait a cycle (~2s at default 0.5 CPS) then restore
         setTimeout(() => {
           setOneShotPlaying(false);
+          for (const t of tempTimersRef.current.values()) clearTimeout(t);
+          tempTimersRef.current.clear();
+          setTemporarySequenceIds(new Set());
           const prev = previousTrackRef.current;
           if (prev) {
             setCurrentTrack(prev.track);
@@ -260,7 +310,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       .catch(() => {
         setOneShotPlaying(false);
       });
-  };, []);
+  }, []);
 
   const setVolume = useCallback((v: number) => {
     setVolumeState(Math.max(0, Math.min(1, v)));
@@ -276,7 +326,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     () => ({
       currentTrack,
       activeSequenceIds,
-      temporarySequenceId,
+      temporarySequenceIds,
       oneShotPlaying,
       volume,
       muted,
@@ -286,7 +336,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     [
       currentTrack,
       activeSequenceIds,
-      temporarySequenceId,
+      temporarySequenceIds,
       oneShotPlaying,
       volume,
       muted,

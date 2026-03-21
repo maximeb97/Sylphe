@@ -18,9 +18,19 @@ $: sound("white").gain(.03)
   .lpf(sine.range(200, 3000).slow(4)).coarse(4)
 
 // @id:haunted
-_$: note("<c4 ~ eb4 ~ f#4 ~ c4 ~>")
+$: note("<c4 ~ eb4 ~ f#4 ~ c4 ~>")
   .sound("square").gain(.15).crush(6)
   .lpf(400).room(.7).roomsize(3)
+
+// @id:signal-bleed
+_$: sound("white").gain(.05).coarse(12)
+  .lpf(sine.range(400, 2500).fast(8))
+  .delay(.3).delayfeedback(.7).room(.4)
+
+// @id:data-surge
+_$: note("<c3 f3 c3 f#3>*4")
+  .sound("sawtooth").gain(.1).crush(3).distort(.5)
+  .lpf(sine.range(300, 1800).fast(6)).room(.3)
 `;
 
 const { preamble, sequences } = parseStrudelScript(script);

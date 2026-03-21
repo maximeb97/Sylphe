@@ -82,12 +82,13 @@ export default function HallOfFamePage() {
       setShowArchiveRouge(false);
       setArchiveRougeStep(0);
       actions.clearTemporarySequence();
+      actions.activateTemporarySequence("glory-theme", 6);
       actions.playOneShot("sfx-puzzle");
       return;
     }
 
     if (nextStep === 1) {
-      actions.activateTemporarySequence("corruption-glitch");
+      actions.activateTemporarySequence("corruption-glitch", 4);
     }
 
     setArchiveRougeStep(nextStep);
