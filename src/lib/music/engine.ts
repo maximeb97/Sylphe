@@ -131,7 +131,7 @@ export async function getRepl() {
     // 2. Inject our AudioContext into superdough so that the SuperdoughAudioController
     //    (and all samples) are created on the same context as our masterGain.
     //    This MUST happen before initStrudelScope() calls getAudioContext() internally.
-    const { setAudioContext: setSDCtx, initAudio } =
+    const { setAudioContext: setSDCtx } =
       await import("@strudel/webaudio");
     setSDCtx(ourCtx);
 
@@ -141,7 +141,6 @@ export async function getRepl() {
     //    and calls audioCtx.audioWorklet.addModule() on ourCtx — required before
     //    any AudioWorkletNode can be constructed.
     await initStrudelScope();
-    await initAudio();
 
     const { repl } = await import("@strudel/core");
     const { transpiler } = await import("@strudel/transpiler");
