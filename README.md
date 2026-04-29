@@ -25,6 +25,7 @@ Les variables publiques suivantes permettent de brancher les nouveaux liens sans
 - `NEXT_PUBLIC_NEXVID_URL`: remplace le bouton d'action de `NexVid` par `VISITER`.
 - `NEXT_PUBLIC_RECLYP_URL`: remplace le bouton d'action de `ReClyp` par `VISITER`.
 - `NEXT_PUBLIC_FRAGBIN_URL`: remplace le bouton d'action de `FragBin` par `VISITER`.
+- `NEXT_PUBLIC_BROWMI_URL`: remplace le bouton d'action de `Browmi` par `VISITER`.
 
 Exemple :
 
@@ -34,6 +35,7 @@ NEXT_PUBLIC_MAXIME_PROFILE_URL=https://maxime.example/profile
 NEXT_PUBLIC_NEXVID_URL=https://nexvid.example
 NEXT_PUBLIC_RECLYP_URL=https://reclyp.example
 NEXT_PUBLIC_FRAGBIN_URL=https://fragbin.example
+NEXT_PUBLIC_BROWMI_URL=https://browmi.example
 ```
 
 ## Scripts

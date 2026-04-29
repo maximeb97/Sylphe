@@ -114,6 +114,20 @@ const products: Product[] = [
     imageAlt: "FragBin",
   },
   {
+    name: "Browmi",
+    desc: "Adoptez un animal virtuel",
+    fullDesc:
+      "Adoptez un Browmon, un animal de compagnie virtuel qui vit dans votre navigateur. Prenez soin de lui, jouez avec lui et regardez-le grandir au fil du temps. Un compagnon numérique pour égayer vos journées en ligne.",
+    sprite: MASTERBALL_SPRITE,
+    stat: "★★★★★",
+    price: "GRATUIT",
+    buyLabel: "VISITER",
+    actionHref: process.env.NEXT_PUBLIC_BROWMI_URL,
+    openInNewTab: true,
+    imageSrc: "/img/browmi.png",
+    imageAlt: "Browmi",
+  },
+  {
     name: "MASTER BALL",
     desc: "Notre produit phare. Technologie de capture ultime avec un taux de réussite de 100%.",
     fullDesc:
